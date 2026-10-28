@@ -1,0 +1,30 @@
+# arquivo montado e saídas dos testes: saem de novo com python scripts/montar.py e node tests/e2e.mjs
+dist/
+files/
+node_modules/
+# PDFs reais nunca entram no Git; exemplos de teste são gerados na hora pelo próprio teste
+*.pdf
+# exceção: o PDF de teste e a máscara, inventados para os testes e gerados por gerar_pdf_teste.py
+!tests/fixtures/*.pdf
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.tmp
+*.log
+# configurações locais de ferramentas e de agentes
+.claude/
+.codex/
+.vscode/
+.idea/
+# segredos e certificados: nunca entram no Git
+.env
+.env.*
+*.pfx
+*.p12
+*.pem
+*.key
+# arquivos do sistema
+Thumbs.db
+desktop.ini
+.DS_Store

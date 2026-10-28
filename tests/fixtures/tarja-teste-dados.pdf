@@ -1,0 +1,298 @@
+%PDF-1.7
+%âãÏÓ
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Pages /Count 8 /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 19 0 R 21 0 R 23 0 R] >>
+endobj
+5 0 obj
+<< /Length 1651 >>
+stream
+BT
+/F1 16 Tf
+0 Tc 100 Tz
+1 0 0 1 60 780 Tm
+3 Tr (Declaração de exemplo \(dados fictícios\)) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 740 Tm
+3 Tr (Nome: ) Tj
+0 Tr (Fulano de Teste) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 715 Tm
+3 Tr (CPF: ) Tj
+0 Tr (831.975.872-60) Tj
+3 Tr ( \(titular\)) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 690 Tm
+3 Tr (E-mail: ) Tj
+0 Tr (fulano.teste@exemplo.test) Tj
+3 Tr ( ou telefone ) Tj
+0 Tr (\(00\) 91234-5678) Tj
+ET
+BT
+/F2 11 Tf
+0 Tc 100 Tz
+1 0 0 1 60 665 Tm
+3 Tr (CNPJ da empresa: ) Tj
+0 Tr (19.808.456/0001-00) Tj
+ET
+BT
+/F3 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 640 Tm
+3 Tr (Endereço com CEP ) Tj
+0 Tr (00012-345) Tj
+3 Tr ( e RG ) Tj
+0 Tr (00.000.123-4) Tj
+3 Tr ( SSP) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 70 Tz
+1 0 0 1 60 590 Tm
+3 Tr (Fone apertado: ) Tj
+0 Tr (\(00\) 3123-4567) Tj
+ET
+BT
+/F1 11 Tf
+1.2 Tc 100 Tz
+1 0 0 1 60 565 Tm
+3 Tr (E-mail espaçado: ) Tj
+0 Tr (ana.exemplo@escola.test) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 515 Tm
+3 Tr (Protocolo 123.456.789-00 \(não é CPF\)) Tj
+ET
+BT
+/F3 13 Tf
+0 Tc 100 Tz
+1 0 0 1 60 490 Tm
+3 Tr (Linha em Times com CPF ) Tj
+0 Tr (833.311.475-08) Tj
+3 Tr ( no fim) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 440 Tm
+3 Tr (Documento assinado por ) Tj
+0 Tr (Beltrana de) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 424 Tm
+0 Tr (Exemplo Teste) Tj
+3 Tr (, servidora.) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 400 Tm
+3 Tr (A banana é de ) Tj
+0 Tr (Ana) Tj
+3 Tr (.) Tj
+ET
+BT
+/F1 12 Tf
+1 0 0 1 60 540 Tm
+3 Tr (CPF partido: ) Tj
+0 Tr (514.334) Tj
+0 Tr (.988-55) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 465 Tm
+3 Tr [(RG nº )] TJ
+3 Tr [() -250] TJ
+0 Tr [(000000012)] TJ
+3 Tr [() 40] TJ
+0 Tr [(3456)] TJ
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 144 >>
+stream
+BT
+/F1 14 Tf
+0 Tc 100 Tz
+1 0 0 1 72 520 Tm
+3 Tr (Contato: ) Tj
+0 Tr (\(00\) 91234-5678) Tj
+3 Tr ( e ) Tj
+0 Tr (joana.exemplo@exemplo.test) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 115 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 160 860 Tm
+3 Tr (Página com origem deslocada, CPF ) Tj
+0 Tr (831.975.872-60) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [100 100 695 942] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 113 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 780 Tm
+3 Tr (E-mail na página girada: ) Tj
+0 Tr (beltrano@exemplo.test) Tj
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 11 0 R /Rotate 90 >>
+endobj
+13 0 obj
+<< /Length 99 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+0 1 -1 0 300 200 Tm
+3 Tr (CPF na vertical ) Tj
+0 Tr (831.975.872-60) Tj
+ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 187 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 72 700 Tm
+3 Tr (CPF no campo abaixo \(formulário\):) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 72 500 Tm
+3 Tr (CPF invisível ) Tj
+3 Tr (831.975.872-60) Tj
+ET
+endstream
+endobj
+16 0 obj
+<< /Length 62 /Type /XObject /Subtype /Form /BBox [0 0 228 28] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> >>
+stream
+/Tx BMC q BT /F1 12 Tf 0 g 4 9 Td (831.975.872-60) Tj ET Q EMC
+endstream
+endobj
+17 0 obj
+<< /Type /Annot /Subtype /Widget /FT /Tx /T (cpf_titular) /V (831.975.872-60) /DA (/F1 12 Tf 0 g) /F 4 /Rect [72 640 300 668] /AP << /N 16 0 R >> >>
+endobj
+18 0 obj
+<< /Type /Annot /Subtype /Text /Rect [400 700 420 720] /F 4 /Open false /Contents (comentario escondido: segredo.comentario@exemplo.test) >>
+endobj
+19 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 15 0 R /Annots [17 0 R 18 0 R] >>
+endobj
+20 0 obj
+<< /Length 0 >>
+stream
+
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 96 >>
+stream
+BT
+/F1 8 Tf
+0 Tc 100 Tz
+1 0 0 1 30 380 Tm
+3 Tr (CPF em UserUnit ) Tj
+0 Tr (831.975.872-60) Tj
+ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 298 421] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 22 0 R /UserUnit 2 >>
+endobj
+24 0 obj
+<< /S /JavaScript /JS (app.alert\('nao deveria rodar'\);) >>
+endobj
+25 0 obj
+<< /Type /Catalog /Pages 4 0 R /OpenAction 24 0 R /AcroForm << /Fields [17 0 R] /DA (/F1 12 Tf 0 g) /DR << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> >> >>
+endobj
+26 0 obj
+<< /Title (Documento secreto de Fulano de Teste) /Author (Fulano de Teste) /Subject (CPF 831.975.872-60) /Producer (gerador de teste) >>
+endobj
+xref
+0 27
+0000000000 65535 f 
+0000000015 00000 n 
+0000000112 00000 n 
+0000000207 00000 n 
+0000000306 00000 n 
+0000000411 00000 n 
+0000002114 00000 n 
+0000002260 00000 n 
+0000002455 00000 n 
+0000002601 00000 n 
+0000002767 00000 n 
+0000002918 00000 n 
+0000003083 00000 n 
+0000003242 00000 n 
+0000003392 00000 n 
+0000003540 00000 n 
+0000003779 00000 n 
+0000004000 00000 n 
+0000004165 00000 n 
+0000004322 00000 n 
+0000004494 00000 n 
+0000004544 00000 n 
+0000004692 00000 n 
+0000004839 00000 n 
+0000004999 00000 n 
+0000005076 00000 n 
+0000005250 00000 n 
+trailer
+<< /Size 27 /Root 25 0 R /Info 26 0 R >>
+startxref
+5403
+%%EOF

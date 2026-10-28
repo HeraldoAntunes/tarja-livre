@@ -1,0 +1,26 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# Como citar o Tarja Livre (Citation File Format 1.2.0). O GitHub mostra "Cite this repository" a partir deste arquivo.
+# A cada versão publicada, atualizar version e incluir date-released (e o DOI, depois do Zenodo).
+cff-version: 1.2.0
+message: "Se usar o Tarja Livre num trabalho, cite a versão usada como abaixo."
+type: software
+title: "Tarja Livre: tarjar dados pessoais em PDF, livre e sem internet"
+abstract: >-
+  Programa livre que tarja dados pessoais em PDF de forma irreversível, refazendo cada página como imagem, com
+  sugestão de tarjas para CPF, CNPJ, RG, e-mail, telefone e CEP, carimbo LGPD, SHA-256 do original e folha de
+  conferência. Funciona num arquivo só, no navegador, sem internet.
+version: "1.0.0"
+date-released: "2026-10-28"
+authors:
+  - given-names: "Heraldo"
+    family-names: "Antunes"
+    orcid: "https://orcid.org/0000-0002-5495-0381"
+license: MIT
+repository-code: "https://github.com/HeraldoAntunes/tarja-livre"
+url: "https://github.com/HeraldoAntunes/tarja-livre/releases/latest"
+keywords:
+  - "LGPD"
+  - "dados pessoais"
+  - "PDF"
+  - "software livre"
+  - "offline"

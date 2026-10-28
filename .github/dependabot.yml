@@ -1,0 +1,16 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-FileCopyrightText: 2026 Heraldo Antunes
+# SPDX-License-Identifier: MIT
+# Dependabot: uma vez por mês, abre um pedido de mudança (pull request) quando sai versão nova das actions.
+# As bibliotecas do programa (PDF.js e jsPDF, em vendor/) são cópias conferidas à mão: troca de versão é trabalho
+# planejado, com os testes de ponta a ponta, e não pedido automático. Nada é aplicado sozinho.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,0 +1,25 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-FileCopyrightText: 2026 Heraldo Antunes
+# SPDX-License-Identifier: MIT
+name: Sugerir uma melhoria
+description: Uma ideia de recurso para o Tarja Livre
+labels: ["melhoria"]
+body:
+  - type: textarea
+    id: situacao
+    attributes:
+      label: Que situação isso resolve?
+      description: Conte que tipo de documento você tarja e onde o programa poderia ajudar mais. Sem dado pessoal de ninguém.
+    validations:
+      required: true
+  - type: textarea
+    id: ideia
+    attributes:
+      label: Como você imagina que funcione?
+    validations:
+      required: true
+  - type: input
+    id: onde
+    attributes:
+      label: Onde você usa (opcional)
+      placeholder: "secretaria escolar, coordenação de curso, órgão público"

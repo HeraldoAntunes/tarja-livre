@@ -1,0 +1,71 @@
+{
+  "paginas": 8,
+  "tamanhos": [
+    [
+      595,
+      842
+    ],
+    [
+      792,
+      612
+    ],
+    [
+      595,
+      842
+    ],
+    [
+      842,
+      595
+    ],
+    [
+      595,
+      842
+    ],
+    [
+      595,
+      842
+    ],
+    [
+      595,
+      842
+    ],
+    [
+      596,
+      842
+    ]
+  ],
+  "sugestoes": {
+    "termo": 4,
+    "cpf": 8,
+    "email": 4,
+    "telefone": 3,
+    "cnpj": 1,
+    "cep": 1,
+    "rg": 2
+  },
+  "total": 23,
+  "termos": [
+    "Fulano de Teste",
+    "Beltrana de Exemplo Teste",
+    "Ana"
+  ],
+  "paginas_sem_texto": [
+    7
+  ],
+  "proibidos": [
+    "831.975.872-60",
+    "514.334.988-55",
+    "833.311.475-08",
+    "19.808.456/0001-00",
+    "fulano",
+    "Fulano",
+    "Beltrana",
+    "91234",
+    "joana",
+    "beltrano",
+    "segredo",
+    "00012-345",
+    "nao deveria rodar",
+    "Documento secreto"
+  ]
+}

@@ -1,0 +1,267 @@
+%PDF-1.7
+%âãÏÓ
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Pages /Count 8 /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 19 0 R 21 0 R 23 0 R] >>
+endobj
+5 0 obj
+<< /Length 1391 >>
+stream
+BT
+/F1 16 Tf
+0 Tc 100 Tz
+1 0 0 1 60 780 Tm
+0 Tr (Declaração de exemplo \(dados fictícios\)) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 740 Tm
+0 Tr (Nome: Fulano de Teste) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 715 Tm
+0 Tr (CPF: 831.975.872-60 \(titular\)) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 690 Tm
+0 Tr (E-mail: fulano.teste@exemplo.test ou telefone \(00\) 91234-5678) Tj
+ET
+BT
+/F2 11 Tf
+0 Tc 100 Tz
+1 0 0 1 60 665 Tm
+0 Tr (CNPJ da empresa: 19.808.456/0001-00) Tj
+ET
+BT
+/F3 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 640 Tm
+0 Tr (Endereço com CEP 00012-345 e RG 00.000.123-4 SSP) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 70 Tz
+1 0 0 1 60 590 Tm
+0 Tr (Fone apertado: \(00\) 3123-4567) Tj
+ET
+BT
+/F1 11 Tf
+1.2 Tc 100 Tz
+1 0 0 1 60 565 Tm
+0 Tr (E-mail espaçado: ana.exemplo@escola.test) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 515 Tm
+0 Tr (Protocolo 123.456.789-00 \(não é CPF\)) Tj
+ET
+BT
+/F3 13 Tf
+0 Tc 100 Tz
+1 0 0 1 60 490 Tm
+0 Tr (Linha em Times com CPF 833.311.475-08 no fim) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 440 Tm
+0 Tr (Documento assinado por Beltrana de) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 424 Tm
+0 Tr (Exemplo Teste, servidora.) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 400 Tm
+0 Tr (A banana é de Ana.) Tj
+ET
+BT
+/F1 12 Tf
+1 0 0 1 60 540 Tm
+0 Tr (CPF partido: ) Tj
+0 Tr (514.334) Tj
+0 Tr (.988-55) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 465 Tm
+[(RG nº ) -250 (000000012) 40 (3456)] TJ
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 111 >>
+stream
+BT
+/F1 14 Tf
+0 Tc 100 Tz
+1 0 0 1 72 520 Tm
+0 Tr (Contato: \(00\) 91234-5678 e joana.exemplo@exemplo.test) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 104 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 160 860 Tm
+0 Tr (Página com origem deslocada, CPF 831.975.872-60) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [100 100 695 942] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 102 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 60 780 Tm
+0 Tr (E-mail na página girada: beltrano@exemplo.test) Tj
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 11 0 R /Rotate 90 >>
+endobj
+13 0 obj
+<< /Length 88 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+0 1 -1 0 300 200 Tm
+0 Tr (CPF na vertical 831.975.872-60) Tj
+ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 176 >>
+stream
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 72 700 Tm
+0 Tr (CPF no campo abaixo \(formulário\):) Tj
+ET
+BT
+/F1 12 Tf
+0 Tc 100 Tz
+1 0 0 1 72 500 Tm
+3 Tr (CPF invisível 831.975.872-60) Tj
+ET
+endstream
+endobj
+16 0 obj
+<< /Length 62 /Type /XObject /Subtype /Form /BBox [0 0 228 28] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> >>
+stream
+/Tx BMC q BT /F1 12 Tf 0 g 4 9 Td (831.975.872-60) Tj ET Q EMC
+endstream
+endobj
+17 0 obj
+<< /Type /Annot /Subtype /Widget /FT /Tx /T (cpf_titular) /V (831.975.872-60) /DA (/F1 12 Tf 0 g) /F 4 /Rect [72 640 300 668] /AP << /N 16 0 R >> >>
+endobj
+18 0 obj
+<< /Type /Annot /Subtype /Text /Rect [400 700 420 720] /F 4 /Open false /Contents (comentario escondido: segredo.comentario@exemplo.test) >>
+endobj
+19 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 15 0 R /Annots [17 0 R 18 0 R] >>
+endobj
+20 0 obj
+<< /Length 78 >>
+stream
+q 0.75 0.85 1 rg 120 300 300 180 re f 0 0.4 0.2 RG 3 w 140 320 m 400 460 l S Q
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 85 >>
+stream
+BT
+/F1 8 Tf
+0 Tc 100 Tz
+1 0 0 1 30 380 Tm
+0 Tr (CPF em UserUnit 831.975.872-60) Tj
+ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 298 421] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 22 0 R /UserUnit 2 >>
+endobj
+24 0 obj
+<< /S /JavaScript /JS (app.alert\('nao deveria rodar'\);) >>
+endobj
+25 0 obj
+<< /Type /Catalog /Pages 4 0 R /OpenAction 24 0 R /AcroForm << /Fields [17 0 R] /DA (/F1 12 Tf 0 g) /DR << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> >> >>
+endobj
+26 0 obj
+<< /Title (Documento secreto de Fulano de Teste) /Author (Fulano de Teste) /Subject (CPF 831.975.872-60) /Producer (gerador de teste) >>
+endobj
+xref
+0 27
+0000000000 65535 f 
+0000000015 00000 n 
+0000000112 00000 n 
+0000000207 00000 n 
+0000000306 00000 n 
+0000000411 00000 n 
+0000001854 00000 n 
+0000002000 00000 n 
+0000002162 00000 n 
+0000002308 00000 n 
+0000002463 00000 n 
+0000002614 00000 n 
+0000002768 00000 n 
+0000002927 00000 n 
+0000003066 00000 n 
+0000003214 00000 n 
+0000003442 00000 n 
+0000003663 00000 n 
+0000003828 00000 n 
+0000003985 00000 n 
+0000004157 00000 n 
+0000004286 00000 n 
+0000004434 00000 n 
+0000004570 00000 n 
+0000004730 00000 n 
+0000004807 00000 n 
+0000004981 00000 n 
+trailer
+<< /Size 27 /Root 25 0 R /Info 26 0 R >>
+startxref
+5134
+%%EOF

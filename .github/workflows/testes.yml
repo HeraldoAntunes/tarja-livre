@@ -1,0 +1,51 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-FileCopyrightText: 2026 Heraldo Antunes
+# SPDX-License-Identifier: MIT
+# Testes automáticos a cada envio ao GitHub, num Windows com o Microsoft Edge (o mesmo que o programa usa): monta o
+# HTML único nas duas versões (normal e com OCR), roda os testes da procura, do montador e dos dados fictícios, e os
+# testes de ponta a ponta, que abrem o arquivo direto do disco no Edge sem janela. Nada é publicado por aqui.
+name: Testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Montar o HTML único
+        run: python -X utf8 scripts/montar.py --release
+
+      - name: Testes rápidos (procura, montador, dados fictícios)
+        run: node --test tests/achados.test.mjs tests/montar.test.mjs tests/ficticios.test.mjs
+
+      - name: Ponta a ponta (fluxo completo)
+        run: node tests/e2e.mjs
+
+      - name: Ponta a ponta (PDF de teste e arquivos hostis)
+        run: node tests/e2e_pdf_teste.mjs
+
+      - name: Ponta a ponta (vários arquivos)
+        run: node tests/e2e_varios.mjs
+
+      - name: Ponta a ponta (versão com OCR, página digitalizada)
+        run: node tests/e2e_ocr.mjs

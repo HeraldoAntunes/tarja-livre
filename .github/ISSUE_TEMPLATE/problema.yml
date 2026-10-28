@@ -1,0 +1,54 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-FileCopyrightText: 2026 Heraldo Antunes
+# SPDX-License-Identifier: MIT
+name: Relatar um problema
+description: Algo não funcionou como deveria no Tarja Livre
+labels: ["problema"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a melhorar o Tarja Livre! **Nunca anexe documento real nem dado pessoal de ninguém**: reproduza com um PDF feito só para o teste.
+        Problemas de **segurança** (por exemplo, um dado coberto que ainda aparece no PDF salvo) não devem ser abertos aqui: veja o SECURITY.md.
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o problema e o que você esperava que acontecesse.
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passo a passo para repetir
+      placeholder: |
+        1. Abri um PDF de 3 páginas feito no editor de texto
+        2. Cliquei em "Procurar no documento"
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do Tarja Livre
+      description: Aparece na janela "Ajuda e Sobre".
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: navegador
+    attributes:
+      label: Navegador
+      options: [Microsoft Edge, Google Chrome, Mozilla Firefox, Safari, Outro]
+    validations:
+      required: true
+  - type: dropdown
+    id: sistema
+    attributes:
+      label: Sistema
+      options: [Windows, Linux, macOS, Android, iOS ou iPadOS, Outro]
+  - type: textarea
+    id: extra
+    attributes:
+      label: Prints ou observações
+      description: Prints só de documentos de teste, sem dado pessoal de ninguém.
