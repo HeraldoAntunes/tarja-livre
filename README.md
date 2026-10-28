@@ -17,6 +17,7 @@ Sugere CPF, e-mail, telefone e nomes da sua lista, e refaz cada página como ima
   <a href="https://scorecard.dev/viewer/?uri=github.com/HeraldoAntunes/tarja-livre"><img src="https://api.scorecard.dev/projects/github.com/HeraldoAntunes/tarja-livre/badge" alt="OpenSSF Scorecard"></a>
   <a href="https://github.com/HeraldoAntunes/tarja-livre/releases/latest"><img src="https://img.shields.io/github/v/release/HeraldoAntunes/tarja-livre?label=vers%C3%A3o" alt="Versão"></a>
   <a href="https://github.com/HeraldoAntunes/tarja-livre/releases"><img src="https://img.shields.io/github/downloads/HeraldoAntunes/tarja-livre/total?label=downloads" alt="Downloads"></a>
+  <a href="https://doi.org/10.5281/zenodo.23725274"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23725274.svg" alt="DOI"></a>
 </p>
 
 <p align="center">
@@ -148,6 +149,13 @@ programa, na janela **Ajuda e Sobre**.
 `node --test tests/achados.test.mjs tests/montar.test.mjs tests/ficticios.test.mjs` e `node tests/e2e.mjs`,
 `node tests/e2e_pdf_teste.mjs`, `node tests/e2e_varios.mjs` e `node tests/e2e_ocr.mjs` (precisam do Microsoft Edge). Visão do código em
 [docs/ARQUITETURA.md](docs/ARQUITETURA.md); como contribuir em [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+
+## Como citar
+
+Se usar o Tarja Livre num trabalho, artigo ou material didático, cite a versão usada. Os dados estão em
+[CITATION.cff](CITATION.cff); no GitHub, o botão **Cite this repository** gera a referência pronta (APA ou BibTeX).
+Cada versão fica arquivada no Zenodo com DOI. O DOI geral, que leva sempre à versão mais recente, é
+[10.5281/zenodo.23725274](https://doi.org/10.5281/zenodo.23725274).
 
 ## Licença
 

@@ -4,6 +4,7 @@
 cff-version: 1.2.0
 message: "Se usar o Tarja Livre num trabalho, cite a versão usada como abaixo."
 type: software
+doi: "10.5281/zenodo.23725274"
 title: "Tarja Livre: tarjar dados pessoais em PDF, livre e sem internet"
 abstract: >-
   Programa livre que tarja dados pessoais em PDF de forma irreversível, refazendo cada página como imagem, com
@@ -24,3 +25,10 @@ keywords:
   - "PDF"
   - "software livre"
   - "offline"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23725274"
+    description: "DOI de todas as versões no Zenodo (aponta sempre para a mais recente)"
+  - type: doi
+    value: "10.5281/zenodo.23725275"
+    description: "DOI da versão 1.0.0"
