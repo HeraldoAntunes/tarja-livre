@@ -97,3 +97,22 @@ test('versão igual no programa, no CHANGELOG e no CITATION', () => {
   assert.match(citation, new RegExp(`^version: "${versao.replace(/\./g, '\\.')}"`, 'm'), 'CITATION com a versão');
   for (const { nome } of VERSOES) assert.ok(examinar(nome).html.includes(`VERSAO = '${versao}'`), 'versão em ' + nome);
 });
+
+test('Criar-atalho-TarjaLivre.cmd: CRLF, ícone embutido, PowerShell sem erro de sintaxe e nada da internet', () => {
+  const cmd = execFileSync('python', ['-X', 'utf8', '-c',
+    'import sys; sys.path.insert(0, "scripts"); import montar; sys.stdout.buffer.write(montar.criar_atalho().encode())'],
+  { cwd: RAIZ, maxBuffer: 1 << 24 }).toString('utf8');
+  assert.ok(!/[^\r]\n/.test(cmd), 'toda linha termina em CRLF');
+  const icone = cmd.match(/\$icone64 = '([A-Za-z0-9+/=]+)'/)?.[1];
+  assert.ok(icone, 'ícone no lugar do marcador');
+  assert.deepEqual(Buffer.from(icone, 'base64'), readFileSync(join(RAIZ, 'docs', 'img', 'icone.ico')), 'é o docs/img/icone.ico');
+  assert.doesNotMatch(cmd, /https?:\/\//, 'nenhum endereço da internet');
+  const partes = cmd.split('#--POWERSHELL--#');
+  assert.equal(partes.length, 2, 'um marcador só, o que separa o PowerShell (a linha do cmd monta o texto em dois pedaços)');
+  if (process.platform === 'win32') {
+    const erros = execFileSync('powershell', ['-NoProfile', '-Command',
+      '$e = $null; [void][System.Management.Automation.Language.Parser]::ParseInput([Console]::In.ReadToEnd(), [ref]$null, [ref]$e); $e.Count'],
+    { input: partes[1] }).toString().trim();
+    assert.equal(erros, '0', 'PowerShell sem erro de sintaxe');
+  }
+});

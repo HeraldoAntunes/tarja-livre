@@ -38,15 +38,21 @@ as tarjas, então o texto coberto deixa de existir no arquivo novo. O documento 
 
 ## Qual arquivo baixar
 
-Os arquivos abaixo são da última versão publicada (versão 1.0.0).
+Os arquivos abaixo são da última versão publicada (versão 1.1.0).
 
 | Para quê | Baixar |
 |---|---|
-| **Usar em qualquer sistema, sem instalar nada: abre no navegador** | [**TarjaLivre-1.0.0.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.0.0/TarjaLivre-1.0.0.html) (cerca de 2 MB) |
-| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.0.0.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.0.0/TarjaLivre-OCR-1.0.0.html) (cerca de 8 MB) |
+| **Usar em qualquer sistema, sem instalar nada: abre no navegador** | [**TarjaLivre-1.1.0.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.1.0/TarjaLivre-1.1.0.html) (cerca de 2 MB) |
+| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.1.0.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.1.0/TarjaLivre-OCR-1.1.0.html) (cerca de 8 MB) |
+| Atalho com o ícone do Tarja, para fixar na barra de tarefas do Windows | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.1.0/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
 | Conferir se o arquivo é legítimo | `SHA256SUMS.txt`, na mesma [página da versão](https://github.com/HeraldoAntunes/tarja-livre/releases/latest) |
 
 É um arquivo só: baixe, abra com dois cliques e pronto. Dá para levar num pendrive ou guardar na rede da escola.
+
+**Ícone na barra de tarefas (Windows, opcional):** ponha o `Criar-atalho-TarjaLivre.cmd` na mesma pasta do Tarja e
+dê dois cliques. Ele cria o atalho **Tarja Livre** na Área de Trabalho e no menu Iniciar. Clique nele com o botão
+direito, depois em **Mostrar mais opções** e em **Fixar na barra de tarefas**. O Windows pode pedir confirmação
+antes de rodar o arquivo. Se mudar o Tarja de pasta, rode de novo na pasta nova.
 Versões anteriores ficam na [página de versões](https://github.com/HeraldoAntunes/tarja-livre/releases).
 
 - **Grátis e livre:** licença [MIT](LICENSE). Use, copie e distribua à vontade, inclusive em escolas e órgãos públicos.
@@ -134,8 +140,23 @@ versão com OCR, e o OCR pode errar letras. É uma ajuda: a conferência é sua.
 **Qual das duas versões baixar?** A normal (cerca de 2 MB) serve para PDF gerado no computador, que já tem texto. A
 com OCR (cerca de 8 MB) também lê PDF digitalizado. As duas funcionam sem internet.
 
-**O documento vai para algum servidor?** Não. Tudo acontece no seu navegador, e a página bloqueia qualquer acesso à
-rede.
+## Privacidade
+
+O Tarja Livre nunca se conecta à internet. A página dele proíbe o navegador de buscar qualquer coisa na rede
+(`connect-src 'none'`). O documento não sai do seu computador.
+
+O PDF que você abre é lido no próprio navegador. O PDF tarjado é salvo pelo navegador, como um download comum.
+Nada passa por servidor.
+
+O OCR, da versão que lê PDF digitalizado, também roda no seu computador. O leitor e os dados do português vão
+dentro do próprio arquivo.
+
+O botão **Ver se há versão nova**, na janela **Ajuda e Sobre**, só abre a página de versões numa aba do navegador.
+Quem acessa a internet nessa hora é o navegador, não o Tarja.
+
+O navegador guarda neste computador só as suas escolhas: os tipos de dado marcados, o **Formato das páginas**, a
+**Folha de conferência no fim** e os avisos. A lista de nomes e termos só fica guardada se você marcar **Guardar a
+lista neste computador**. Desmarcar apaga.
 
 ## Segurança
 

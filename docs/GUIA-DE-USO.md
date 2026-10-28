@@ -78,7 +78,21 @@ O PDF salvo tem cada página como imagem: o texto coberto não existe mais no ar
 selecionar nem pesquisar o texto. A folha de conferência registra data, SHA-256 do original, tarjas por página e
 tipos procurados, sem mostrar nada do que foi coberto. O SHA-256 do PDF salvo aparece no painel.
 
-## 6. Ajustes e versão nova
+## 6. Ícone na barra de tarefas (Windows)
+
+Aberto direto, o Tarja aparece na barra de tarefas com o ícone do navegador. Para ter o ícone dele:
+
+1. Baixe o `Criar-atalho-TarjaLivre.cmd` na página da versão e ponha na mesma pasta do `TarjaLivre-x.y.z.html`.
+2. Dê dois cliques nele. Se o Windows pedir confirmação, confirme. Se houver mais de um arquivo do Tarja na pasta,
+   ele pergunta qual usar.
+3. O Tarja abre numa janela própria do Microsoft Edge, sem abas, e o atalho **Tarja Livre** aparece na Área de
+   Trabalho e no menu Iniciar.
+4. Clique no atalho com o botão direito, depois em **Mostrar mais opções** e em **Fixar na barra de tarefas**.
+
+O atalho não usa a internet e não instala nada. Ele vale para a pasta onde o Tarja está: se mudar o arquivo de
+lugar, rode o `Criar-atalho-TarjaLivre.cmd` de novo na pasta nova.
+
+## 7. Ajustes e versão nova
 
 Na janela **Ajuda e Sobre**, o botão **Ver se há versão nova** abre a página de versões no navegador, com a versão
 instalada ao lado. Ele só abre a página: o programa não procura nada na internet sozinho.

@@ -8,7 +8,8 @@ fora pode rodar. O worker do PDF.js vai como texto e vira um worker blob: na hor
 arquivo (file://) é barrado pelo navegador.
 
 Uso: python scripts/montar.py [--release]
-     --release também gera dist/release/ com TarjaLivre-<versão>.html e SHA256SUMS.txt, os anexos da release.
+     --release também gera dist/release/ com TarjaLivre-<versão>.html, Criar-atalho-TarjaLivre.cmd (com o ícone
+     docs/img/icone.ico embutido) e SHA256SUMS.txt, os anexos da release.
 """
 
 import base64
@@ -153,8 +154,18 @@ def montar(ocr: bool = False) -> Path:
     return saida
 
 
+def criar_atalho() -> str:
+    """O Criar-atalho-TarjaLivre.cmd, com o ícone dentro: um arquivo só, que o usuário põe junto do HTML."""
+    modelo = ler(SRC / "criar-atalho.cmd")
+    icone = base64.b64encode((RAIZ / "docs" / "img" / "icone.ico").read_bytes()).decode("ascii")
+    if modelo.count("__ICONE_BASE64__") != 1:
+        sys.exit("criar-atalho.cmd sem o marcador do ícone")
+    # o cmd.exe lê melhor com CRLF
+    return modelo.replace("__ICONE_BASE64__", icone).replace("\r\n", "\n").replace("\n", "\r\n")
+
+
 def release(saida: Path, saida_ocr: Path) -> Path:
-    """Arquivos da release, em dist/release/: os dois HTML com a versão no nome e o SHA256SUMS.txt."""
+    """Arquivos da release, em dist/release/: os dois HTML com a versão no nome, o atalho e o SHA256SUMS.txt."""
     versao = re.search(r"VERSAO = '([^']+)'", ler(SRC / "versao.js")).group(1)
     pasta = saida.parent / "release"
     if pasta.exists():
@@ -164,6 +175,9 @@ def release(saida: Path, saida_ocr: Path) -> Path:
     for origem, nome in ((saida, f"TarjaLivre-{versao}.html"), (saida_ocr, f"TarjaLivre-OCR-{versao}.html")):
         shutil.copyfile(origem, pasta / nome)
         linhas.append(f"{hashlib.sha256((pasta / nome).read_bytes()).hexdigest()}  {nome}\n")
+    atalho = pasta / "Criar-atalho-TarjaLivre.cmd"
+    atalho.write_bytes(criar_atalho().encode("utf-8"))
+    linhas.append(f"{hashlib.sha256(atalho.read_bytes()).hexdigest()}  {atalho.name}\n")
     (pasta / "SHA256SUMS.txt").write_text("".join(linhas), encoding="utf-8", newline="\n")
     return pasta
 

@@ -10,7 +10,7 @@ abstract: >-
   Programa livre que tarja dados pessoais em PDF de forma irreversível, refazendo cada página como imagem, com
   sugestão de tarjas para CPF, CNPJ, RG, e-mail, telefone e CEP, carimbo LGPD, SHA-256 do original e folha de
   conferência. Funciona num arquivo só, no navegador, sem internet.
-version: "1.0.0"
+version: "1.1.0"
 date-released: "2026-10-28"
 authors:
   - given-names: "Heraldo"

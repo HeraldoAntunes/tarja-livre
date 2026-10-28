@@ -5,6 +5,19 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+## [1.1.0] - 2026-10-28
+
+### Novo
+- **Atalho com o ícone do Tarja**, para fixar na barra de tarefas do Windows. Baixe o `Criar-atalho-TarjaLivre.cmd`,
+  ponha na mesma pasta do `TarjaLivre-1.1.0.html` e dê dois cliques. Ele cria o atalho na Área de Trabalho e no
+  menu Iniciar. O atalho abre o Tarja numa janela própria do Microsoft Edge, sem abas, e a janela fica junto do
+  ícone fixado. Não usa a internet e não instala nada.
+
+### Documentação
+- Seção "Privacidade" no README, com o que o programa faz e o que guarda no computador.
+
+O programa em si não mudou.
+
 ## [1.0.0] - 2026-10-28
 
 Primeira versão publicada.
