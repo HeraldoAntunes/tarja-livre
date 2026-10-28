@@ -11,7 +11,7 @@ Sugere CPF, e-mail, telefone e nomes da sua lista, e refaz cada página como ima
   <img src="https://img.shields.io/badge/testado%20no-Edge%20%C2%B7%20Windows%2011-0078D6" alt="Testado no Edge e Windows 11">
   <img src="https://img.shields.io/badge/internet-n%C3%A3o%20precisa-2b8a3e" alt="Não precisa de internet">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="Licença MIT"></a>
-  <img src="https://img.shields.io/badge/situa%C3%A7%C3%A3o-em%20teste-e8590c" alt="Situação: em teste">
+  <img src="https://img.shields.io/badge/situa%C3%A7%C3%A3o-est%C3%A1vel-2b8a3e" alt="Situação: estável">
   <br>
   <a href="https://github.com/HeraldoAntunes/tarja-livre/actions/workflows/testes.yml"><img src="https://github.com/HeraldoAntunes/tarja-livre/actions/workflows/testes.yml/badge.svg" alt="Testes"></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/HeraldoAntunes/tarja-livre"><img src="https://api.scorecard.dev/projects/github.com/HeraldoAntunes/tarja-livre/badge" alt="OpenSSF Scorecard"></a>
