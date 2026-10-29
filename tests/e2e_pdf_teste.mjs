@@ -58,6 +58,19 @@ try {
   await ate(`/não foi possível abrir|com defeito/i.test(document.getElementById('aviso').textContent) || document.getElementById('infoPaginas').textContent !== '-'`, 'PDF cortado: aviso ou abre o que der');
   assert.equal(await js(`document.getElementById('btSalvar').disabled`), true, 'nada para salvar depois de arquivo ruim');
 
+  // página maior que o máximo do PDF salvo (14.400 pt, 5,08 m): era aceita e saía cortada, dizendo que deu certo
+  // (auditoria de 29/10/2026). Tem de ser recusada ao abrir. Mesmo tamanho de texto: 10000 vira 20000.
+  const larga = await js(`(() => {
+    const d = new jspdf.jsPDF({ unit: 'pt', format: [10000, 1000], orientation: 'l' });
+    d.text('CPF 831.975.872-60', 100, 100);
+    const s = d.output().replace('/MediaBox [0 0 10000. ', '/MediaBox [0 0 20000. ');
+    if (!s.includes('/MediaBox [0 0 20000. ')) throw new Error('não achou a MediaBox para trocar: ' + (() => { const o = d.output(); const i = o.indexOf('/MediaBox'); return o.slice(i, i + 40); })());
+    return btoa(s);
+  })()`);
+  await nav.enviarArquivo(Buffer.from(larga, 'base64'), 'larga.pdf');
+  await ate(`/maior que o Tarja consegue salvar/.test(document.getElementById('aviso').textContent)`, 'recusar página de 20.000 pt');
+  assert.equal(await js(`document.getElementById('btSalvar').disabled`), true, 'nada para salvar depois da página larga demais');
+
   // página enorme (200 x 200 polegadas): sai com resolução menor, mas sai inteira e no tamanho certo
   const enorme = await js(`(() => {
     const d = new jspdf.jsPDF({ unit: 'pt', format: [14400, 14400] });

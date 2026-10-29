@@ -108,6 +108,11 @@
       <p class="rotulo">SHA-256 do original</p>
       <code id="infoHash" class="hash">-</code>
       <button class="btn pequeno" id="btCopiarHash" type="button" disabled>Copiar</button>
+      <div class="andamento" id="andamento" role="status" hidden>
+        <p id="andamentoTexto"></p>
+        <button class="btn pequeno principal" id="btRecuperar" type="button">Recuperar</button>
+        <button class="btn pequeno" id="btDescartarAndamento" type="button">Descartar</button>
+      </div>
     </section>
 
     <section>
@@ -125,7 +130,8 @@
       <label class="op"><input type="checkbox" id="termoAcento" checked> Ignorar maiúsculas e acentos</label>
       <label class="op"><input type="checkbox" id="termoGuardar"> Guardar a lista neste computador</label>
       <p class="suave">A lista também é dado pessoal: ela some ao fechar o programa, a não ser que você marque
-        "Guardar".</p>
+        "Guardar". Em computador dividido (sala dos professores, laboratório), quem usar o mesmo usuário do Windows
+        depois vai ver a lista guardada: não marque.</p>
       <div class="botoes">
         <button class="btn" id="btProcurar" type="button" disabled>Procurar no documento</button>
         <button class="btn" id="btProcurarTodos" type="button" hidden>Procurar em todos os arquivos</button>
@@ -214,6 +220,16 @@
       </table>
       <h2>Ajustes</h2>
       <label class="op"><input type="checkbox" id="mostrarAvisos" checked> Mostrar avisos rápidos no rodapé</label>
+      <label class="op"><input type="checkbox" id="guardarAndamento" checked> Guardar o andamento para recuperar se o
+        programa fechar de repente</label>
+      <p class="suave">Guarda neste computador só o lugar das tarjas e as páginas vistas, ligados ao SHA-256 do PDF.
+        Não guarda o PDF, o nome dele nem o texto coberto. Ao abrir o mesmo PDF de novo, o Tarja Livre oferece recuperar.
+        Some ao salvar, ao fechar o arquivo, ao descartar e depois de 7 dias. Desmarcar apaga.</p>
+      <p class="linha-versao">
+        <button class="btn" id="btApagarTudo" type="button">Apagar tudo o que o Tarja Livre guardou</button>
+      </p>
+      <p class="suave">Apaga deste computador as escolhas, a lista de nomes guardada e o andamento. Use ao terminar num
+        computador dividido. O que está aberto agora continua na tela.</p>
       <h2>Cuidados</h2>
       <p>O Tarja Livre ajuda a cobrir dados pessoais, mas não garante anonimização perfeita nem conformidade jurídica
         com a LGPD. Nomes e endereços só são achados se estiverem na lista que você escrever. PDF digitalizado (só imagem)

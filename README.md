@@ -38,18 +38,27 @@ as tarjas, então o texto coberto deixa de existir no arquivo novo. O documento 
 
 ## Qual arquivo baixar
 
-Os arquivos abaixo são da última versão publicada (versão 1.1.0).
+Os arquivos abaixo são da última versão publicada (versão 1.2.0).
 
 | Para quê | Baixar |
 |---|---|
-| **Usar em qualquer sistema, sem instalar nada: abre no navegador** | [**TarjaLivre-1.1.0.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.1.0/TarjaLivre-1.1.0.html) (cerca de 2 MB) |
-| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.1.0.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.1.0/TarjaLivre-OCR-1.1.0.html) (cerca de 8 MB) |
-| Atalho com o ícone do Tarja, para fixar na barra de tarefas do Windows | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.1.0/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
+| **Windows: janela própria, se instala sozinho, já com OCR** | [**TarjaLivre-1.2.0.exe**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.0/TarjaLivre-1.2.0.exe) (cerca de 11 MB) |
+| Usar em qualquer sistema, sem instalar nada: abre no navegador | [**TarjaLivre-1.2.0.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.0/TarjaLivre-1.2.0.html) (cerca de 2 MB) |
+| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.2.0.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.0/TarjaLivre-OCR-1.2.0.html) (cerca de 8 MB) |
+| Atalho com o ícone do Tarja para o arquivo HTML (o .exe cria o dele ao instalar) | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.0/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
 | Conferir se o arquivo é legítimo | `SHA256SUMS.txt`, na mesma [página da versão](https://github.com/HeraldoAntunes/tarja-livre/releases/latest) |
 
 É um arquivo só: baixe, abra com dois cliques e pronto. Dá para levar num pendrive ou guardar na rede da escola.
 
-**Ícone na barra de tarefas (Windows, opcional):** ponha o `Criar-atalho-TarjaLivre.cmd` na mesma pasta do Tarja e
+**O .exe (Windows)** abre numa janela própria, com o ícone do Tarja na barra de tarefas, sem depender do navegador do
+dia a dia (programas de banco que se instalam no navegador não entram nele). Na primeira vez, ele pergunta se instala: **Sim** copia o programa para a sua conta (sem pedir administrador), cria o
+atalho **Tarja Livre** no menu Iniciar e na Área de Trabalho e põe o Tarja em **Aplicativos instalados**, de onde se
+desinstala; **Não** só usa, sem instalar (bom para pendrive). Na primeira vez, o
+Windows também pode avisar que o programa é de editor desconhecido, porque ele não tem assinatura de empresa: clique em
+**Mais informações** e em **Executar assim mesmo**. Ele usa o Microsoft Edge WebView2, que já vem no Windows 11 e no
+Windows 10 atualizado; se faltar, o próprio programa avisa.
+
+**Ícone na barra de tarefas para o HTML (Windows, opcional):** ponha o `Criar-atalho-TarjaLivre.cmd` na mesma pasta do Tarja e
 dê dois cliques. Ele cria o atalho **Tarja Livre** na Área de Trabalho e no menu Iniciar. Clique nele com o botão
 direito, depois em **Mostrar mais opções** e em **Fixar na barra de tarefas**. O Windows pode pedir confirmação
 antes de rodar o arquivo. Se mudar o Tarja de pasta, rode de novo na pasta nova.
@@ -122,8 +131,9 @@ Todos os documentos das imagens são de exemplo, com dados fictícios.
 
 ## Sistemas
 
-Testado no Windows 11 com o Microsoft Edge. Como é uma página HTML comum, deve funcionar em Linux, macOS e outros
-navegadores atualizados (Google Chrome, Mozilla Firefox), mas isso não foi verificado.
+O `.exe` funciona no Windows 10 e 11 (64 bits) e foi testado no Windows 11. O HTML foi testado no Windows 11 com o
+Microsoft Edge; como é uma página HTML comum, deve funcionar em Linux, macOS e outros navegadores atualizados (Google
+Chrome, Mozilla Firefox), mas isso não foi verificado.
 
 ## Perguntas frequentes
 
@@ -142,11 +152,11 @@ com OCR (cerca de 8 MB) também lê PDF digitalizado. As duas funcionam sem inte
 
 ## Privacidade
 
-O Tarja Livre nunca se conecta à internet. A página dele proíbe o navegador de buscar qualquer coisa na rede
+O Tarja Livre não se conecta à internet. A página dele proíbe o navegador de buscar qualquer coisa na rede
 (`connect-src 'none'`). O documento não sai do seu computador.
 
-O PDF que você abre é lido no próprio navegador. O PDF tarjado é salvo pelo navegador, como um download comum.
-Nada passa por servidor.
+O PDF que você abre é lido no próprio navegador. Ao salvar, o Edge, o Chrome e o `.exe` abrem a caixa **Salvar como**
+para você escolher a pasta; nos outros navegadores, o PDF tarjado vai como um download comum. Nada passa por servidor.
 
 O OCR, da versão que lê PDF digitalizado, também roda no seu computador. O leitor e os dados do português vão
 dentro do próprio arquivo.
@@ -156,7 +166,29 @@ Quem acessa a internet nessa hora é o navegador, não o Tarja.
 
 O navegador guarda neste computador só as suas escolhas: os tipos de dado marcados, o **Formato das páginas**, a
 **Folha de conferência no fim** e os avisos. A lista de nomes e termos só fica guardada se você marcar **Guardar a
-lista neste computador**. Desmarcar apaga.
+lista neste computador**, e o programa pergunta antes: quem usar o mesmo usuário do Windows depois vai ver a lista.
+Desmarcar apaga.
+
+Para não perder trabalho numa queda (falta de energia, programa fechado de repente), o Tarja guarda neste computador
+o **andamento**: só o lugar das tarjas e dos traços e as páginas já vistas, ligados ao SHA-256 do PDF. Não guarda o
+PDF, o nome dele nem o texto coberto. Ao abrir o mesmo PDF de novo, ele oferece **Recuperar** ou **Descartar**. O
+andamento some ao salvar, ao fechar o arquivo, ao descartar e depois de 7 dias. Dá para desligar em **Ajustes**, na
+janela **Ajuda e Sobre**; desligar apaga.
+
+**Computador dividido** (sala dos professores, laboratório): não guarde a lista e, ao terminar, use **Apagar tudo o
+que o Tarja Livre guardou**, em **Ajustes**. Isso tira deste computador as escolhas, a lista guardada e o andamento.
+
+**Ao instalar**, o `.exe` grava só na sua conta do Windows: o programa em `%LOCALAPPDATA%\Programs\Tarja Livre`, o
+atalho no menu Iniciar e na Área de Trabalho e a entrada de **Aplicativos instalados**. O que a página guarda fica em
+`%LOCALAPPDATA%\br.tarjalivre.app`. Ao desinstalar, ele pergunta se apaga também essa pasta.
+
+O `.exe` mostra a mesma página dentro de uma janela feita com o Microsoft Edge WebView2, um componente da Microsoft
+que já vem no Windows. Além da regra da página, o Tarja proíbe o motor dessa janela de achar qualquer endereço da
+internet. Mesmo assim, nos testes, o próprio componente da Microsoft abriu sozinho uma conexão segura (HTTPS) com
+servidores da Microsoft ao abrir o programa, por fora dessas regras, como o navegador também faz por conta própria.
+O Tarja não usa essa conexão nem tem acesso a ela, e a página onde o PDF é aberto e tarjado continua sem acesso à
+rede. Cortar até essa conexão só é possível bloqueando o programa no firewall do Windows. O botão **Ver se há versão
+nova** abre a página no seu navegador.
 
 ## Segurança
 

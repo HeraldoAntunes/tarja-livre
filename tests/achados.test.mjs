@@ -245,3 +245,13 @@ test('caixa já coberta por tarja', () => {
   assert.ok(!coberta(caixa, [{ x: 5, y: 5, w: 20, h: 20 }]));
   assert.ok(!coberta(caixa, []));
 });
+
+// auditoria de 29/10/2026: 90,5% coberto deixava "st" de um e-mail visível e a sugestão sumia
+test('caixa só conta como coberta se ficar inteira embaixo das tarjas', () => {
+  const caixa = { x: 10, y: 10, w: 50, h: 10 };
+  assert.ok(!coberta(caixa, [{ x: 10, y: 10, w: 45.25, h: 10 }]), '90,5% da largura não é coberta');
+  assert.ok(!coberta(caixa, [{ x: 10, y: 10.5, w: 50, h: 9.5 }]), 'uma faixa de cima de fora não é coberta');
+  assert.ok(coberta(caixa, [{ x: 0, y: 0, w: 35, h: 30 }, { x: 34, y: 0, w: 40, h: 30 }]), 'duas tarjas que juntas cobrem');
+  assert.ok(!coberta(caixa, [{ x: 0, y: 0, w: 35, h: 30 }, { x: 36, y: 0, w: 40, h: 30 }]), 'fresta entre duas tarjas');
+  assert.ok(!coberta(caixa, [{ x: 0, y: 0, w: 80, h: 14 }, { x: 0, y: 16, w: 80, h: 14 }]), 'fresta na altura');
+});

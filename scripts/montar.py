@@ -8,8 +8,9 @@ fora pode rodar. O worker do PDF.js vai como texto e vira um worker blob: na hor
 arquivo (file://) é barrado pelo navegador.
 
 Uso: python scripts/montar.py [--release]
-     --release também gera dist/release/ com TarjaLivre-<versão>.html, Criar-atalho-TarjaLivre.cmd (com o ícone
-     docs/img/icone.ico embutido) e SHA256SUMS.txt, os anexos da release.
+     --release também gera dist/release/ com TarjaLivre-<versão>.html, TarjaLivre-OCR-<versão>.html,
+     TarjaLivre-<versão>.exe (janela própria, portátil, com OCR; precisa do Rust), Criar-atalho-TarjaLivre.cmd (com o
+     ícone docs/img/icone.ico embutido) e SHA256SUMS.txt, os anexos da release. --sem-exe pula o exe.
 """
 
 import base64
@@ -17,6 +18,7 @@ import hashlib
 import html as html_lib
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -164,6 +166,21 @@ def criar_atalho() -> str:
     return modelo.replace("__ICONE_BASE64__", icone).replace("\r\n", "\n").replace("\n", "\r\n")
 
 
+def exe(saida_ocr: Path, versao: str) -> Path:
+    """O exe de janela própria (app/, Tauri 2 com o WebView2), com o HTML com OCR dentro."""
+    app = RAIZ / "app"
+    for arq, padrao in ((app / "Cargo.toml", r'^version = "([^"]+)"'), (app / "tauri.conf.json", r'^  "version": "([^"]+)"')):
+        achado = re.search(padrao, ler(arq), flags=re.M)
+        if not achado or achado.group(1) != versao:
+            sys.exit(f"{arq.relative_to(RAIZ)} com versão diferente de {versao}: rode scripts/nova_versao.py")
+    (app / "web").mkdir(exist_ok=True)
+    shutil.copyfile(saida_ocr, app / "web" / "index.html")
+    (app / "icons").mkdir(exist_ok=True)
+    shutil.copyfile(RAIZ / "docs" / "img" / "icone.ico", app / "icons" / "icon.ico")
+    subprocess.run(["cargo", "build", "--release", "--locked"], cwd=app, check=True)
+    return app / "target" / "release" / "TarjaLivre.exe"
+
+
 def release(saida: Path, saida_ocr: Path) -> Path:
     """Arquivos da release, em dist/release/: os dois HTML com a versão no nome, o atalho e o SHA256SUMS.txt."""
     versao = re.search(r"VERSAO = '([^']+)'", ler(SRC / "versao.js")).group(1)
@@ -174,6 +191,10 @@ def release(saida: Path, saida_ocr: Path) -> Path:
     linhas = []
     for origem, nome in ((saida, f"TarjaLivre-{versao}.html"), (saida_ocr, f"TarjaLivre-OCR-{versao}.html")):
         shutil.copyfile(origem, pasta / nome)
+        linhas.append(f"{hashlib.sha256((pasta / nome).read_bytes()).hexdigest()}  {nome}\n")
+    if "--sem-exe" not in sys.argv:
+        nome = f"TarjaLivre-{versao}.exe"
+        shutil.copyfile(exe(saida_ocr, versao), pasta / nome)
         linhas.append(f"{hashlib.sha256((pasta / nome).read_bytes()).hexdigest()}  {nome}\n")
     atalho = pasta / "Criar-atalho-TarjaLivre.cmd"
     atalho.write_bytes(criar_atalho().encode("utf-8"))

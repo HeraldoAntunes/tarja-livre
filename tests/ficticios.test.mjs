@@ -15,7 +15,8 @@ import { cpfValido, cnpjValido } from '../src/achados.js';
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const CPF_FICTICIOS = ['831.975.872-60', '514.334.988-55', '833.311.475-08', '834.068.419-10'];
 export const CNPJ_FICTICIOS = ['19.808.456/0001-00'];
-const FORA = new Set(['.git', 'vendor', 'dist', 'files', 'node_modules']);
+// app/web, app/target e app/gen saem da montagem do exe (cópia do HTML montado, com as licenças das bibliotecas)
+const FORA = new Set(['.git', 'vendor', 'dist', 'files', 'node_modules', 'web', 'target', 'gen', 'para-virustotal']);
 
 function arquivos(pasta) {
   return readdirSync(pasta).flatMap((n) => {

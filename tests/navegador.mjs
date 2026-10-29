@@ -28,14 +28,23 @@ const portaLivre = () => new Promise((ok) => {
   s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); });
 });
 
-export async function abrirNavegador(capturas, { largura = 1400, altura = 900 } = {}) {
-  if (!EDGE) throw new Error('Microsoft Edge não encontrado');
+// Com TARJA_EXE=<caminho do exe>, os testes rodam dentro da janela própria (WebView2) em vez do Edge sem janela.
+const EXE = process.env.TARJA_EXE;
+
+// perfilFixo: pasta de perfil que sobrevive ao fechar (para testar o que fica guardado entre uma abertura e outra)
+export async function abrirNavegador(capturas, { largura = 1400, altura = 900, perfilFixo = null } = {}) {
+  if (!EDGE && !EXE) throw new Error('Microsoft Edge não encontrado');
   const porta = await portaLivre();
-  const perfil = mkdtempSync(join(tmpdir(), 'tarja-e2e-perfil-'));
+  const perfil = perfilFixo || mkdtempSync(join(tmpdir(), 'tarja-e2e-perfil-'));
   const baixados = mkdtempSync(join(tmpdir(), 'tarja-e2e-saida-'));
-  const edge = spawn(EDGE, ['--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`,
-    '--no-first-run', '--no-default-browser-check', `--window-size=${largura},${altura}`, 'about:blank'], { stdio: 'ignore' });
+  const edge = EXE
+    ? spawn(EXE, ['--sem-instalar'], { stdio: 'ignore', env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: perfil,
+      WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${porta}` } })
+    : spawn(EDGE, ['--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`,
+      '--no-first-run', '--no-default-browser-check', `--window-size=${largura},${altura}`, 'about:blank'], { stdio: 'ignore' });
   const erros = [];
+  const respostas = [];   // respostas combinadas para as próximas perguntas (confirm) da página
+  const perguntas = [];   // o texto de cada pergunta respondida assim
   let alvo;
   for (let t = 0; t < 60 && !alvo; t++) {
     await espera(250);
@@ -62,8 +71,10 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900 } 
     if (d.method === 'Log.entryAdded' && d.params.entry.level === 'error') erros.push('log: ' + d.params.entry.text);
     // confirm()/alert() inesperado travaria a página sem janela: registra como erro e responde "Cancelar"
     if (d.method === 'Page.javascriptDialogOpening') {
-      erros.push('janela inesperada: ' + d.params.message);
-      ws.send(JSON.stringify({ id: ++seq, method: 'Page.handleJavaScriptDialog', params: { accept: false } }));
+      if (respostas.length) perguntas.push(d.params.message);
+      else erros.push('janela inesperada: ' + d.params.message);
+      const accept = respostas.length ? respostas.shift() : false;
+      ws.send(JSON.stringify({ id: ++seq, method: 'Page.handleJavaScriptDialog', params: { accept } }));
     }
   };
   const cdp = (method, params = {}) => new Promise((r, f) => {
@@ -88,7 +99,9 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900 } 
     throw new Error('tempo esgotado esperando: ' + rotulo + '\n  estado: ' + estado);
   };
   const n = {
-    cdp, js, ate, erros, baixados,
+    cdp, js, ate, erros, baixados, perguntas,
+    // combina a resposta das próximas perguntas da página (true = OK, false = Cancelar)
+    responder: (...r) => respostas.push(...r),
     // eventos do protocolo (por exemplo, uma janela nova aberta pela página)
     aoEvento: (f) => ouvintes.push(f),
     clicar: (id) => js(`document.getElementById('${id}').click()`),
@@ -119,9 +132,12 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900 } 
       await cdp('Log.enable');
       await cdp('Page.enable');
       await cdp('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: baixados });
-      await cdp('Page.navigate', { url: pathToFileURL(arquivo).href });
+      if (!EXE) await cdp('Page.navigate', { url: pathToFileURL(arquivo).href });
       await ate(`document.readyState === 'complete' && !!globalThis.pdfjsLib && !!globalThis.jspdf`, 'página carregar');
       await js(`window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => __csp.push(e.violatedDirective + ' ' + e.blockedURI))`);
+      // a caixa "Salvar como" do sistema não abre sem janela: os testes salvam por download, e o teste do
+      // "Salvar como" põe um substituto no lugar dela
+      await js(`window.showSaveFilePicker = undefined`);
     },
     // entrega um arquivo ao botão "Abrir PDF", como se o usuário tivesse escolhido
     async enviarArquivo(bytes, nome) {
@@ -143,11 +159,18 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900 } 
       }
       throw new Error('PDF salvo não apareceu: ' + nome);
     },
+    // queda brusca: mata o processo e os filhos pelo PID, sem dar à página a chance de gravar nada
+    async matar() {
+      try { ws.close(); } catch { /* já fechado */ }
+      try { execFileSync('taskkill', ['/F', '/T', '/PID', String(edge.pid)], { stdio: 'ignore' }); } catch { /* já saiu */ }
+      await espera(1500);
+    },
     async fechar() {
       try { ws.close(); } catch { /* já fechado */ }
-      edge.kill();
+      if (EXE) { try { execFileSync('taskkill', ['/F', '/T', '/PID', String(edge.pid)], { stdio: 'ignore' }); } catch { /* já saiu */ } }
+      else edge.kill();
       await espera(500);
-      for (const p of [perfil, baixados]) { try { rmSync(p, { recursive: true, force: true }); } catch { /* Edge ainda segurando */ } }
+      for (const p of perfilFixo ? [baixados] : [perfil, baixados]) { try { rmSync(p, { recursive: true, force: true }); } catch { /* Edge ainda segurando */ } }
     },
   };
   return n;

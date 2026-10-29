@@ -1,0 +1,27 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE). Janela própria (Tauri 2 com o WebView2), portátil.
+[package]
+name = "tarja-livre"
+version = "1.2.0"
+description = "Tarja Livre: tarjar dados pessoais em PDF, sem internet"
+authors = ["Heraldo Antunes"]
+edition = "2021"
+license = "MIT"
+
+[[bin]]
+name = "TarjaLivre"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# sem a "compression" (brotli) do padrão: com a página comprimida dentro, o exe levava 1 alerta de 75 no VirusTotal
+# (MaxSecure, por suspeita genérica); sem ela, 0 de 75 (29/10/2026). O exe fica com 11 MB em vez de 6 MB.
+tauri = { version = "2", default-features = false, features = ["wry", "common-controls-v6", "dynamic-acl"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

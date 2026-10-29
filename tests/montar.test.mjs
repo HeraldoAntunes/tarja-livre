@@ -95,6 +95,8 @@ test('versão igual no programa, no CHANGELOG e no CITATION', () => {
   const citation = readFileSync(join(RAIZ, 'CITATION.cff'), 'utf8');
   assert.match(changelog, new RegExp(`^## \\[${versao.replace(/\./g, '\\.')}\\]`, 'm'), 'CHANGELOG com a versão');
   assert.match(citation, new RegExp(`^version: "${versao.replace(/\./g, '\\.')}"`, 'm'), 'CITATION com a versão');
+  assert.match(readFileSync(join(RAIZ, 'app', 'Cargo.toml'), 'utf8'), new RegExp(`^version = "${versao.replace(/\./g, '\\.')}"`, 'm'), 'exe (Cargo.toml) com a versão');
+  assert.equal(JSON.parse(readFileSync(join(RAIZ, 'app', 'tauri.conf.json'), 'utf8')).version, versao, 'exe (tauri.conf.json) com a versão');
   for (const { nome } of VERSOES) assert.ok(examinar(nome).html.includes(`VERSAO = '${versao}'`), 'versão em ' + nome);
 });
 

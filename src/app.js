@@ -13,6 +13,7 @@ const { jsPDF } = globalThis.jspdf;
 
 const DPI_SAIDA = 150;
 const MAX_PAGINAS = 1000;
+const PAGINAS_MUITAS = 150;   // acima disto, o salvar avisa que vai demorar
 // Tela, miniatura e PDF salvo desenham igual, com campos e anotações: o que se confere é o que sai. Tudo no modo
 // de impressão: (1) o modo de tela do PDF.js espera o requestAnimationFrame, que para em aba escondida e depois
 // de canvas muito grande, e a página nunca terminava de aparecer; (2) se só o PDF salvo usasse impressão, uma
@@ -22,6 +23,7 @@ const ANOT_ESCONDIDA = 2;
 const ANOT_IMPRIMIR = 4;
 // limites de canvas que os navegadores aguentam com folga; página maior sai com menos pontos por polegada
 const MAX_LADO_PX = 12000;
+const MAX_LADO_PT = 14400;  // maior lado de página que o PDF salvo aceita
 const MAX_AREA_PX = 36e6;  // folha A0 ainda sai a 150 ppp
 const ZOOMS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3];
 const TEXTO_CARIMBO = 'Documento com dados pessoais tarjados\nconforme a LGPD (Lei nº 13.709/2018)';
@@ -45,6 +47,8 @@ const el = {
   aviso: $('aviso'), sobre: $('sobre'), sobreVersao: $('sobreVersao'), mostrarAvisos: $('mostrarAvisos'),
   infoConferido: $('infoConferido'), opOcr: $('opOcr'), ocrLigado: $('ocrLigado'), rotuloTarja: $('rotuloTarja'), listaSugestoes: $('listaSugestoes'), btAceitarMarcadas: $('btAceitarMarcadas'),
   abas: $('abas'), btProcurarTodos: $('btProcurarTodos'), btProximo: $('btProximo'),
+  andamento: $('andamento'), andamentoTexto: $('andamentoTexto'), btRecuperar: $('btRecuperar'),
+  btDescartarAndamento: $('btDescartarAndamento'), guardarAndamento: $('guardarAndamento'), btApagarTudo: $('btApagarTudo'),
   termos: $('termos'), infoTermos: $('infoTermos'), btImportarTermos: $('btImportarTermos'), btLimparTermos: $('btLimparTermos'),
   entradaTermos: $('entradaTermos'), termoInteira: $('termoInteira'), termoAcento: $('termoAcento'), termoGuardar: $('termoGuardar'),
 };
@@ -56,8 +60,130 @@ function lerPref() {
 }
 function gravarPref() {
   const p = { formato: el.formato.value, folha: el.folha.checked, avisos: el.mostrarAvisos.checked,
-              tipos: tiposMarcados(), tiposVistos: Object.keys(TIPOS) };
+              andamento: el.guardarAndamento.checked, tipos: tiposMarcados(), tiposVistos: Object.keys(TIPOS) };
   try { localStorage.setItem(PREF, JSON.stringify(p)); } catch (e) { console.warn('preferências não gravadas', e); }
+}
+
+// ---------- andamento (recuperar as tarjas se o programa fechar de repente) ----------
+// Guarda só a geometria das marcas (tarjas e traços) e as páginas vistas, pela impressão digital (SHA-256) do PDF
+// original. Nada do PDF, do nome do arquivo nem do texto achado. Some ao salvar, ao fechar o arquivo, ao descartar,
+// ao desligar a opção e depois de 7 dias. Vai no IndexedDB com escrita confirmada no disco: o localStorage fica
+// segundos só na memória e uma queda nesse intervalo o perde (medido no Edge e no WebView2).
+const ANDAMENTO_DIAS = 7;
+let tempoAndamento = null;
+let bancoAndamento = null;
+let filaAndamento = Promise.resolve();
+
+function banco() {
+  bancoAndamento = bancoAndamento || new Promise((ok, falha) => {
+    const q = indexedDB.open('tarja-livre', 1);
+    q.onupgradeneeded = () => q.result.createObjectStore('andamento');
+    q.onsuccess = () => ok(q.result);
+    q.onerror = () => falha(q.error);
+  });
+  return bancoAndamento;
+}
+// uma operação no depósito do andamento, só terminando depois de gravada no disco
+async function noAndamento(modo, f) {
+  const db = await banco();
+  return new Promise((ok, falha) => {
+    const t = db.transaction('andamento', modo, { durability: 'strict' });
+    let r;
+    f(t.objectStore('andamento'), (v) => { r = v; });
+    t.oncomplete = () => ok(r);
+    t.onerror = () => falha(t.error);
+    t.onabort = () => falha(t.error);
+  });
+}
+// as gravações e remoções andam em fila, na ordem em que foram pedidas
+function naFila(f) {
+  filaAndamento = filaAndamento.then(f, f).catch((e) => console.warn('andamento não gravado', e));
+  return filaAndamento;
+}
+// só os campos de desenho, escolhidos um a um: nenhum texto passa daqui
+function marcaSoGeometria(m) {
+  if (m.tipo === 'caneta') return { tipo: 'caneta', cor: m.cor, largura: m.largura, pontos: m.pontos.map(([x, y]) => [x, y]) };
+  return { tipo: 'tarja', cor: m.cor, x: m.x, y: m.y, w: m.w, h: m.h };
+}
+function agendarAndamento() {
+  if (!el.guardarAndamento.checked) return;
+  clearTimeout(tempoAndamento);
+  tempoAndamento = setTimeout(gravarAndamento, 1000);
+}
+function gravarAndamento() {
+  clearTimeout(tempoAndamento);
+  tempoAndamento = null;
+  if (!el.guardarAndamento.checked) return filaAndamento;
+  const fotos = docs.map((d) => [d.hash, d.andamentoPendente ? null
+    : d.salvo || !d.paginas.some((p) => p.marcas.length) ? 'apagar'
+      : { quando: Date.now(), paginas: d.paginas.map((p) => ({ vista: p.vista, marcas: p.marcas.map(marcaSoGeometria) })) }]);
+  return naFila(() => noAndamento('readwrite', (s) => {
+    for (const [hash, foto] of fotos) {
+      // enquanto a pessoa não respondeu à oferta, as marcas de antes ficam como estão
+      if (foto === 'apagar') s.delete(hash);
+      else if (foto) s.put(foto, hash);
+    }
+  }));
+}
+function esquecerAndamento(hash) {
+  return naFila(() => noAndamento('readwrite', (s) => s.delete(hash)));
+}
+function apagarTodoAndamento() {
+  clearTimeout(tempoAndamento);
+  tempoAndamento = null;
+  return naFila(() => noAndamento('readwrite', (s) => s.clear()));
+}
+function limparAndamentoVelho() {
+  const limite = Date.now() - ANDAMENTO_DIAS * 24 * 3600 * 1000;
+  return naFila(() => noAndamento('readwrite', (s) => {
+    s.openCursor().onsuccess = (e) => {
+      const c = e.target.result;
+      if (!c) return;
+      if (!(c.value?.quando > limite)) c.delete();
+      c.continue();
+    };
+  }));
+}
+// andamento guardado que serve para este arquivo (mesmo SHA-256 e mesmo número de páginas)
+async function andamentoDe(d) {
+  await filaAndamento;
+  const a = await noAndamento('readonly', (s, guardar) => { s.get(d.hash).onsuccess = (e) => guardar(e.target.result); })
+    .catch(() => null);
+  return a && Array.isArray(a.paginas) && a.paginas.length === d.paginas.length ? a : null;
+}
+async function mostrarAndamento() {
+  const d = doc;
+  const oferecer = d && (d.andamentoPendente || (!d.andamentoVisto && !d.paginas.some((p) => p.marcas.length)));
+  const a = oferecer ? await andamentoDe(d) : null;
+  if (d !== doc) return;
+  el.andamento.hidden = !a;
+  if (!a) return;
+  d.andamentoPendente = true;
+  d.andamentoGuardado = a;
+  const n = a.paginas.reduce((s, p) => s + p.marcas.length, 0);
+  const quando = new Date(a.quando).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  el.andamentoTexto.textContent = `Este arquivo tem ${n} marca(s) de antes (${quando}), que não chegaram a ser salvas.`;
+}
+function recuperarAndamento() {
+  const a = doc && doc.andamentoGuardado;
+  doc.andamentoVisto = true;
+  doc.andamentoPendente = false;
+  doc.andamentoGuardado = null;
+  el.andamento.hidden = true;
+  if (!a) return;
+  a.paginas.forEach((p, i) => { if (p.vista) doc.paginas[i].vista = true; });
+  registrar(a.paginas.map((p, i) => ({ pagina: i, antes: doc.paginas[i].marcas.slice(), depois: [...doc.paginas[i].marcas, ...p.marcas.map(marcaSoGeometria)] }))
+    .filter((m) => m.depois.length > m.antes.length));
+  montarMiniaturas();
+  avisar('Marcas de antes recuperadas. Confira as páginas antes de salvar.');
+}
+function descartarAndamento() {
+  doc.andamentoVisto = true;
+  doc.andamentoPendente = false;
+  doc.andamentoGuardado = null;
+  el.andamento.hidden = true;
+  esquecerAndamento(doc.hash);
+  avisar('Marcas de antes descartadas.');
 }
 
 // ---------- estado ----------
@@ -165,6 +291,15 @@ async function carregarArquivo(arquivo) {
       avisar(`${arquivo.name}: a página ${i} está com defeito; o arquivo não foi aberto.`, true);
       return null;
     }
+    // o PDF salvo não passa de 14.400 pt de lado (5,08 m; limite do formato e da biblioteca): página maior sairia
+    // cortada, então o arquivo é recusado ao abrir (auditoria de 29/10/2026)
+    if (Math.max(v.width, v.height) > MAX_LADO_PT + 0.5) {
+      pdf.destroy();
+      const cm = (pt) => Math.round(pt / 72 * 2.54);
+      avisar(`${arquivo.name}: a página ${i} mede ${cm(v.width)} × ${cm(v.height)} cm, maior que o Tarja consegue salvar `
+        + `(${cm(MAX_LADO_PT)} cm de lado); o arquivo não foi aberto.`, true);
+      return null;
+    }
     paginas.push({ w: v.width, h: v.height, vista: false, marcas: [], sugestoes: [], semTexto: false });
   }
   return {
@@ -212,6 +347,7 @@ async function ativar(d) {
     el.revisei.checked = d.revisado;
   }
   el.nomeArquivo.textContent = doc.nome;
+  mostrarAndamento();
   document.title = doc.nome + ' - Tarja Livre';
   el.infoPaginas.textContent = String(doc.paginas.length);
   el.infoHash.textContent = doc.hash;
@@ -229,6 +365,8 @@ function fechar(d = doc) {
   const k = docs.indexOf(d);
   docs.splice(k, 1);
   d.pdf.destroy();
+  // fechar o arquivo é escolher não guardar: as marcas de antes deixam de ser oferecidas
+  esquecerAndamento(d.hash);
   if (d !== doc) {
     montarAbas();
     atualizar();
@@ -396,8 +534,34 @@ async function mostrar(i) {
   atualizar();
   // só conta como vista a página que chegou a aparecer inteira (passar depressa por ela não vale)
   const desenhada = await desenharBase();
-  if (desenhada >= 0 && doc) doc.paginas[desenhada].vista = true;
+  if (desenhada >= 0 && desenhada === atual) marcarVisto();
   atualizar();
+}
+
+// Com zoom, a página não cabe no palco: ela só conta como vista quando todos os pedaços dela já apareceram na tela,
+// rolando (auditoria de 29/10/2026). A página é dividida numa grade; cada pedaço com o centro à vista fica marcado.
+const GRADE_VISTA = 8;
+function marcarVisto() {
+  if (!doc || base.pagina !== atual) return;
+  const p = doc.paginas[atual];
+  if (p.vista) return;
+  const t = el.tela.getBoundingClientRect();
+  const c = el.palco.getBoundingClientRect();
+  if (t.width <= 0 || t.height <= 0) return;
+  if (!p.vistos || p.vistosZoom !== zoom) { p.vistos = new Uint8Array(GRADE_VISTA * GRADE_VISTA); p.vistosZoom = zoom; }
+  for (let i = 0; i < GRADE_VISTA; i++) {
+    for (let j = 0; j < GRADE_VISTA; j++) {
+      const x = t.left + ((i + 0.5) / GRADE_VISTA) * t.width;
+      const y = t.top + ((j + 0.5) / GRADE_VISTA) * t.height;
+      if (x >= c.left && x <= c.right && y >= c.top && y <= c.bottom) p.vistos[i * GRADE_VISTA + j] = 1;
+    }
+  }
+  if (p.vistos.every((v) => v)) {
+    p.vista = true;
+    p.vistos = null;
+    if (!doc.salvo) agendarAndamento();
+    atualizar();
+  }
 }
 
 // Escala (pixels por ponto) limitada para o canvas caber na memória do navegador: canvas grande demais sai em
@@ -686,7 +850,7 @@ el.tela.addEventListener('pointerdown', (ev) => {
   }
   if (noCarimbo(pt)) {
     const k = caixaCarimbo(document.createElement('canvas').getContext('2d'), atual);
-    arrasto = { tipo: 'carimbo', dx: pt[0] - k.x, dy: pt[1] - k.y };
+    arrasto = { tipo: 'carimbo', dx: pt[0] - k.x, dy: pt[1] - k.y, antes: { fx: carimbo.fx, fy: carimbo.fy, pagina: carimbo.pagina } };
     el.tela.classList.add('mover');
     desenharTela();
     return;
@@ -701,7 +865,22 @@ el.tela.addEventListener('pointerdown', (ev) => {
   } else {
     arrasto = { tipo: 'tarja', inicio: pt, fim: pt };
   }
+  // o gesto vale só para o arquivo e a página onde começou (auditoria de 29/10/2026)
+  arrasto.doc = doc;
+  arrasto.pagina = atual;
 });
+
+// Gesto interrompido (o sistema cancelou, ou a página ou o arquivo mudaram no meio): nada é aplicado e o carimbo
+// volta para onde estava.
+function cancelarArrasto() {
+  const a = arrasto;
+  arrasto = null;
+  el.tela.classList.remove('mover');
+  if (a?.tipo === 'carimbo') Object.assign(carimbo, a.antes);
+  if (doc) desenharTela();
+}
+
+const arrastoFora = () => arrasto && (arrasto.doc !== doc || arrasto.pagina !== atual);
 
 el.tela.addEventListener('pointermove', (ev) => {
   if (!doc) return;
@@ -710,6 +889,7 @@ el.tela.addEventListener('pointermove', (ev) => {
     el.tela.classList.toggle('mover', ferramenta !== 'borracha' && noCarimbo(pt));
     return;
   }
+  if (arrastoFora()) { cancelarArrasto(); return; }
   if (arrasto.tipo === 'carimbo') {
     const p = doc.paginas[atual];
     carimbo.fx = (pt[0] - arrasto.dx) / p.w;
@@ -748,6 +928,7 @@ async function soltarTexto(a) {
 
 function soltar(ev) {
   if (!doc || !arrasto) return;
+  if (arrastoFora()) { cancelarArrasto(); return; }
   const a = arrasto;
   arrasto = null;
   el.tela.classList.remove('mover');
@@ -781,7 +962,7 @@ function soltar(ev) {
   registrar([{ pagina: atual, antes: p.marcas.slice(), depois: [...p.marcas, { tipo: 'tarja', cor, ...r }] }]);
 }
 el.tela.addEventListener('pointerup', soltar);
-el.tela.addEventListener('pointercancel', () => { arrasto = null; desenharTela(); });
+el.tela.addEventListener('pointercancel', cancelarArrasto);
 
 // Tarja do tamanho da página, na cor escolhida (anexo que não pode sair, página só com dado pessoal).
 function cobrirPagina() {
@@ -835,6 +1016,7 @@ function refazerUltimo() {
 // qualquer mudança depois da conferência pede conferência de novo
 function mudou() {
   if (doc) doc.salvo = false;
+  agendarAndamento();
   if (el.revisei.checked) {
     el.revisei.checked = false;
     avisar('Houve mudança: confira as páginas e marque "Revisei" de novo.');
@@ -865,6 +1047,21 @@ function guardarTermos() {
     console.warn('lista de termos não guardada', e);
     avisar('O navegador não deixou guardar a lista neste computador.', true);
   }
+}
+
+// Para computador dividido: tira deste navegador tudo o que o Tarja guardou (escolhas, lista e andamento). O que está
+// aberto continua na tela; só deixa de ficar guardado.
+async function apagarTudoGuardado() {
+  if (!confirm('Apagar deste computador tudo o que o Tarja Livre guardou (escolhas, lista de nomes e andamento)?')) return;
+  el.termoGuardar.checked = false;
+  for (const d of docs) { d.andamentoPendente = false; d.andamentoGuardado = null; }
+  el.andamento.hidden = true;
+  try {
+    localStorage.removeItem(GUARDA_TERMOS);
+    localStorage.removeItem(PREF);
+  } catch (e) { console.warn('não apagou o que estava guardado', e); }
+  await apagarTodoAndamento();
+  avisar('Apagado deste computador: escolhas, lista guardada e andamento.');
 }
 
 function esquecerTermos() {
@@ -1092,6 +1289,7 @@ async function procurarArquivos(lista) {
   atualizar();
   let total = 0;
   let semTexto = 0;
+  const falharam = [];
   for (const [n, d] of lista.entries()) {
     if (!docs.includes(d)) continue;
     try {
@@ -1106,14 +1304,18 @@ async function procurarArquivos(lista) {
       // arquivo fechado no meio da procura: não é erro
       if (!docs.includes(d)) continue;
       console.warn('procura interrompida', d.nome, e);
-      avisar(`A procura em ${d.nome} não terminou: tente de novo.`, true);
+      falharam.push(d.nome);
     }
   }
   procurando = false;
   if (doc) desenharTela();
   atualizar();
   const onde = lista.length > 1 ? ` em ${lista.length} arquivos` : '';
-  if (semTexto) {
+  // procura que falhou nunca vira "Nada encontrado": isso daria falsa segurança (auditoria de 29/10/2026)
+  if (falharam.length) {
+    avisar(`A procura em ${falharam.join(', ')} não terminou: tente de novo. Até lá, não conte com as sugestões ` +
+      'desse arquivo.', true);
+  } else if (semTexto) {
     avisar(`${semTexto} página(s) sem texto${onde} (talvez digitalizadas): nelas a procura não funciona, tarje à mão.` +
       (ocrDisponivel() ? '' : ' A versão com OCR lê páginas digitalizadas.'), true);
   } else {
@@ -1347,6 +1549,12 @@ async function salvar() {
   if (!doc || !el.revisei.checked) return;
   const pendentes = doc.paginas.reduce((n, p) => n + p.sugestoes.length, 0);
   if (pendentes && !confirm(`Ainda há ${pendentes} sugestão(ões) não aceita(s). Salvar mesmo assim?`)) return;
+  // sem a caixa "Salvar como" segue direto (sem esperar nada), e a interface trava já no clique
+  const destino = typeof window.showSaveFilePicker === 'function' ? await escolherDestino() : null;
+  if (destino === 'cancelado') {
+    avisar('Salvamento cancelado: nada foi gravado.');
+    return;
+  }
   const formato = el.formato.value === 'jpeg' ? 'jpeg' : 'png';
   document.body.classList.add('ocupado');
   // trava também o teclado (Tab): mudar o carimbo ou o "Revisei" no meio deixaria páginas diferentes entre si
@@ -1355,10 +1563,16 @@ async function salvar() {
   el.btSalvar.disabled = true;
   let pdf = null;
   menorDpi = DPI_SAIDA;
+  const inicio = Date.now();
+  // medido: 100 páginas levaram 9 min num processador 4x mais lento, e 300 páginas passaram de 1 GB de memória
+  if (doc.paginas.length > PAGINAS_MUITAS) {
+    avisar(`Documento grande (${doc.paginas.length} páginas): salvar pode levar vários minutos. Deixe o computador na tomada ` +
+      'e feche outros programas. Em computador lento, o formato JPEG salva mais rápido.');
+  }
   try {
     for (let i = 0; i < doc.paginas.length; i++) {
       const p = doc.paginas[i];
-      el.btSalvar.textContent = `Gerando página ${i + 1} de ${doc.paginas.length}...`;
+      el.btSalvar.textContent = `Gerando página ${i + 1} de ${doc.paginas.length}...` + faltaTempo(inicio, i, doc.paginas.length);
       el.barraProgresso.style.width = Math.round((100 * i) / doc.paginas.length) + '%';
       const s = escalaSegura(p, DPI_SAIDA / 72);
       menorDpi = Math.min(menorDpi, Math.floor(s * 72));
@@ -1391,19 +1605,22 @@ async function salvar() {
     const depois = await contarTexto(bytes, doc.paginas.length);
     if (depois !== 0) throw new ErroConferencia(depois);
     const hashSaida = await sha256(bytes);
-    baixar(bytes, nomeSaida());
+    const nomeFinal = await gravar(destino, bytes);
     doc.salvo = true;
+    esquecerAndamento(doc.hash);
     doc.hashSaida = hashSaida;
     doc.conferencia = `Conferido: o PDF salvo foi lido de novo e tem 0 caracteres de texto nas ${doc.paginas.length} página(s) refeitas.`;
     el.barraProgresso.style.width = '100%';
     const faltam = docs.filter((d) => !d.hashSaida).length;
-    avisar('PDF salvo como ' + nomeSaida() + '. Abra e confira antes de compartilhar.' +
+    avisar('PDF salvo como ' + nomeFinal + '. Abra e confira antes de compartilhar.' +
       (faltam ? ` Falta(m) ${faltam} arquivo(s).` : ''), true);
   } catch (e) {
     console.warn('falha ao salvar', e);
     avisar(e instanceof ErroConferencia
       ? `O PDF gerado ainda tinha ${e.letras} caractere(s) de texto: por segurança, nada foi salvo. Relate o problema.`
-      : 'Não foi possível gerar o PDF. Tente o formato JPEG ou um documento menor.', true);
+      : e instanceof ErroGravar
+        ? 'Não foi possível gravar o PDF na pasta escolhida (sem permissão ou disco cheio). Tente outra pasta.'
+        : 'Não foi possível gerar o PDF. Tente o formato JPEG ou um documento menor.', true);
   } finally {
     document.body.classList.remove('ocupado');
     travarInterface(false);
@@ -1411,6 +1628,49 @@ async function salvar() {
     setTimeout(() => { el.progresso.hidden = true; el.barraProgresso.style.width = '0'; }, 1200);
     atualizar();
   }
+}
+
+class ErroGravar extends Error {}
+
+// Em computador lento um PDF grande leva minutos: a partir da 3ª página, a média por página dá o tempo que falta
+// (o "travou?" vira "faltam cerca de 6 min").
+function faltaTempo(inicio, feitas, total) {
+  if (feitas < 2) return '';
+  const s = ((Date.now() - inicio) / feitas) * (total - feitas) / 1000;
+  if (s < 20) return '';
+  return s < 90 ? ' Falta menos de 2 min.' : ` Faltam cerca de ${Math.round(s / 60)} min.`;
+}
+
+// "Salvar como": onde o navegador oferece (Edge, Chrome e a janela própria), a pessoa escolhe a pasta e o nome. A caixa
+// só pode abrir logo depois do clique, por isso vem antes de gerar o PDF. Sem ela (Firefox) ou se o navegador recusar,
+// o PDF vai como download comum. Devolve o lugar escolhido, null (download) ou 'cancelado'.
+async function escolherDestino() {
+  if (typeof window.showSaveFilePicker !== 'function') return null;
+  try {
+    return await window.showSaveFilePicker({ suggestedName: nomeSaida(),
+      types: [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }] });
+  } catch (e) {
+    if (e.name === 'AbortError') return 'cancelado';
+    console.warn('caixa "Salvar como" recusada; vai como download', e);
+    return null;
+  }
+}
+
+// grava no lugar escolhido ou baixa; devolve o nome com que ficou
+async function gravar(destino, bytes) {
+  if (!destino) {
+    baixar(bytes, nomeSaida());
+    return nomeSaida();
+  }
+  try {
+    const w = await destino.createWritable();
+    await w.write(bytes);
+    await w.close();
+  } catch (e) {
+    console.warn('falha ao gravar no lugar escolhido', e);
+    throw new ErroGravar();
+  }
+  return destino.name;
 }
 
 function baixar(bytes, nome) {
@@ -1427,6 +1687,7 @@ function baixar(bytes, nome) {
 // ---------- estado dos controles ----------
 function atualizar() {
   const tem = !!doc;
+  if (!tem) el.andamento.hidden = true;
   el.btFechar.disabled = !tem;
   el.btCopiarHash.disabled = !tem;
   el.btProcurar.disabled = !tem;
@@ -1504,7 +1765,7 @@ function mudarZoom(passo) {
   const k = ZOOMS.indexOf(zoom) + passo;
   if (k < 0 || k >= ZOOMS.length) return;
   zoom = ZOOMS[k];
-  desenharBase();
+  desenharBase().then((i) => { if (i === atual) marcarVisto(); });
   atualizar();
 }
 
@@ -1529,6 +1790,19 @@ function iniciar() {
   if (pref.formato === 'jpeg') el.formato.value = 'jpeg';
   if (pref.folha === false) el.folha.checked = false;
   if (pref.avisos === false) el.mostrarAvisos.checked = false;
+  if (pref.andamento === false) el.guardarAndamento.checked = false;
+  limparAndamentoVelho();
+  el.guardarAndamento.addEventListener('change', () => {
+    if (el.guardarAndamento.checked) gravarAndamento();
+    else apagarTodoAndamento();
+    gravarPref();
+  });
+  el.btRecuperar.addEventListener('click', recuperarAndamento);
+  el.btApagarTudo.addEventListener('click', apagarTudoGuardado);
+  el.btDescartarAndamento.addEventListener('click', descartarAndamento);
+  // a janela escondida ou fechando grava na hora o que ainda estava esperando
+  document.addEventListener('visibilitychange', () => { if (tempoAndamento) gravarAndamento(); });
+  window.addEventListener('pagehide', () => { if (tempoAndamento) gravarAndamento(); });
   el.carTexto.value = carimbo.texto;
 
   el.btAbrir.addEventListener('click', () => el.entrada.click());
@@ -1582,6 +1856,11 @@ function iniciar() {
   for (const c of [el.termoInteira, el.termoAcento]) c.addEventListener('change', mudouTermos);
   el.termoGuardar.addEventListener('change', () => {
     if (el.termoGuardar.checked) {
+      if (!confirm('Guardar a lista de nomes neste computador?\n\nQualquer pessoa que usar este mesmo usuário do ' +
+        'Windows depois vai ver a lista. Em computador dividido (sala dos professores, laboratório), não guarde.')) {
+        el.termoGuardar.checked = false;
+        return;
+      }
       guardarTermos();
       avisar('A lista fica guardada neste navegador até você desmarcar "Guardar".');
     } else {
@@ -1590,6 +1869,9 @@ function iniciar() {
     }
   });
   el.carUma.addEventListener('click', () => { if (doc) { carimbo.pagina = atual; mudouCarimbo(); } });
+  // com zoom, rolar pela página é o que a faz contar como vista
+  el.palco.addEventListener('scroll', marcarVisto, { passive: true });
+  window.addEventListener('resize', marcarVisto);
   el.formato.addEventListener('change', gravarPref);
   el.folha.addEventListener('change', gravarPref);
   el.mostrarAvisos.addEventListener('change', gravarPref);

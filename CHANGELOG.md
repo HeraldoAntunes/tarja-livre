@@ -5,6 +5,36 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+## [1.2.0] - 2026-10-29
+
+### Novo
+- **Tarja Livre em janela própria para Windows** (`TarjaLivre-1.2.0.exe`, cerca de 11 MB, já com OCR). Abre sem
+  depender do navegador do dia a dia, com o ícone do Tarja na barra de tarefas. Não precisa de
+  internet: a página continua sem acesso à rede e o motor da janela não acha nenhum endereço; só o componente da
+  Microsoft (WebView2) pode abrir sozinho uma conexão com a Microsoft, como contado na seção Privacidade do README. O
+  arquivo HTML continua, para quem prefere o navegador ou usa outro sistema.
+- **O `.exe` se instala sozinho**, sem instalador à parte e sem pedir administrador: na primeira vez, pergunta se
+  instala para a sua conta, cria o atalho no menu Iniciar e na Área de Trabalho e aparece em **Aplicativos
+  instalados**. Ao desinstalar, pergunta se apaga também o que o Tarja guardou. **Não** só usa, sem instalar.
+- **Recuperar o trabalho depois de uma queda.** Se o programa fechar de repente, ao abrir o mesmo PDF de novo o Tarja
+  oferece recuperar as tarjas e as páginas vistas. Guarda só a posição das marcas, nunca o PDF, o nome dele ou o texto
+  coberto, e apaga ao salvar, ao fechar o arquivo, ao descartar e depois de 7 dias. Pode ser desligado em Ajustes.
+
+- **Salvar como**: no Edge, no Chrome e no `.exe`, o Tarja pergunta onde gravar o PDF tarjado (antes ia sempre para
+  Downloads). Nos outros navegadores, continua como download.
+- **Computador dividido**: guardar a lista de nomes agora avisa que outra pessoa com o mesmo usuário do Windows vai
+  vê-la, e há o botão **Apagar tudo o que o Tarja Livre guardou**, em Ajustes.
+
+### Corrigido
+- **Cobertura inteira** (auditoria independente de 29/10/2026): uma sugestão só deixa de ficar pendente quando fica
+  inteira embaixo das tarjas. Antes, uma tarja sobre 90% dela já bastava, e letras do dado podiam ficar à vista.
+- Página maior que 5,08 m (14.400 pt) de lado é recusada ao abrir, com aviso. Antes, saía cortada no PDF salvo.
+- Trocar de página ou de arquivo no meio de um arrasto cancela o gesto. Antes, a tarja podia cair na outra página.
+- Um gesto interrompido pelo sistema devolve o carimbo ao lugar de antes.
+- Procura que falha avisa que não terminou, e não mais "Nada encontrado".
+- Com zoom, a página só conta como vista depois de aparecer inteira na tela, rolando por ela.
+- Ao fechar a janela com tarjas não salvas, o `.exe` pergunta antes de fechar.
+
 ## [1.1.0] - 2026-10-28
 
 ### Novo

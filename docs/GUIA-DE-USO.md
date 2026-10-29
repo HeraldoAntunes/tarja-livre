@@ -1,14 +1,24 @@
 <!-- Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE) -->
 # Guia de uso do Tarja Livre
 
-O Tarja Livre é um arquivo só que abre no navegador e funciona sem internet. Nada é instalado e nenhum documento sai
-do computador. Há duas versões: `TarjaLivre-x.y.z.html` (cerca de 2 MB) e `TarjaLivre-OCR-x.y.z.html` (cerca de
-8 MB), que também lê PDF digitalizado.
+O Tarja Livre funciona sem internet e nenhum documento sai do computador. Há três arquivos, com o
+mesmo programa:
+
+- `TarjaLivre-x.y.z.exe` (Windows, cerca de 11 MB): abre numa janela própria, já com a leitura de PDF digitalizado;
+- `TarjaLivre-x.y.z.html` (cerca de 2 MB): abre no navegador, em qualquer sistema;
+- `TarjaLivre-OCR-x.y.z.html` (cerca de 8 MB): o mesmo no navegador, também lendo PDF digitalizado.
 
 ## 1. Abrir
 
-- Abra o arquivo com dois cliques. Se o computador perguntar com qual programa abrir, escolha o Microsoft Edge, o
-  Google Chrome ou o Mozilla Firefox.
+- Abra o arquivo com dois cliques. No `.exe`, o Windows pode avisar na primeira vez que o editor é desconhecido:
+  clique em **Mais informações** e em **Executar assim mesmo**. No `.html`, se o computador perguntar com qual
+  programa abrir, escolha o Microsoft Edge, o Google Chrome ou o Mozilla Firefox.
+- **Instalar o `.exe`:** na primeira vez, ele pergunta se instala. **Sim** instala só para a sua conta, sem pedir
+  administrador: cria o atalho **Tarja Livre** no menu Iniciar e na Área de Trabalho, e o Tarja aparece em
+  **Configurações > Aplicativos > Aplicativos instalados**. **Não** só usa agora, sem instalar (para pendrive).
+  Abrir uma versão mais nova pergunta se atualiza; as escolhas e o andamento continuam.
+- **Desinstalar:** em **Aplicativos instalados**, clique nos três pontos do Tarja Livre e em **Desinstalar**. Ele
+  pergunta se apaga também o que guardou (escolhas, lista de nomes e andamento); em computador dividido, escolha **Sim**.
 - Clique em **Abrir PDF** ou arraste os arquivos para a janela. Pode abrir **vários de uma vez** (até 20): cada um
   ganha uma aba em cima da página, com a situação dele: *a conferir*, *conferido* ou *salvo*.
 - O painel da direita mostra o número de páginas e o **SHA-256 do original**, um código que identifica aquele
@@ -69,7 +79,9 @@ nova conferência dos outros arquivos.
 1. Passe por todas as páginas: cada uma que aparece inteira na tela ganha um visto verde na miniatura.
 2. Marque **Revisei todas as páginas**. Qualquer mudança depois disso desmarca a caixa, e é preciso conferir de novo.
 3. Escolha o formato (PNG, mais nítido, ou JPEG, arquivo menor) e se quer a **folha de conferência** no fim.
-4. Clique em **Salvar PDF tarjado**. Antes de terminar, o programa lê de novo o PDF gerado e só salva se não sobrar
+4. Clique em **Salvar PDF tarjado**. No Edge, no Chrome e no `.exe`, abre a caixa **Salvar como** para escolher a
+   pasta e o nome; nos outros navegadores, o PDF vai para a pasta de downloads. Cancelar a caixa não grava nada.
+   Antes de terminar, o programa lê de novo o PDF gerado e só salva se não sobrar
    nenhum caractere de texto nas páginas refeitas; o resultado aparece no painel e na folha. O arquivo sai como
    `nome-tarjado.pdf`. Com vários arquivos, **Ir para o próximo arquivo** leva ao que falta salvar.
 5. Abra o PDF salvo e confira mais uma vez antes de compartilhar.
@@ -80,7 +92,8 @@ tipos procurados, sem mostrar nada do que foi coberto. O SHA-256 do PDF salvo ap
 
 ## 6. Ícone na barra de tarefas (Windows)
 
-Aberto direto, o Tarja aparece na barra de tarefas com o ícone do navegador. Para ter o ícone dele:
+O `.exe` já aparece com o ícone do Tarja: clique nele na barra com o botão direito e escolha **Fixar na barra de
+tarefas** (instalado, o atalho do menu Iniciar também tem **Fixar na barra de tarefas**). O `.html`, aberto direto, aparece com o ícone do navegador. Para ter o ícone do Tarja com ele:
 
 1. Baixe o `Criar-atalho-TarjaLivre.cmd` na página da versão e ponha na mesma pasta do `TarjaLivre-x.y.z.html`.
 2. Dê dois cliques nele. Se o Windows pedir confirmação, confirme. Se houver mais de um arquivo do Tarja na pasta,
@@ -92,7 +105,23 @@ Aberto direto, o Tarja aparece na barra de tarefas com o ícone do navegador. Pa
 O atalho não usa a internet e não instala nada. Ele vale para a pasta onde o Tarja está: se mudar o arquivo de
 lugar, rode o `Criar-atalho-TarjaLivre.cmd` de novo na pasta nova.
 
-## 7. Ajustes e versão nova
+## 7. Se o programa fechar de repente
+
+Se o Tarja fechar no meio do trabalho (falta de energia, computador reiniciado, programa travado), abra de novo o
+**mesmo PDF**. No painel da direita aparece a oferta das marcas de antes:
+
+- **Recuperar** traz de volta as tarjas, os traços e as páginas já vistas. Confira as páginas antes de salvar.
+- **Descartar** apaga o que estava guardado.
+
+O Tarja guarda só o lugar das marcas e as páginas vistas, ligados ao SHA-256 do PDF; nunca o PDF, o nome dele ou o
+texto coberto. Isso some ao salvar, ao fechar o arquivo e depois de 7 dias. Para não guardar nada, desmarque
+**Guardar o andamento** em **Ajustes**, na janela **Ajuda e Sobre**.
+
+**Computador dividido** (sala dos professores, laboratório): não marque **Guardar a lista neste computador** e, ao
+terminar, clique em **Apagar tudo o que o Tarja Livre guardou**, em **Ajustes**. Isso tira as escolhas, a lista
+guardada e o andamento; o que está aberto continua na tela.
+
+## 8. Ajustes e versão nova
 
 Na janela **Ajuda e Sobre**, o botão **Ver se há versão nova** abre a página de versões no navegador, com a versão
 instalada ao lado. Ele só abre a página: o programa não procura nada na internet sozinho.

@@ -35,6 +35,13 @@ try {
     const e = document.getElementById('entradaTermos'); e.files = dt.files; e.dispatchEvent(new Event('change')); })()`);
   await ate(`document.getElementById('infoTermos').textContent === '2 termo(s) na lista.'`, 'importar a lista de termos');
   assert.equal(await js(`localStorage.getItem('tarja-livre.termos')`), null, 'lista não gravada sem pedir');
+  // computador dividido: guardar pergunta antes; Cancelar não guarda
+  nav.responder(false);
+  await clicar('termoGuardar');
+  assert.equal(await js(`document.getElementById('termoGuardar').checked`), false, 'Cancelar deixa desmarcado');
+  assert.equal(await js(`localStorage.getItem('tarja-livre.termos')`), null, 'Cancelar não guarda a lista');
+  assert.match(nav.perguntas.at(-1), /mesmo usuário do Windows/, 'a pergunta avisa do computador dividido');
+  nav.responder(true);
   await clicar('termoGuardar');
   assert.match(await js(`localStorage.getItem('tarja-livre.termos') || ''`), /Rua das Flores/, 'lista guardada quando pedido');
   await clicar('termoGuardar');

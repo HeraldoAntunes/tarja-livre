@@ -1,0 +1,56 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-FileCopyrightText: 2026 Heraldo Antunes
+# SPDX-License-Identifier: MIT
+# "PC limpo": numa máquina Windows recém-criada pelo GitHub (nada do computador do autor), monta o exe portátil e
+# roda tests/pc_limpo.ps1, que confere quatro cenários com captura de tela de cada um:
+#   normal       o exe abre, fica vivo e mostra a janela; mede as conexões de todos os processos dele;
+#   sem internet o exe e o WebView2 barrados no firewall da máquina descartável: o programa abre e fica vivo;
+#   sem WebView2 o carregador aponta para uma pasta vazia: tem de aparecer a mensagem que explica e oferece o HTML;
+#   instalar     `--instalar` cria a pasta, os atalhos e a entrada em Aplicativos instalados; o instalado abre a janela;
+#                `--desinstalar --silencioso` tira tudo.
+# As capturas e o relatório (pc-limpo.json) ficam como artefato da execução. Nada é publicado por aqui.
+name: PC limpo
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pc-limpo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pc-limpo:
+    strategy:
+      fail-fast: false
+      matrix:
+        windows: [windows-latest, windows-2022]
+    runs-on: ${{ matrix.windows }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Montar o exe portátil
+        run: python -X utf8 scripts/montar.py --release
+
+      - name: Rodar como um professor rodaria
+        shell: powershell
+        run: >-
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests/pc_limpo.ps1
+          -Exe (Get-ChildItem dist/release/TarjaLivre-*.exe | Select-Object -First 1).FullName
+          -Saida pc-limpo -Segundos 90 -BloquearRede -Instalar
+
+      - name: Guardar capturas e relatório
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: pc-limpo-${{ matrix.windows }}
+          path: pc-limpo/
+          retention-days: 30

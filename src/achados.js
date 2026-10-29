@@ -352,13 +352,25 @@ export function selecionar(pedacosPagina, a, b, medir = null) {
   return caixas(pedacos, origem, Math.min(ja, jb), Math.max(ja, jb) + 1, medir);
 }
 
-// Uma caixa já está coberta por tarjas se quase toda a área dela fica embaixo de alguma tarja.
+// Uma caixa já está coberta por tarjas só se ficar inteira embaixo delas (uma ou várias juntas). "Quase toda" não
+// serve: 90% de um e-mail coberto ainda deixa letras à vista (auditoria de 29/10/2026). A folga de 0,01 é só para o
+// arredondamento das contas.
 export function coberta(caixa, tarjas) {
-  const area = caixa.w * caixa.h;
-  if (area <= 0) return true;
-  return tarjas.some((t) => {
-    const w = Math.min(caixa.x + caixa.w, t.x + t.w) - Math.max(caixa.x, t.x);
-    const h = Math.min(caixa.y + caixa.h, t.y + t.h) - Math.max(caixa.y, t.y);
-    return w > 0 && h > 0 && (w * h) / area >= 0.9;
-  });
+  const FOLGA = 0.01;
+  const x0 = caixa.x + FOLGA, y0 = caixa.y + FOLGA, x1 = caixa.x + caixa.w - FOLGA, y1 = caixa.y + caixa.h - FOLGA;
+  if (x1 <= x0 || y1 <= y0) return true;
+  const por = tarjas.filter((t) => t.x < x1 && t.x + t.w > x0 && t.y < y1 && t.y + t.h > y0);
+  if (!por.length) return false;
+  // divide a caixa pelas bordas das tarjas: cada pedaço tem de ter o centro dentro de alguma tarja
+  const cortes = (a, b, bordas) => [...new Set([a, b, ...bordas.filter((v) => v > a && v < b)])].sort((m, n) => m - n);
+  const xs = cortes(x0, x1, por.flatMap((t) => [t.x, t.x + t.w]));
+  const ys = cortes(y0, y1, por.flatMap((t) => [t.y, t.y + t.h]));
+  for (let i = 0; i + 1 < xs.length; i++) {
+    const cx = (xs[i] + xs[i + 1]) / 2;
+    for (let j = 0; j + 1 < ys.length; j++) {
+      const cy = (ys[j] + ys[j + 1]) / 2;
+      if (!por.some((t) => cx >= t.x && cx <= t.x + t.w && cy >= t.y && cy <= t.y + t.h)) return false;
+    }
+  }
+  return true;
 }
