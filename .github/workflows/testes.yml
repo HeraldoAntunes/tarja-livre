@@ -39,9 +39,9 @@ jobs:
       - name: Montar o HTML único
         run: python -X utf8 scripts/montar.py --release
 
-      - name: Dependências dos testes (PyMuPDF para conferir os pixels; as da auditoria externa, pelo package-lock)
+      - name: Dependências dos testes (PyMuPDF e numpy para conferir os pixels; as da auditoria externa, pelo package-lock)
         run: |
-          python -m pip install pymupdf==1.27.2.3
+          python -m pip install pymupdf==1.27.2.3 numpy==2.4.4
           npm ci --ignore-scripts --prefix tests/auditoria-ext/ampliada
 
       - name: Suíte inteira (tests/todos.py)
