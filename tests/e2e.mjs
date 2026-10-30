@@ -5,7 +5,7 @@
 // protocolo de depuração, gera um PDF de exemplo com dados fictícios, procura, tarja, confere e salva, e depois lê
 // o PDF salvo para provar que o texto coberto sumiu. Uso: node tests/e2e.mjs [pasta para as capturas de tela]
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
 import { RAIZ, espera, montar, abrirNavegador } from './navegador.mjs';
@@ -161,7 +161,7 @@ try {
   let arquivo;
   for (let t = 0; t < 200 && !arquivo; t++) {
     await espera(150);
-    arquivo = readdirSync(baixados).find((n) => n.endsWith('.pdf'));
+    arquivo = nav.prontos().find((n) => n.endsWith('.pdf'));
   }
   assert.ok(arquivo, 'PDF salvo baixado');
   assert.equal(arquivo, 'exemplo-tarjado.pdf');

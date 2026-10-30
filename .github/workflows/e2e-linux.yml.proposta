@@ -1,0 +1,55 @@
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-FileCopyrightText: 2026 Heraldo Antunes
+# SPDX-License-Identifier: MIT
+# PROPOSTA, DESLIGADA. O GitHub só lê arquivos .yml e .yaml desta pasta; com o nome .yml.proposta, este arquivo não
+# roda. Para ligar, renomeie para e2e-linux.yml (ver docs/E2E-MULTIPLATAFORMA.md, "CI no Linux").
+#
+# Os testes rápidos e os 9 de ponta a ponta num Ubuntu, no Chrome e no Firefox que já vêm na imagem do GitHub, pelo
+# tests/todos.py, com TARJA_NAVEGADOR escolhendo o navegador. Não substitui o testes.yml (Windows e Edge, o navegador
+# que o programa usa de verdade): é um a mais, para pegar o que só quebra fora do Windows. Nada é publicado por aqui.
+#
+# Antes de ligar: o e2e_ocr falha no Linux por um defeito do programa (o e-mail da página digitalizada não vira
+# sugestão; ver docs/E2E-MULTIPLATAFORMA.md). Ligado antes da correção, este job fica vermelho em todo PR.
+name: Testes no Linux
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-linux-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        navegador: [chromium, firefox]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Dependências dos testes (PyMuPDF para conferir os pixels)
+        run: python3 -m pip install pymupdf==1.27.2.3
+
+      - name: Versões dos navegadores
+        run: |
+          google-chrome --version
+          firefox --version
+
+      # chromium usa o Google Chrome da imagem (/usr/bin/google-chrome); firefox, o /usr/bin/firefox
+      - name: Testes rápidos e os 9 de ponta a ponta (tests/todos.py)
+        env:
+          TARJA_NAVEGADOR: ${{ matrix.navegador }}
+        run: python3 -X utf8 tests/todos.py --sem-auditoria

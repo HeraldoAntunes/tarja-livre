@@ -5,7 +5,8 @@
 documentos antigos não fazia isso: o Node não expande o *, auditoria da rc.1 da 1.2.1). Usado pelo CI.
 
   rápidos      node --test: procura, montador, dados fictícios
-  e2e          os de ponta a ponta no Edge sem janela (ou dentro do exe, com TARJA_EXE), um processo por arquivo
+  e2e          os de ponta a ponta no Edge sem janela (ou dentro do exe, com TARJA_EXE; ou no Chromium ou no Firefox,
+               com TARJA_NAVEGADOR, ver docs/E2E-MULTIPLATAFORMA.md), um processo por arquivo
   auditoria    os testes da auditoria externa (tests/auditoria-ext/rodar.py; precisa do npm ci de lá)
 
 Fora daqui, rodados à parte na bateria da versão: e2e_fechar (só no exe), e2e_longo (30 min), e2e_pesado (minutos),
