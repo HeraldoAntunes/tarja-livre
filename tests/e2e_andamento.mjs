@@ -36,6 +36,17 @@ const LER = `new Promise((ok) => { const q = indexedDB.open('tarja-livre', 1);
 const guardado = (n) => n.js(LER);
 const oferta = (n) => n.js(`document.getElementById('andamento').hidden ? '' : document.getElementById('andamentoTexto').textContent`);
 const marcasNaOferta = (t) => Number((t.match(/tem (\d+) marca/) || [])[1] || 0);
+// a oferta vem de mostrarAndamento(), que lê o IndexedDB depois que a página já apareceu: num PC lento (o runner do
+// Actions, 30/10/2026) ler na hora pegava a faixa ainda escondida. Esperar a oferta quando ela tem de vir; quando não
+// tem de vir, dar o mesmo tempo antes de conferir que ficou vazia.
+async function ofertaEsperada(n) {
+  await n.ate(`!document.getElementById('andamento').hidden`, 'a oferta aparecer', 10000);
+  return oferta(n);
+}
+async function ofertaAusente(n) {
+  await espera(2000);
+  return oferta(n);
+}
 async function esperarGravar(n, marcas) {
   await n.ate(`${LER}.then((t) => { try { const a = Object.values(JSON.parse(t))[0];
     return a.paginas.reduce((s, p) => s + p.marcas.length, 0) === ${marcas}; } catch { return false; } })`, `gravar ${marcas} marca(s)`, 5000);
@@ -43,7 +54,7 @@ async function esperarGravar(n, marcas) {
 
 // 1ª vez: nada a oferecer; aceita as sugestões (CPF, e-mail, nomes...) e tarja à mão; morre sem salvar
 let n = await abrir();
-assert.equal(await oferta(n), '', 'nada a oferecer na primeira vez');
+assert.equal(await ofertaAusente(n), '', 'nada a oferecer na primeira vez');
 await n.clicar('btProcurar');
 await n.ate(`/pendente/.test(document.getElementById('resumoAchados').textContent)`, 'procura terminar', 60000);
 await n.clicar('btAceitarTodas');
@@ -67,7 +78,7 @@ await n.matar();
 // 2ª a 5ª vez: a oferta aparece com as marcas certas, recupera, tarja mais uma e morre de novo
 for (let k = 2; k <= VEZES; k++) {
   n = await abrir();
-  const t = await oferta(n);
+  const t = await ofertaEsperada(n);
   assert.equal(marcasNaOferta(t), total, `queda ${k - 1}: oferta com ${total} marca(s), veio "${t}"`);
   if (k === 2) await n.captura('andamento-2-oferta.png');
   await n.clicar('btRecuperar');
@@ -80,7 +91,7 @@ for (let k = 2; k <= VEZES; k++) {
 
 // queda no meio do salvamento: as marcas continuam guardadas
 n = await abrir();
-assert.equal(marcasNaOferta(await oferta(n)), total, 'oferta depois da última queda');
+assert.equal(marcasNaOferta(await ofertaEsperada(n)), total, 'oferta depois da última queda');
 await n.clicar('btRecuperar');
 for (let i = 0; i < 8; i++) {
   await n.js(`document.querySelectorAll('.mini-pag')[${i}].click()`);
@@ -98,7 +109,7 @@ await espera(1500);
 assert.ok(await n.js(`document.body.classList.contains('ocupado')`), 'salvamento em andamento na hora da queda');
 await n.matar();
 n = await abrir();
-assert.equal(marcasNaOferta(await oferta(n)), total, 'queda no salvamento: as marcas continuam oferecidas');
+assert.equal(marcasNaOferta(await ofertaEsperada(n)), total, 'queda no salvamento: as marcas continuam oferecidas');
 
 // salvar até o fim apaga o andamento
 await n.clicar('btRecuperar');
@@ -128,12 +139,12 @@ await n.matar();
 
 // Descartar apaga; desligar a opção também
 n = await abrir();
-assert.equal(await oferta(n), '', 'depois de salvo, nada a oferecer');
+assert.equal(await ofertaAusente(n), '', 'depois de salvo, nada a oferecer');
 await n.arrastar(0.2, 0.2, 0.4, 0.3);
 await esperarGravar(n, 1);
 await n.matar();
 n = await abrir();
-assert.equal(marcasNaOferta(await oferta(n)), 1, 'oferta da tarja nova');
+assert.equal(marcasNaOferta(await ofertaEsperada(n)), 1, 'oferta da tarja nova');
 await n.clicar('btDescartarAndamento');
 await n.ate(`${LER}.then((t) => t === '')`, 'Descartar apagar', 5000);
 await n.arrastar(0.2, 0.2, 0.4, 0.3);
