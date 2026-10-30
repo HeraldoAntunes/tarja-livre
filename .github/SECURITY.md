@@ -27,8 +27,10 @@
 ## O que o programa não garante
 
 O Tarja Livre ajuda a cobrir dados pessoais, mas não garante anonimização perfeita nem conformidade jurídica com a
-LGPD. A procura automática lê só o texto do PDF: não funciona em PDF digitalizado e não reconhece nomes nem
-endereços. Quem salva confere cada página, e o PDF salvo deve ser revisto antes de compartilhar.
+LGPD. A procura automática acha CPF, CNPJ, RG, e-mail, telefone, CEP, PIS/NIS, título de eleitor, CNH, número de
+processo e os nomes ou termos da lista que você escrever; não reconhece sozinha nomes nem endereços fora da lista. Em
+PDF digitalizado, só a versão com OCR lê o texto da imagem, e o OCR pode errar. Quem salva confere cada página, e o PDF
+salvo deve ser revisto antes de compartilhar.
 
 ## Versões com suporte
 

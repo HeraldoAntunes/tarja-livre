@@ -46,6 +46,7 @@ def main(argv: list[str]) -> int:
     trocar(RAIZ / "README.md", r"releases/download/v[\d.]+/TarjaLivre-[\d.]+\.exe", rf"releases/download/v{v}/TarjaLivre-{v}.exe",
            obrigatorio=False)
     trocar(RAIZ / "README.md", r"TarjaLivre-[\d.]+\.exe", rf"TarjaLivre-{v}.exe", obrigatorio=False)
+    trocar(RAIZ / "README.md", r"Instalar-TarjaLivre-[\d.]+\.zip", rf"Instalar-TarjaLivre-{v}.zip", obrigatorio=False)
     trocar(RAIZ / "README.md", r"\(versão [\d.]+\)", f"(versão {v})")
     changelog = (RAIZ / "CHANGELOG.md").read_text(encoding="utf-8")
     if f"## [{v}]" not in changelog:

@@ -7,7 +7,7 @@
 
 - [ ] `python scripts/montar.py` montou o HTML
 - [ ] `node --test tests/achados.test.mjs tests/montar.test.mjs tests/ficticios.test.mjs` passou
-- [ ] `node tests/e2e.mjs`, `node tests/e2e_pdf_teste.mjs` e `node tests/e2e_varios.mjs` passaram
+- [ ] a suíte inteira (`python -X utf8 tests/todos.py`) passou
 - [ ] Testado no navegador (diga qual):
 - [ ] Nenhum documento real nem dado pessoal neste pedido
 

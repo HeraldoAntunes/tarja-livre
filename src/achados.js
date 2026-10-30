@@ -24,8 +24,8 @@ export const DESMARCADOS = ['processo'];
 // rótulos de tudo o que a procura acha, inclusive os termos digitados pelo usuário (que não são uma caixa de marcar)
 export const NOMES = { ...TIPOS, termo: 'Termo da lista' };
 
-const MAX_TERMOS = 500;
-const MAX_LETRAS_TERMO = 200;
+export const MAX_TERMOS = 500;
+export const MAX_LETRAS_TERMO = 200;
 
 // Lista digitada, colada ou importada: um termo por linha (ou separado por ponto e vírgula), sem repetidos.
 export function prepararTermos(texto) {

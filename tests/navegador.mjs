@@ -32,6 +32,35 @@ const portaLivre = () => new Promise((ok) => {
 const EXE = process.env.TARJA_EXE;
 
 // perfilFixo: pasta de perfil que sobrevive ao fechar (para testar o que fica guardado entre uma abertura e outra)
+// Limpeza no fim, também quando o teste falha (cada perfil do WebView2 ocupa uns 0,5 GB; antes ficavam na pasta
+// temporária para sempre). Fecha os processos do Edge e do WebView2 que usam a pasta do teste (só esses: a pasta é
+// única, criada aqui) e apaga as pastas, tentando de novo enquanto algum processo ainda as segura.
+const abertos = new Map();     // pid do navegador ou do exe → pastas do teste
+const pastasDoFim = new Set(); // perfis fixos (sobrevivem entre aberturas): só saem no fim do processo
+const pausa = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+function fecharProcessosDa(pasta) {
+  try {
+    execFileSync('powershell', ['-NoProfile', '-Command', `Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^msedge' -and $_.CommandLine -like '*${pasta.replace(/'/g, "''")}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`], { stdio: 'ignore' });
+  } catch { /* nada a fechar */ }
+}
+function apagarPasta(pasta) {
+  for (let k = 0; k < 10; k++) {
+    try { rmSync(pasta, { recursive: true, force: true }); } catch { /* ainda presa */ }
+    if (!existsSync(pasta)) return;
+    fecharProcessosDa(pasta);
+    pausa(500);
+  }
+}
+function limpar(pid, pastas) {
+  try { execFileSync('taskkill', ['/F', '/T', '/PID', String(pid)], { stdio: 'ignore' }); } catch { /* já saiu */ }
+  for (const p of pastas) { fecharProcessosDa(p); apagarPasta(p); }
+  abertos.delete(pid);
+}
+process.on('exit', () => {
+  for (const [pid, pastas] of abertos) limpar(pid, pastas);
+  for (const p of pastasDoFim) { fecharProcessosDa(p); apagarPasta(p); }
+});
+
 export async function abrirNavegador(capturas, { largura = 1400, altura = 900, perfilFixo = null } = {}) {
   if (!EDGE && !EXE) throw new Error('Microsoft Edge não encontrado');
   const porta = await portaLivre();
@@ -53,7 +82,9 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
       alvo = lista.find((x) => x.type === 'page');
     } catch { /* o Edge ainda está subindo */ }
   }
-  if (!alvo) { edge.kill(); throw new Error('Edge não respondeu no protocolo de depuração'); }
+  abertos.set(edge.pid, perfilFixo ? [baixados] : [perfil, baixados]);
+  if (perfilFixo) pastasDoFim.add(perfilFixo);
+  if (!alvo) { limpar(edge.pid, abertos.get(edge.pid)); throw new Error('Edge não respondeu no protocolo de depuração'); }
 
   const ws = new WebSocket(alvo.webSocketDebuggerUrl);
   await new Promise((r, f) => { ws.onopen = r; ws.onerror = f; });
@@ -73,8 +104,11 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     if (d.method === 'Page.javascriptDialogOpening') {
       if (respostas.length) perguntas.push(d.params.message);
       else erros.push('janela inesperada: ' + d.params.message);
-      const accept = respostas.length ? respostas.shift() : false;
-      ws.send(JSON.stringify({ id: ++seq, method: 'Page.handleJavaScriptDialog', params: { accept } }));
+      // a resposta pode ser { aceitar, depois: ms }: como alguém que demora para responder
+      const r = respostas.length ? respostas.shift() : false;
+      const accept = typeof r === 'object' ? r.aceitar : r;
+      const enviar = () => ws.send(JSON.stringify({ id: ++seq, method: 'Page.handleJavaScriptDialog', params: { accept } }));
+      if (typeof r === 'object' && r.depois) setTimeout(enviar, r.depois); else enviar();
     }
   };
   const cdp = (method, params = {}) => new Promise((r, f) => {
@@ -99,8 +133,8 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     throw new Error('tempo esgotado esperando: ' + rotulo + '\n  estado: ' + estado);
   };
   const n = {
-    cdp, js, ate, erros, baixados, perguntas,
-    // combina a resposta das próximas perguntas da página (true = OK, false = Cancelar)
+    cdp, js, ate, erros, baixados, perguntas, pid: edge.pid,
+    // combina a resposta das próximas perguntas da página (true = OK, false = Cancelar, ou { aceitar, depois: ms })
     responder: (...r) => respostas.push(...r),
     // eventos do protocolo (por exemplo, uma janela nova aberta pela página)
     aoEvento: (f) => ouvintes.push(f),
@@ -167,10 +201,8 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     },
     async fechar() {
       try { ws.close(); } catch { /* já fechado */ }
-      if (EXE) { try { execFileSync('taskkill', ['/F', '/T', '/PID', String(edge.pid)], { stdio: 'ignore' }); } catch { /* já saiu */ } }
-      else edge.kill();
-      await espera(500);
-      for (const p of perfilFixo ? [baixados] : [perfil, baixados]) { try { rmSync(p, { recursive: true, force: true }); } catch { /* Edge ainda segurando */ } }
+      await espera(300);
+      limpar(edge.pid, abertos.get(edge.pid) || []);
     },
   };
   return n;

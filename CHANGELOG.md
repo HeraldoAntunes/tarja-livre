@@ -5,6 +5,40 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+## [1.2.1] - 2026-10-29
+
+### Corrigido
+- **O carimbo volta a se mover ao arrastar.** Na 1.2.0, ele ficava parado no lugar (defeito introduzido por uma
+  correção da própria 1.2.0).
+- **"Apagar tudo o que o Tarja Livre guardou"** só diz "Apagado" quando apagou mesmo; se algo não sair, avisa o quê.
+- **Recuperação depois de uma queda**: quem edita sem parar também tem o andamento guardado (no máximo 2 s depois da
+  primeira mudança), e o programa avisa se não conseguir guardar.
+- **Página vista com zoom**: só conta como vista quando a área inteira, com as margens, já apareceu na tela.
+- **Salvar fica preso ao documento que o começou.** Na 1.2.0, trocar de aba com a caixa "Salvar como" aberta fazia
+  sair o outro documento, com o nome do primeiro. Agora a tela trava já no clique em Salvar e, se o documento mudar
+  mesmo assim, nada é gravado e um aviso explica. Um segundo pedido de salvar, com o primeiro em andamento, não faz
+  nada.
+- **Procura incompleta não diz mais "Nada encontrado".** Se os campos de formulário ou as anotações de uma página
+  não puderem ser lidos, o aviso diz em que arquivo e páginas a procura ficou incompleta, para conferir à mão.
+- **Recuperação mais firme**: andamento guardado estragado é descartado em vez de travar a oferta de recuperar, e uma
+  falha passageira ao abrir o depósito do navegador não impede as gravações seguintes.
+- **Abrir arquivos ao mesmo tempo** (o botão e arrastar, por exemplo) não cria mais duas abas do mesmo PDF nem passa
+  do limite de 20 arquivos.
+- **Fechar o `.exe`**: só fecha sem perguntar quando a página responde que não há nada por salvar; resposta vazia
+  ou estranha (falha da página) faz o próprio Windows perguntar.
+- **Atualizar o `.exe`**: se o programa novo não conseguir entrar no lugar, o antigo volta e continua instalado.
+  Uma troca que parou no meio é retomada sem apagar a cópia anterior, e sempre sobra ao menos uma cópia que abre;
+  se nem a volta der certo, o aviso diz onde a cópia ficou.
+- **WebView2 órfão**: só é encerrado quando o Windows confirma que o programa que o abriu já fechou; na dúvida,
+  fica. O que não sai é anotado no `janelas.log`.
+- **Fechar o `.exe` com o programa ocupado**: se a página não responder em 3 s, o próprio Windows pergunta se fecha.
+- **Desinstalar e atualizar o `.exe`**: o programa é tirado do lugar primeiro, com novas tentativas; se não der, nada é
+  mexido e a instalação continua inteira. Funciona também com a pasta temporária em outro disco.
+- **Abrir o `.exe` mais firme**: a janela só aparece pronta; se o Windows falhar ao criá-la, o programa tenta de novo e,
+  se não der, explica em português o que fazer.
+- O `.exe` diminui as conexões que o componente WebView2, da Microsoft, abre sozinho com a Microsoft ao abrir. Elas
+  ainda podem acontecer (ver Privacidade).
+
 ## [1.2.0] - 2026-10-29
 
 ### Novo

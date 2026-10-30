@@ -27,6 +27,8 @@ public static class PcLimpo {
   [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, StringBuilder s, int n);
   [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassName(IntPtr h, StringBuilder s, int n);
   public static string Classe(IntPtr h) { var s = new StringBuilder(64); GetClassName(h, s, 64); return s.ToString(); }
+  [StructLayout(LayoutKind.Sequential)] public struct Ret { public int L, T, R, B; }
+  [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out Ret r);
   // o texto de uma caixa de mensagem fica nos controles filhos dela
   public static string Textos(IntPtr h) {
     var l = new List<string>();
@@ -44,6 +46,39 @@ function Captura([string]$nome) {
   $bmp.Save((Join-Path $Saida $nome), [System.Drawing.Imaging.ImageFormat]::Png)
   $g.Dispose(); $bmp.Dispose()
 }
+
+# A janela está desenhada? Janela branca (a página não carregou) não conta (auditoria de 29/10/2026, rodada 2): pega
+# a área da janela na tela e conta as cores de uma grade de pontos; a interface do Tarja tem a barra escura, botões e
+# texto. Espera até $limite segundos e devolve as cores achadas e a fração de pontos que não são brancos.
+function Desenhada($a, [int]$limite = 40) {
+  $fim = (Get-Date).AddSeconds($limite)
+  $r = $null
+  while ((Get-Date) -lt $fim) {
+    Start-Sleep 1
+    $a.P.Refresh()
+    if ($a.P.HasExited -or $a.P.MainWindowHandle -eq [IntPtr]::Zero) { continue }
+    $q = New-Object PcLimpo+Ret
+    [void][PcLimpo]::GetWindowRect($a.P.MainWindowHandle, [ref]$q)
+    $w = $q.R - $q.L; $h = $q.B - $q.T
+    if ($w -lt 200 -or $h -lt 200) { continue }
+    $bmp = New-Object System.Drawing.Bitmap $w, $h
+    $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.CopyFromScreen($q.L, $q.T, 0, 0, $bmp.Size)
+    $cores = @{}; $naoBrancos = 0; $total = 0
+    for ($x = 10; $x -lt $w - 10; $x += [Math]::Max(1, [int]($w / 40))) {
+      for ($y = 40; $y -lt $h - 10; $y += [Math]::Max(1, [int]($h / 40))) {
+        $c = $bmp.GetPixel($x, $y); $total++
+        $cores["$($c.R),$($c.G),$($c.B)"] = 1
+        if ($c.R -lt 235 -or $c.G -lt 235 -or $c.B -lt 235) { $naoBrancos++ }
+      }
+    }
+    $g.Dispose(); $bmp.Dispose()
+    $r = [pscustomobject]@{ Cores = $cores.Count; NaoBrancos = [Math]::Round($naoBrancos / [Math]::Max(1, $total), 3) }
+    if ($r.Cores -ge 6 -and $r.NaoBrancos -ge 0.03) { return $r }
+  }
+  $r
+}
+$desenhada = { param($r) $r -and $r.Cores -ge 6 -and $r.NaoBrancos -ge 0.03 }
 
 # abre o exe com uma pasta de perfil só deste cenário e devolve o processo e essa pasta
 function Abrir([string]$cenario, [hashtable]$ambiente = @{}, [string]$Programa = $Exe, [string[]]$Argumentos = @('--sem-instalar')) {
@@ -93,12 +128,13 @@ $falhas = @()
 
 # 1) normal
 $a = Abrir 'normal'
-Start-Sleep 8
+$tela = Desenhada $a
 $a.P.Refresh()
 $titulo = $a.P.MainWindowTitle
 Captura 'pc-limpo-1-normal.png'
 $o = Observar $a
-$relatorio.normal = [ordered]@{ vivo = $o.Vivo; janela = $titulo; processosDoMotor = $o.Motor; conexoes = $o.Conexoes }
+$relatorio.normal = [ordered]@{ vivo = $o.Vivo; janela = $titulo; desenho = $tela; processosDoMotor = $o.Motor; conexoes = $o.Conexoes }
+if (-not (& $desenhada $tela)) { $falhas += "normal: a janela não ficou desenhada (branca?): $($tela | ConvertTo-Json -Compress)" }
 if (-not $o.Vivo) { $falhas += 'normal: o exe fechou sozinho' }
 if ($titulo -notlike 'Tarja Livre*') { $falhas += "normal: janela '$titulo' em vez de Tarja Livre" }
 if ($o.Motor -lt 1) { $falhas += 'normal: o motor WebView2 não subiu' }
@@ -112,12 +148,13 @@ if ($BloquearRede) {
       Get-ChildItem "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application\*\msedgewebview2.exe" | Select-Object -First 1).FullName)
   try {
     $a = Abrir 'sem-internet'
-    Start-Sleep 8
+    $tela = Desenhada $a
     $a.P.Refresh()
     $titulo = $a.P.MainWindowTitle
     Captura 'pc-limpo-2-sem-internet.png'
     $o = Observar $a
-    $relatorio.semInternet = [ordered]@{ vivo = $o.Vivo; janela = $titulo; conexoes = $o.Conexoes }
+    $relatorio.semInternet = [ordered]@{ vivo = $o.Vivo; janela = $titulo; desenho = $tela; conexoes = $o.Conexoes }
+    if (-not (& $desenhada $tela)) { $falhas += "sem internet: a janela não ficou desenhada (branca?)" }
     if (-not $o.Vivo) { $falhas += 'sem internet: o exe fechou sozinho' }
     if ($titulo -notlike 'Tarja Livre*') { $falhas += "sem internet: janela '$titulo'" }
     Fechar $a
@@ -161,11 +198,13 @@ if ($Instalar) {
   if ($mesmo) {
     # o instalado já não pergunta nada: abre a janela direto
     $a = Abrir 'instalado' @{} $instalado @()
-    Start-Sleep 8
+    $tela = Desenhada $a
     $a.P.Refresh()
     $titulo = $a.P.MainWindowTitle
     Captura 'pc-limpo-4-instalado.png'
     $relatorio.instalar.janela = $titulo
+    $relatorio.instalar.desenho = $tela
+    if (-not (& $desenhada $tela)) { $falhas += "instalado: a janela não ficou desenhada (branca?)" }
     if ($titulo -notlike 'Tarja Livre*') { $falhas += "instalado: janela '$titulo' em vez de Tarja Livre" }
     Fechar $a
     $r = Start-Process $instalado -ArgumentList '--desinstalar', '--silencioso' -Wait -PassThru

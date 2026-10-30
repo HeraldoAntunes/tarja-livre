@@ -2,8 +2,12 @@
 # SPDX-FileCopyrightText: 2026 Heraldo Antunes
 # SPDX-License-Identifier: MIT
 # Testes automáticos a cada envio ao GitHub, num Windows com o Microsoft Edge (o mesmo que o programa usa): monta o
-# HTML único nas duas versões (normal e com OCR), roda os testes da procura, do montador e dos dados fictícios, e os
-# testes de ponta a ponta, que abrem o arquivo direto do disco no Edge sem janela. Nada é publicado por aqui.
+# HTML único nas duas versões (normal e com OCR) e roda a suíte inteira pelo tests/todos.py: os testes da procura,
+# do montador e dos dados fictícios, todos os de ponta a ponta (abrem o arquivo direto do disco no Edge sem janela,
+# incluindo os das auditorias, a recuperação depois de quedas e a exportação conferida pelo PyMuPDF) e os testes da
+# auditoria externa (tests/auditoria-ext). Nada é publicado por aqui. NÃO roda a parte longa nem a do Windows de
+# verdade da bateria (só na máquina do professor, no exe exato): e2e_longo (30 min, Warsaw), conexões 5 × 10 min,
+# e2e_fechar e os .ps1 (janela, quedas, instalar e atualizar), nem o cargo test; um badge verde não cobre esses.
 name: Testes
 
 on:
@@ -22,7 +26,7 @@ concurrency:
 jobs:
   testes:
     runs-on: windows-latest
-    timeout-minutes: 25
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -35,17 +39,10 @@ jobs:
       - name: Montar o HTML único
         run: python -X utf8 scripts/montar.py --release
 
-      - name: Testes rápidos (procura, montador, dados fictícios)
-        run: node --test tests/achados.test.mjs tests/montar.test.mjs tests/ficticios.test.mjs
+      - name: Dependências dos testes (PyMuPDF para conferir os pixels; as da auditoria externa, pelo package-lock)
+        run: |
+          python -m pip install pymupdf==1.27.2.3
+          npm ci --ignore-scripts --prefix tests/auditoria-ext/ampliada
 
-      - name: Ponta a ponta (fluxo completo)
-        run: node tests/e2e.mjs
-
-      - name: Ponta a ponta (PDF de teste e arquivos hostis)
-        run: node tests/e2e_pdf_teste.mjs
-
-      - name: Ponta a ponta (vários arquivos)
-        run: node tests/e2e_varios.mjs
-
-      - name: Ponta a ponta (versão com OCR, página digitalizada)
-        run: node tests/e2e_ocr.mjs
+      - name: Suíte inteira (tests/todos.py)
+        run: python -X utf8 tests/todos.py

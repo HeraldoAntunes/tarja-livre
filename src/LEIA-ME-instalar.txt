@@ -1,0 +1,17 @@
+Tarja Livre __VERSAO__ para Windows
+
+1. Extraia este zip: botão direito no arquivo, "Extrair tudo".
+2. Na pasta extraída, abra o TarjaLivre-__VERSAO__.exe.
+3. Na primeira vez, ele pergunta se instala:
+   Sim: instala só para a sua conta (não pede administrador), cria o atalho Tarja Livre no menu Iniciar e na Área de
+   Trabalho e aparece em Aplicativos instalados, de onde se desinstala.
+   Não: só usa agora, sem instalar (bom para pendrive).
+
+Quem já tem uma versão anterior instalada: abra o exe novo e responda Sim em "Atualizar".
+Se o Windows avisar que o editor é desconhecido, clique em "Mais informações" e em "Executar assim mesmo": o programa
+não tem assinatura de empresa.
+
+O Tarja Livre funciona sem internet e não envia o seu PDF para lugar nenhum. Revise o PDF salvo antes de compartilhar.
+
+Licença: LICENSE (MIT). Avisos dos componentes de terceiros: THIRD-PARTY-NOTICES.md.
+Página do programa e versões novas: https://github.com/HeraldoAntunes/tarja-livre

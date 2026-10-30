@@ -1,10 +1,12 @@
 <!-- Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE) -->
 # Guia de uso do Tarja Livre
 
-O Tarja Livre funciona sem internet e nenhum documento sai do computador. Há três arquivos, com o
+O Tarja Livre funciona sem internet e nenhum documento sai do computador. Há três downloads, com o
 mesmo programa:
 
-- `TarjaLivre-x.y.z.exe` (Windows, cerca de 11 MB): abre numa janela própria, já com a leitura de PDF digitalizado;
+- `Instalar-TarjaLivre-x.y.z.zip` (Windows, cerca de 5 MB): traz o `TarjaLivre-x.y.z.exe`, que abre numa janela
+  própria, já com a leitura de PDF digitalizado. Extraia o zip (botão direito, **Extrair tudo**) e abra o `.exe` da
+  pasta extraída;
 - `TarjaLivre-x.y.z.html` (cerca de 2 MB): abre no navegador, em qualquer sistema;
 - `TarjaLivre-OCR-x.y.z.html` (cerca de 8 MB): o mesmo no navegador, também lendo PDF digitalizado.
 

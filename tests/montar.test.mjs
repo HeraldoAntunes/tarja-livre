@@ -118,3 +118,26 @@ test('Criar-atalho-TarjaLivre.cmd: CRLF, ícone embutido, PowerShell sem erro de
     assert.equal(erros, '0', 'PowerShell sem erro de sintaxe');
   }
 });
+
+test('Instalar-TarjaLivre-<versão>.zip: o exe, a LICENSE, os avisos e o LEIA-ME, com os mesmos bytes a cada montagem', () => {
+  // padrão dos quatro programas (29/10/2026): nenhum exe solto na release, o exe vai neste zip
+  const py = 'import sys, tempfile, zipfile, hashlib, pathlib; sys.path.insert(0, "scripts"); import montar\n' +
+    'v = montar.re.search(r"VERSAO = \'([^\']+)\'", montar.ler(montar.SRC / "versao.js")).group(1)\n' +
+    'd = pathlib.Path(tempfile.mkdtemp()); exe = d / "falso.exe"; exe.write_bytes(b"MZ" + bytes(range(256)) * 64)\n' +
+    'hs = []\n' +
+    'for k in (1, 2):\n' +
+    '    montar.zip_instalar(exe, d / f"{k}.zip", v); hs.append(hashlib.sha256((d / f"{k}.zip").read_bytes()).hexdigest())\n' +
+    'z = zipfile.ZipFile(d / "1.zip"); leia = z.read("LEIA-ME.txt")\n' +
+    'print(v); print(hs[0] == hs[1]); print("|".join(z.namelist())); print(z.read(f"TarjaLivre-{v}.exe") == exe.read_bytes())\n' +
+    'print(leia.startswith(b"\\xef\\xbb\\xbf")); print(b"\\n" not in leia.replace(b"\\r\\n", b"")); print(f"TarjaLivre-{v}.exe".encode() in leia)\n' +
+    'print(z.read("LICENSE") == pathlib.Path("LICENSE").read_bytes())';
+  const [v, iguais, nomes, exeIgual, bom, crlf, citaExe, licenca] = execFileSync('python', ['-X', 'utf8', '-c', py], { cwd: RAIZ })
+    .toString('utf8').trim().split(/\r?\n/);
+  assert.equal(iguais, 'True', 'duas montagens, o mesmo SHA-256');
+  assert.deepEqual(nomes.split('|'), [`TarjaLivre-${v}.exe`, 'LEIA-ME.txt', 'LICENSE', 'THIRD-PARTY-NOTICES.md'], 'conteúdo do zip');
+  assert.equal(exeIgual, 'True', 'o exe dentro é o montado');
+  assert.equal(bom, 'True', 'LEIA-ME com BOM (Bloco de Notas antigo)');
+  assert.equal(crlf, 'True', 'LEIA-ME com CRLF');
+  assert.equal(citaExe, 'True', 'LEIA-ME diz o nome do exe da versão');
+  assert.equal(licenca, 'True', 'a LICENSE do repositório');
+});

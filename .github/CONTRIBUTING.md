@@ -19,7 +19,8 @@ compartilhar documentos.
   4. Dados de exemplo só fictícios, nas faixas de `tests/fixtures/LEIA-ME.md` (o teste `tests/ficticios.test.mjs`
      reprova o resto).
   5. Antes do *pull request*, rode `python scripts/montar.py`, `node --test tests/achados.test.mjs
-     tests/montar.test.mjs tests/ficticios.test.mjs` e os três `node tests/e2e*.mjs` (precisam do Microsoft Edge).
+     tests/montar.test.mjs tests/ficticios.test.mjs` e os testes de ponta a ponta, todos de uma vez, com `python -X utf8 tests/todos.py` (precisam
+     do Microsoft Edge; com `TARJA_EXE=<exe>`, rodam dentro do `.exe`).
      Mudança de comportamento vem com teste que falha sem ela.
   6. Textos da interface em português do Brasil, com acentuação correta e sem travessão.
   7. Todo arquivo de código novo começa com o cabeçalho de autoria e licença (`SPDX-License-Identifier: MIT`).

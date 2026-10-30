@@ -6,7 +6,7 @@
 // sugestões) está em pontos do PDF, com origem no canto de cima da página; a tela só converte na hora de desenhar,
 // então ampliar ou mudar de monitor não desalinha nada.
 import { VERSAO } from './versao.js';
-import { TIPOS, NOMES, DESMARCADOS, procurar, coberta, prepararTermos, corrigirOcr, selecionar } from './achados.js';
+import { TIPOS, NOMES, DESMARCADOS, procurar, coberta, prepararTermos, corrigirOcr, selecionar, MAX_TERMOS, MAX_LETRAS_TERMO } from './achados.js';
 
 const pdfjsLib = globalThis.pdfjsLib;
 const { jsPDF } = globalThis.jspdf;
@@ -74,12 +74,20 @@ let tempoAndamento = null;
 let bancoAndamento = null;
 let filaAndamento = Promise.resolve();
 
+// a abertura que falhou não fica guardada: a próxima gravação tenta abrir de novo (auditoria TL-X06)
 function banco() {
   bancoAndamento = bancoAndamento || new Promise((ok, falha) => {
     const q = indexedDB.open('tarja-livre', 1);
     q.onupgradeneeded = () => q.result.createObjectStore('andamento');
-    q.onsuccess = () => ok(q.result);
+    q.onsuccess = () => {
+      // fechado por fora (o navegador limpou os dados do site): a próxima vez abre de novo
+      q.result.onclose = () => { bancoAndamento = null; };
+      ok(q.result);
+    };
     q.onerror = () => falha(q.error);
+  }).catch((e) => {
+    bancoAndamento = null;
+    throw e;
   });
   return bancoAndamento;
 }
@@ -95,20 +103,28 @@ async function noAndamento(modo, f) {
     t.onabort = () => falha(t.error);
   });
 }
-// as gravações e remoções andam em fila, na ordem em que foram pedidas
+// as gravações e remoções andam em fila, na ordem em que foram pedidas; cada uma devolve true se deu certo e false
+// se falhou (a falha não para a fila)
 function naFila(f) {
-  filaAndamento = filaAndamento.then(f, f).catch((e) => console.warn('andamento não gravado', e));
-  return filaAndamento;
+  const vez = filaAndamento.then(f, f).then(() => true, (e) => { console.warn('andamento não gravado', e); return false; });
+  filaAndamento = vez;
+  return vez;
 }
 // só os campos de desenho, escolhidos um a um: nenhum texto passa daqui
 function marcaSoGeometria(m) {
   if (m.tipo === 'caneta') return { tipo: 'caneta', cor: m.cor, largura: m.largura, pontos: m.pontos.map(([x, y]) => [x, y]) };
   return { tipo: 'tarja', cor: m.cor, x: m.x, y: m.y, w: m.w, h: m.h };
 }
+// Grava 1 s depois da última mudança, mas nunca mais de 2 s depois da primeira mudança ainda não gravada: quem
+// edita sem parar também tem o andamento guardado (auditoria de 29/10/2026, rodada 2).
+const PRAZO_ANDAMENTO = 2000;
+let andamentoDesde = 0;
+let avisouFalhaAndamento = false;
 function agendarAndamento() {
   if (!el.guardarAndamento.checked) return;
+  if (!tempoAndamento) andamentoDesde = Date.now();
   clearTimeout(tempoAndamento);
-  tempoAndamento = setTimeout(gravarAndamento, 1000);
+  tempoAndamento = setTimeout(gravarAndamento, Math.max(0, Math.min(1000, PRAZO_ANDAMENTO - (Date.now() - andamentoDesde))));
 }
 function gravarAndamento() {
   clearTimeout(tempoAndamento);
@@ -123,7 +139,16 @@ function gravarAndamento() {
       if (foto === 'apagar') s.delete(hash);
       else if (foto) s.put(foto, hash);
     }
-  }));
+  })).then((ok) => {
+    // falha ao gravar avisa uma vez (até voltar a dar certo): sem isso, a pessoa conta com uma recuperação que não há
+    if (!ok && !avisouFalhaAndamento) {
+      avisouFalhaAndamento = true;
+      avisar('O andamento não pôde ser guardado neste computador: se o programa fechar de repente, as tarjas não ' +
+        'voltam. Salve o PDF assim que puder.', true);
+    }
+    if (ok) avisouFalhaAndamento = false;
+    return ok;
+  });
 }
 function esquecerAndamento(hash) {
   return naFila(() => noAndamento('readwrite', (s) => s.delete(hash)));
@@ -144,12 +169,30 @@ function limparAndamentoVelho() {
     };
   }));
 }
-// andamento guardado que serve para este arquivo (mesmo SHA-256 e mesmo número de páginas)
+// O andamento guardado só é oferecido se servir para este arquivo (mesmo SHA-256 e mesmo número de páginas) e
+// tiver só geometria válida: números finitos e dentro do razoável, cores no formato do programa. Entrada estragada
+// (marcas: null, número que não é número) é descartada, com aviso no console, sem mexer no trabalho da tela
+// (auditoria TL-X05).
+function andamentoValido(a, d) {
+  const num = (x) => typeof x === 'number' && Number.isFinite(x) && Math.abs(x) <= 1e6;
+  const cor = (c) => typeof c === 'string' && /^#[0-9a-f]{6}$/i.test(c);
+  const marca = (m) => !!m && typeof m === 'object' && (m.tipo === 'tarja'
+    ? [m.x, m.y, m.w, m.h].every(num) && cor(m.cor)
+    : m.tipo === 'caneta' && num(m.largura) && m.largura > 0 && cor(m.cor) && Array.isArray(m.pontos) &&
+      m.pontos.length > 0 && m.pontos.every((pt) => Array.isArray(pt) && num(pt[0]) && num(pt[1])));
+  return !!a && typeof a === 'object' && typeof a.quando === 'number' && Number.isFinite(a.quando) && Array.isArray(a.paginas) &&
+    a.paginas.length === d.paginas.length &&
+    a.paginas.every((p) => !!p && typeof p === 'object' && Array.isArray(p.marcas) && p.marcas.every(marca));
+}
 async function andamentoDe(d) {
   await filaAndamento;
   const a = await noAndamento('readonly', (s, guardar) => { s.get(d.hash).onsuccess = (e) => guardar(e.target.result); })
     .catch(() => null);
-  return a && Array.isArray(a.paginas) && a.paginas.length === d.paginas.length ? a : null;
+  if (!a) return null;
+  if (andamentoValido(a, d)) return a;
+  console.warn('andamento guardado estragado ou de outra versão do arquivo: descartado');
+  esquecerAndamento(d.hash);
+  return null;
 }
 async function mostrarAndamento() {
   const d = doc;
@@ -308,18 +351,36 @@ async function carregarArquivo(arquivo) {
   };
 }
 
-// Abre um ou vários arquivos, cada um na sua aba; o primeiro que abrir vai para a tela.
+// Abre um ou vários arquivos, cada um na sua aba; o primeiro que abrir vai para a tela. Pedido durante um salvamento
+// não abre; o que já estava pedido antes termina de ler e entra numa aba, sem ir para a tela no meio do salvamento.
+// Duas aberturas ao mesmo tempo (o botão e arrastar, por exemplo) abriam o mesmo PDF em duas abas ou passavam do
+// limite de arquivos (auditoria TL-X08 e TL-X09): a leitura, que demora, corre solta, mas a entrada na lista é
+// conferida de novo logo antes de entrar, sem espera no meio.
 async function abrirArquivos(lista) {
   if (ocupado()) return;
   let primeiro = null;
+  const limite = () => avisar(`Limite de ${MAX_ARQUIVOS} arquivos abertos: salve e feche alguns antes de abrir mais.`, true);
   for (const arquivo of lista) {
     if (docs.length >= MAX_ARQUIVOS) {
-      avisar(`Limite de ${MAX_ARQUIVOS} arquivos abertos: salve e feche alguns antes de abrir mais.`, true);
+      limite();
       break;
     }
     const novo = await carregarArquivo(arquivo);
     if (!novo) continue;
-    if (!docs.includes(novo)) docs.push(novo);
+    if (!docs.includes(novo)) {
+      // conferido de novo depois da leitura, que leva tempo: repetido ou acima do limite não entra
+      const igual = docs.find((d) => d.hash === novo.hash);
+      if (igual || docs.length >= MAX_ARQUIVOS) {
+        novo.pdf.destroy();
+        if (!igual) {
+          limite();
+          break;
+        }
+        primeiro = primeiro || igual;
+        continue;
+      }
+      docs.push(novo);
+    }
     primeiro = primeiro || novo;
     montarAbas();
   }
@@ -538,9 +599,9 @@ async function mostrar(i) {
   atualizar();
 }
 
-// Com zoom, a página não cabe no palco: ela só conta como vista quando todos os pedaços dela já apareceram na tela,
-// rolando (auditoria de 29/10/2026). A página é dividida numa grade; cada pedaço com o centro à vista fica marcado.
-const GRADE_VISTA = 8;
+// Com zoom, a página não cabe no palco: ela só conta como vista quando a área inteira dela, margens incluídas, já
+// apareceu na tela, rolando (auditoria de 29/10/2026, rodadas 1 e 2). Cada trecho à vista fica guardado, em pontos da
+// página, e a página conta como vista quando esses trechos juntos a cobrem (a mesma conta da cobertura das tarjas).
 function marcarVisto() {
   if (!doc || base.pagina !== atual) return;
   const p = doc.paginas[atual];
@@ -548,15 +609,19 @@ function marcarVisto() {
   const t = el.tela.getBoundingClientRect();
   const c = el.palco.getBoundingClientRect();
   if (t.width <= 0 || t.height <= 0) return;
-  if (!p.vistos || p.vistosZoom !== zoom) { p.vistos = new Uint8Array(GRADE_VISTA * GRADE_VISTA); p.vistosZoom = zoom; }
-  for (let i = 0; i < GRADE_VISTA; i++) {
-    for (let j = 0; j < GRADE_VISTA; j++) {
-      const x = t.left + ((i + 0.5) / GRADE_VISTA) * t.width;
-      const y = t.top + ((j + 0.5) / GRADE_VISTA) * t.height;
-      if (x >= c.left && x <= c.right && y >= c.top && y <= c.bottom) p.vistos[i * GRADE_VISTA + j] = 1;
-    }
-  }
-  if (p.vistos.every((v) => v)) {
+  // a parte do palco onde a página aparece (sem as barras de rolagem)
+  const vx0 = c.left + el.palco.clientLeft, vy0 = c.top + el.palco.clientTop;
+  const vx1 = vx0 + el.palco.clientWidth, vy1 = vy0 + el.palco.clientHeight;
+  const sx = p.w / t.width, sy = p.h / t.height;
+  // 1 pixel de folga para o arredondamento da tela
+  const x0 = Math.max(0, (Math.max(vx0, t.left) - t.left - 1) * sx), x1 = Math.min(p.w, (Math.min(vx1, t.right) - t.left + 1) * sx);
+  const y0 = Math.max(0, (Math.max(vy0, t.top) - t.top - 1) * sy), y1 = Math.min(p.h, (Math.min(vy1, t.bottom) - t.top + 1) * sy);
+  if (x1 <= x0 || y1 <= y0) return;
+  const trecho = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+  p.vistos = p.vistos || [];
+  if (coberta(trecho, p.vistos)) return;
+  p.vistos.push(trecho);
+  if (coberta({ x: 0, y: 0, w: p.w, h: p.h }, p.vistos)) {
     p.vista = true;
     p.vistos = null;
     if (!doc.salvo) agendarAndamento();
@@ -850,7 +915,8 @@ el.tela.addEventListener('pointerdown', (ev) => {
   }
   if (noCarimbo(pt)) {
     const k = caixaCarimbo(document.createElement('canvas').getContext('2d'), atual);
-    arrasto = { tipo: 'carimbo', dx: pt[0] - k.x, dy: pt[1] - k.y, antes: { fx: carimbo.fx, fy: carimbo.fy, pagina: carimbo.pagina } };
+    arrasto = { tipo: 'carimbo', dx: pt[0] - k.x, dy: pt[1] - k.y, antes: { fx: carimbo.fx, fy: carimbo.fy, pagina: carimbo.pagina },
+                doc, pagina: atual };
     el.tela.classList.add('mover');
     desenharTela();
     return;
@@ -1035,7 +1101,14 @@ function termosAtuais() {
 
 function mudouTermos() {
   const n = prepararTermos(el.termos.value).length;
-  el.infoTermos.textContent = n ? `${n} termo(s) na lista.` : 'Nenhum termo.';
+  // o que a lista deixa de fora não some calado (auditoria de 29/10/2026): repetidos, de uma letra só, além do limite
+  // de termos, e o que passa do limite de letras (é cortado)
+  const brutos = el.termos.value.split(/[\r\n;]+/).map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const fora = brutos.length - n;
+  const cortados = brutos.filter((l) => l.length > MAX_LETRAS_TERMO).length;
+  el.infoTermos.textContent = (n ? `${n} termo(s) na lista.` : 'Nenhum termo.') +
+    (fora > 0 ? ` ${fora} linha(s) não entraram (repetidas, com uma letra só ou além do limite de ${MAX_TERMOS} termos).` : '') +
+    (cortados ? ` ${cortados} termo(s) com mais de ${MAX_LETRAS_TERMO} letras foram cortados.` : '');
   if (el.termoGuardar.checked) guardarTermos();
 }
 
@@ -1056,12 +1129,25 @@ async function apagarTudoGuardado() {
   el.termoGuardar.checked = false;
   for (const d of docs) { d.andamentoPendente = false; d.andamentoGuardado = null; }
   el.andamento.hidden = true;
-  try {
-    localStorage.removeItem(GUARDA_TERMOS);
-    localStorage.removeItem(PREF);
-  } catch (e) { console.warn('não apagou o que estava guardado', e); }
-  await apagarTodoAndamento();
-  avisar('Apagado deste computador: escolhas, lista guardada e andamento.');
+  // cada depósito conferido: em computador dividido, dizer "Apagado" sem ter apagado é pior que não ter o botão
+  const falharam = [];
+  for (const [chave, nome] of [[GUARDA_TERMOS, 'a lista guardada'], [PREF, 'as escolhas']]) {
+    try {
+      localStorage.removeItem(chave);
+      if (localStorage.getItem(chave) !== null) throw new Error('continua guardado');
+    } catch (e) {
+      console.warn('não apagou', nome, e);
+      falharam.push(nome);
+    }
+  }
+  if (!(await apagarTodoAndamento())) falharam.push('o andamento');
+  if (falharam.length) {
+    const lista = falharam.length > 1 ? falharam.slice(0, -1).join(', ') + ' e ' + falharam.at(-1) : falharam[0];
+    avisar(`Não foi possível apagar ${lista} deste computador. Feche o Tarja Livre, abra de novo e clique outra vez em ` +
+      '"Apagar tudo"; se continuar, apague os dados de navegação deste arquivo no navegador.', true);
+  } else {
+    avisar('Apagado deste computador: escolhas, lista guardada e andamento.');
+  }
 }
 
 function esquecerTermos() {
@@ -1134,14 +1220,15 @@ function medirTexto(t, pedaco) {
 }
 
 // Campos de formulário e caixas de texto anotadas aparecem na página mas não vêm no texto dela: procura neles à
-// parte e, se achar, sugere cobrir o campo inteiro.
+// parte e, se achar, sugere cobrir o campo inteiro. Devolve null se não conseguir ler: a página fica com a procura
+// incompleta, nunca com "nada encontrado" (auditoria TL-X18).
 async function sugestoesDeAnotacoes(pg, v, tipos, termos) {
   let anots = [];
   try {
     anots = await pg.getAnnotations({ intent: 'print' });
   } catch (e) {
     console.warn('anotações não lidas', e);
-    return [];
+    return null;
   }
   const lista = [];
   for (const a of anots) {
@@ -1246,6 +1333,7 @@ async function lerComOcr(pg, p) {
 async function procurarEm(d, tipos, progresso, termos = null) {
   let semTexto = 0;
   const novas = [];
+  const incompletas = [];   // páginas em que os campos de formulário e as anotações não puderam ser lidos
   const usarOcr = ocrDisponivel() && el.ocrLigado.checked;
   for (let i = 0; i < d.paginas.length; i++) {
     progresso(i);
@@ -1259,7 +1347,9 @@ async function procurarEm(d, tipos, progresso, termos = null) {
       pedacos.push(...(await lerComOcr(pg, d.paginas[i])));
       ocr = true;
     }
-    const achados = [...procurar(pedacos, tipos, medirTexto, termos), ...(await sugestoesDeAnotacoes(pg, v, tipos, termos))];
+    const anotacoes = await sugestoesDeAnotacoes(pg, v, tipos, termos);
+    if (!anotacoes) incompletas.push(i + 1);
+    const achados = [...procurar(pedacos, tipos, medirTexto, termos), ...(anotacoes || [])];
     if (!docs.includes(d)) return null;
     novas.push({ semTexto: pedacos.length === 0, ocr, achados });
   }
@@ -1274,7 +1364,7 @@ async function procurarEm(d, tipos, progresso, termos = null) {
   });
   d.procurou = tipos;
   d.termosProcurados = termos?.lista?.length || 0;  // só a quantidade: os termos são dado pessoal
-  return { total: d.paginas.reduce((n, p) => n + p.sugestoes.length, 0), semTexto };
+  return { total: d.paginas.reduce((n, p) => n + p.sugestoes.length, 0), semTexto, incompletas };
 }
 
 async function procurarArquivos(lista) {
@@ -1290,6 +1380,7 @@ async function procurarArquivos(lista) {
   let total = 0;
   let semTexto = 0;
   const falharam = [];
+  const incompletos = [];
   for (const [n, d] of lista.entries()) {
     if (!docs.includes(d)) continue;
     try {
@@ -1299,7 +1390,11 @@ async function procurarArquivos(lista) {
           ? `Lendo a página ${i + 1} (digitalizada) com OCR... ${arq}`.trim()
           : `Procurando... ${arq}página ${i + 1} de ${d.paginas.length}`;
       }, termos);
-      if (r) { total += r.total; semTexto += r.semTexto; }
+      if (r) {
+        total += r.total;
+        semTexto += r.semTexto;
+        if (r.incompletas.length) incompletos.push(`${d.nome} (página ${r.incompletas.join(', ')})`);
+      }
     } catch (e) {
       // arquivo fechado no meio da procura: não é erro
       if (!docs.includes(d)) continue;
@@ -1315,6 +1410,9 @@ async function procurarArquivos(lista) {
   if (falharam.length) {
     avisar(`A procura em ${falharam.join(', ')} não terminou: tente de novo. Até lá, não conte com as sugestões ` +
       'desse arquivo.', true);
+  } else if (incompletos.length) {
+    avisar(`Procura incompleta: os campos de formulário e as anotações de ${incompletos.join('; ')} não puderam ser ` +
+      `lidos. ${total ? `Há ${total} sugestão(ões) no resto. ` : ''}Confira essas páginas à mão ou procure de novo.`, true);
   } else if (semTexto) {
     avisar(`${semTexto} página(s) sem texto${onde} (talvez digitalizadas): nelas a procura não funciona, tarje à mão.` +
       (ocrDisponivel() ? '' : ' A versão com OCR lê páginas digitalizadas.'), true);
@@ -1546,19 +1644,27 @@ function travarInterface(sim) {
 }
 
 async function salvar() {
-  if (!doc || !el.revisei.checked) return;
+  // um salvar por vez (auditoria TL-X11): o segundo pedido, com o primeiro ainda na caixa ou gerando, não faz nada
+  if (ocupado() || !doc || !el.revisei.checked) return;
   const pendentes = doc.paginas.reduce((n, p) => n + p.sugestoes.length, 0);
   if (pendentes && !confirm(`Ainda há ${pendentes} sugestão(ões) não aceita(s). Salvar mesmo assim?`)) return;
-  // sem a caixa "Salvar como" segue direto (sem esperar nada), e a interface trava já no clique
+  // o salvar fica preso ao documento que o começou (auditoria de 29/10/2026: com a caixa "Salvar como" aberta, trocar
+  // de aba fazia sair o outro documento com o nome deste). A interface trava já no clique, antes da caixa, e trava
+  // também o teclado (Tab): mudar o carimbo ou o "Revisei" no meio deixaria páginas diferentes entre si.
+  const origem = doc;
+  const conferirOrigem = () => { if (doc !== origem) throw new ErroTroca(); };
+  document.body.classList.add('ocupado');
+  travarInterface(true);
   const destino = typeof window.showSaveFilePicker === 'function' ? await escolherDestino() : null;
-  if (destino === 'cancelado') {
-    avisar('Salvamento cancelado: nada foi gravado.');
+  if (destino === 'cancelado' || doc !== origem) {
+    document.body.classList.remove('ocupado');
+    travarInterface(false);
+    avisar(destino === 'cancelado' ? 'Salvamento cancelado: nada foi gravado.'
+      : 'O documento na tela mudou durante o salvamento: nada foi gravado. Salve de novo.', destino !== 'cancelado');
+    atualizar();
     return;
   }
   const formato = el.formato.value === 'jpeg' ? 'jpeg' : 'png';
-  document.body.classList.add('ocupado');
-  // trava também o teclado (Tab): mudar o carimbo ou o "Revisei" no meio deixaria páginas diferentes entre si
-  travarInterface(true);
   el.progresso.hidden = false;
   el.btSalvar.disabled = true;
   let pdf = null;
@@ -1585,6 +1691,7 @@ async function salvar() {
       ctx.fillRect(0, 0, c.width, c.height);
       const pg = await doc.pdf.getPage(i + 1);
       await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: pg.getViewport({ scale: s }) }).promise;
+      conferirOrigem();
       desenharMarcas(ctx, i, s, false);
       const img = await blobEmBytes(c, 'image/' + formato, 0.88);
       const orient = p.w > p.h ? 'l' : 'p';
@@ -1599,24 +1706,28 @@ async function salvar() {
     el.btSalvar.textContent = 'Conferindo o PDF gerado...';
     const antes = await contarTexto(new Uint8Array(pdf.output('arraybuffer')), doc.paginas.length);
     if (antes !== 0) throw new ErroConferencia(antes);
+    conferirOrigem();
     if (el.folha.checked) folhaConferencia(pdf, formato, quando, antes);
     pdf.setProperties({ title: 'Documento tarjado', subject: '', author: '', keywords: '', creator: 'Tarja Livre ' + VERSAO });
     const bytes = new Uint8Array(pdf.output('arraybuffer'));
     const depois = await contarTexto(bytes, doc.paginas.length);
     if (depois !== 0) throw new ErroConferencia(depois);
     const hashSaida = await sha256(bytes);
+    conferirOrigem();
     const nomeFinal = await gravar(destino, bytes);
-    doc.salvo = true;
-    esquecerAndamento(doc.hash);
-    doc.hashSaida = hashSaida;
-    doc.conferencia = `Conferido: o PDF salvo foi lido de novo e tem 0 caracteres de texto nas ${doc.paginas.length} página(s) refeitas.`;
+    origem.salvo = true;
+    esquecerAndamento(origem.hash);
+    origem.hashSaida = hashSaida;
+    origem.conferencia = `Conferido: o PDF salvo foi lido de novo e tem 0 caracteres de texto nas ${origem.paginas.length} página(s) refeitas.`;
     el.barraProgresso.style.width = '100%';
     const faltam = docs.filter((d) => !d.hashSaida).length;
     avisar('PDF salvo como ' + nomeFinal + '. Abra e confira antes de compartilhar.' +
       (faltam ? ` Falta(m) ${faltam} arquivo(s).` : ''), true);
   } catch (e) {
     console.warn('falha ao salvar', e);
-    avisar(e instanceof ErroConferencia
+    avisar(e instanceof ErroTroca
+      ? 'O documento na tela mudou durante o salvamento: nada foi gravado. Salve de novo.'
+      : e instanceof ErroConferencia
       ? `O PDF gerado ainda tinha ${e.letras} caractere(s) de texto: por segurança, nada foi salvo. Relate o problema.`
       : e instanceof ErroGravar
         ? 'Não foi possível gravar o PDF na pasta escolhida (sem permissão ou disco cheio). Tente outra pasta.'
@@ -1631,6 +1742,7 @@ async function salvar() {
 }
 
 class ErroGravar extends Error {}
+class ErroTroca extends Error {}
 
 // Em computador lento um PDF grande leva minutos: a partir da 3ª página, a média por página dá o tempo que falta
 // (o "travou?" vira "faltam cerca de 6 min").

@@ -7,7 +7,7 @@ O programa é uma página HTML única, sem servidor e sem acesso à rede. `scrip
 e as bibliotecas de `vendor/` em `dist/Tarja Livre.html`:
 
 - os scripts entram escritos dentro da página, e a `Content-Security-Policy` libera cada um pelo seu SHA-256
-  (`default-src 'none'`, `connect-src 'none'`, `img-src 'none'`, sem `unsafe-inline` nem `unsafe-eval`);
+  (`default-src 'none'`, `connect-src 'none'`, `img-src data:` (só o ícone, embutido), sem `unsafe-inline` nem `unsafe-eval`);
 - o worker do PDF.js vai como texto e vira um worker `blob:` na hora, porque página aberta direto do disco
   (`file://`) não pode carregar módulo nem worker de módulo;
 - o texto completo das licenças entra na janela **Ajuda e Sobre**.

@@ -38,6 +38,11 @@ pub struct Destino {
     pub area: PathBuf,
     pub dados: PathBuf,
     pub chave: String,
+    /// para onde vai o exe que não pode ser apagado (aberto), na ordem: a pasta temporária e, se ela estiver em outro
+    /// disco (o Windows não move entre discos), uma pasta ao lado da do programa
+    pub sobras: Vec<PathBuf>,
+    /// quantas vezes tentar tirar o exe do lugar, de 0,25 s em 0,25 s
+    pub tentativas: u32,
 }
 
 impl Destino {
@@ -49,6 +54,8 @@ impl Destino {
             area: pasta_conhecida(&FOLDERID_DESKTOP)?,
             dados: local.join(DADOS),
             chave: CHAVE.to_string(),
+            sobras: vec![std::env::temp_dir(), local.join("Programs").join(PASTA_SOBRAS)],
+            tentativas: 40,
         })
     }
     fn exe(&self) -> PathBuf { self.programa.join(EXE) }
@@ -72,7 +79,7 @@ pub fn ao_abrir() -> Seguir {
     if std::env::args().any(|a| a == "--sem-instalar") { return Seguir::Abrir; }
     let Ok(atual) = std::env::current_exe() else { return Seguir::Abrir };
     let Some(destino) = Destino::da_conta() else { return Seguir::Abrir };
-    limpar_sobras();
+    limpar_sobras(&destino);
     if mesmo_arquivo(&atual, &destino.exe()) { return Seguir::Abrir; }
     let instalada = ler_texto(HKCU, &destino.chave, "DisplayVersion");
     let pergunta = match instalada.as_deref() {
@@ -130,10 +137,42 @@ pub fn instalar(destino: &Destino, origem: &Path) -> io::Result<()> {
     if !mesmo_arquivo(origem, &exe) {
         let novo = destino.programa.join(format!("{EXE}.novo"));
         fs::copy(origem, &novo)?;
-        if exe.exists() && fs::remove_file(&exe).is_err() {
-            fs::rename(&exe, nome_de_sobra())?;
+        // o antigo vai para um nome de reserva na mesma pasta (o Windows deixa renomear até o exe aberto) e só sai
+        // depois que o novo está confirmado no lugar; se a troca falhar, a reserva volta e a instalação continua
+        // inteira (auditoria da rc.1, N-C2). Sempre fica ao menos uma cópia que abre (auditoria da rc.2, N-R1).
+        let reserva = destino.programa.join(format!("{EXE}.antigo"));
+        // recuperação pendente: uma troca anterior parou com o exe fora do lugar e só a reserva. Ela volta antes de
+        // tudo; nunca é apagada nesse estado.
+        if !exe.exists() && reserva.exists() {
+            if let Err(e) = restaurar(&reserva, &exe) {
+                let _ = fs::remove_file(&novo);
+                return Err(sem_volta(e, &reserva));
+            }
         }
-        fs::rename(&novo, &exe)?;
+        // com o exe no lugar, uma reserva que sobrou de antes é só sobra
+        if reserva.exists() { let _ = tirar_do_caminho(&reserva, destino); }
+        let tinha = exe.exists();
+        if tinha {
+            if let Err(e) = mover_com_tentativas(&exe, &reserva, destino.tentativas) {
+                let _ = fs::remove_file(&novo);
+                return Err(e);
+            }
+        }
+        let tamanho = fs::metadata(&novo).map(|m| m.len())?;
+        let trocou = promover(&novo, &exe)
+            .and_then(|()| if fs::metadata(&exe).map(|m| m.len()).ok() == Some(tamanho) { Ok(()) }
+                           else { Err(io::Error::other("o programa novo não ficou inteiro no lugar")) });
+        if let Err(e) = trocou {
+            let _ = fs::remove_file(&novo);
+            if tinha {
+                let _ = fs::remove_file(&exe);   // o que entrou pela metade
+                if let Err(v) = restaurar(&reserva, &exe) {
+                    return Err(sem_volta(io::Error::other(format!("{e}; e a volta do anterior também falhou: {v}")), &reserva));
+                }
+            }
+            return Err(e);
+        }
+        if tinha { let _ = tirar_do_caminho(&reserva, destino); }
     }
     for (nome, dados) in ARQUIVOS {
         fs::write(destino.programa.join(nome), dados)?;
@@ -165,19 +204,23 @@ pub fn desinstalar(destino: &Destino, atual: &Path, silencioso: bool) -> io::Res
             _ => return Ok(()),
         }
     };
+    // primeiro o exe, que é o que pode falhar (o antivírus segura por instantes o exe recém-aberto): se não sair do
+    // lugar, nada mais é mexido e a instalação continua inteira (auditoria de 29/10/2026, rodada 2)
+    let _ = atual;
+    if let Err(e) = tirar_do_caminho(&destino.exe(), destino) {
+        if !silencioso {
+            perguntar(&format!("Não foi possível remover o Tarja Livre agora: o arquivo do programa está em uso. Nada \
+                foi mexido. Feche o Tarja Livre, espere alguns segundos e tente de novo.\n\n({e})"), 0x10);
+        }
+        return Err(e);
+    }
     for p in [destino.menu.join(ATALHO), destino.area.join(ATALHO)] {
         let _ = fs::remove_file(p);
     }
     apagar_chave(HKCU, &destino.chave);
     for (nome, _) in ARQUIVOS { let _ = fs::remove_file(destino.programa.join(nome)); }
-    // o programa em uso não pode ser apagado, mas pode ser movido: vai para a pasta temporária
-    let exe = destino.exe();
-    if mesmo_arquivo(atual, &exe) {
-        fs::rename(&exe, nome_de_sobra())?;
-    } else {
-        let _ = fs::remove_file(&exe);
-    }
     let _ = fs::remove_file(destino.programa.join(format!("{EXE}.novo")));
+    let _ = tirar_do_caminho(&destino.programa.join(format!("{EXE}.antigo")), destino);
     // só some se ficou vazia: nada que o usuário tenha posto lá é apagado
     let _ = fs::remove_dir(&destino.programa);
     // a pasta de dados é só do Tarja (o WebView2 dele e o que a página guardou)
@@ -197,22 +240,88 @@ pub fn desinstalar(destino: &Destino, atual: &Path, silencioso: bool) -> io::Res
     Ok(())
 }
 
-// cópias antigas do programa, movidas para a pasta temporária por uma atualização ou desinstalação com ele aberto
+// cópias antigas do programa, movidas por uma atualização ou desinstalação com ele aberto
 const PREFIXO_SOBRA: &str = "TarjaLivre-antigo-";
+const PASTA_SOBRAS: &str = "Tarja Livre (cópias antigas, pode apagar)";
 
-fn nome_de_sobra() -> PathBuf {
+fn nome_de_sobra() -> String {
     let n = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_nanos()).unwrap_or(0);
-    std::env::temp_dir().join(format!("{PREFIXO_SOBRA}{}-{n}.exe", std::process::id()))
+    format!("{PREFIXO_SOBRA}{}-{n}.exe", std::process::id())
 }
 
-fn limpar_sobras() {
-    let Ok(lista) = fs::read_dir(std::env::temp_dir()) else { return };
-    for item in lista.flatten() {
-        let nome = item.file_name().to_string_lossy().to_string();
-        if nome.starts_with(PREFIXO_SOBRA) && nome.ends_with(".exe") {
-            let _ = fs::remove_file(item.path());      // a que ainda estiver aberta fica para a próxima
+// nos testes, a troca do exe novo pelo nome instalado pode falhar de propósito
+#[cfg(test)]
+thread_local! { static FALHAR_TROCA: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+
+fn promover(novo: &Path, exe: &Path) -> io::Result<()> {
+    #[cfg(test)]
+    if FALHAR_TROCA.with(|f| f.get()) { return Err(io::Error::from(io::ErrorKind::PermissionDenied)); }
+    fs::rename(novo, exe)
+}
+
+// nos testes, a volta da reserva também pode falhar de propósito
+#[cfg(test)]
+thread_local! { static FALHAR_VOLTA: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+
+fn restaurar(reserva: &Path, exe: &Path) -> io::Result<()> {
+    #[cfg(test)]
+    if FALHAR_VOLTA.with(|f| f.get()) { return Err(io::Error::from(io::ErrorKind::PermissionDenied)); }
+    fs::rename(reserva, exe)
+}
+
+// erro de quando a cópia anterior não voltou ao lugar: diz onde ela está, para a pessoa (ou o suporte) recuperar
+fn sem_volta(e: io::Error, reserva: &Path) -> io::Error {
+    io::Error::other(format!("{e}. O programa anterior continua guardado em {}: renomeie para {EXE} para usar de \
+        novo.", reserva.display()))
+}
+
+/// Renomeia com novas tentativas, de 0,25 s em 0,25 s (o antivírus segura por instantes o exe recém-aberto).
+fn mover_com_tentativas(de: &Path, para: &Path, tentativas: u32) -> io::Result<()> {
+    let mut ultimo = io::Error::other("não tentou");
+    for vez in 0..tentativas.max(1) {
+        match fs::rename(de, para) {
+            Ok(()) => return Ok(()),
+            Err(e) => ultimo = e,
+        }
+        if vez + 1 < tentativas { std::thread::sleep(std::time::Duration::from_millis(250)); }
+    }
+    Err(ultimo)
+}
+
+/// Tira o exe do caminho: apaga, se ninguém o usa; senão (aberto), move para uma das pastas de sobras do mesmo disco.
+/// Tenta de novo por alguns segundos, porque o antivírus costuma segurar por instantes o exe que acabou de abrir.
+fn tirar_do_caminho(exe: &Path, destino: &Destino) -> io::Result<()> {
+    let mut ultimo = io::Error::other("não tentou");
+    for vez in 0..destino.tentativas.max(1) {
+        if !exe.exists() { return Ok(()); }
+        match fs::remove_file(exe) {
+            Ok(()) => return Ok(()),
+            Err(e) => ultimo = e,
+        }
+        for pasta in &destino.sobras {
+            if fs::create_dir_all(pasta).is_err() { continue; }
+            match fs::rename(exe, pasta.join(nome_de_sobra())) {
+                Ok(()) => return Ok(()),
+                Err(e) => ultimo = e,
+            }
+        }
+        if vez + 1 < destino.tentativas { std::thread::sleep(std::time::Duration::from_millis(250)); }
+    }
+    Err(ultimo)
+}
+
+fn limpar_sobras(destino: &Destino) {
+    for pasta in &destino.sobras {
+        let Ok(lista) = fs::read_dir(pasta) else { continue };
+        for item in lista.flatten() {
+            let nome = item.file_name().to_string_lossy().to_string();
+            if nome.starts_with(PREFIXO_SOBRA) && nome.ends_with(".exe") {
+                let _ = fs::remove_file(item.path());      // a que ainda estiver aberta fica para a próxima
+            }
         }
     }
+    // a pasta ao lado da do programa só existe se precisou; vazia, some
+    if let Some(ao_lado) = destino.sobras.get(1) { let _ = fs::remove_dir(ao_lado); }
 }
 
 fn registrar(destino: &Destino, exe: &Path) -> io::Result<()> {
@@ -410,6 +519,16 @@ mod testes {
         assert!(mais_nova("1.2.0", "versão estranha"));
     }
 
+    #[link(name = "advapi32")]
+    extern "system" {
+        fn RegDeleteKeyW(chave: isize, sub: *const u16) -> i32;
+    }
+    // cada teste apaga só a própria chave (rodam ao mesmo tempo); a de cima some quando a última sai
+    fn apagar_teste(d: &Destino) {
+        apagar_chave(HKCU, &d.chave);
+        unsafe { RegDeleteKeyW(HKCU, largo(r"Software\TarjaLivreTeste").as_ptr()) };
+    }
+
     fn destino_de_teste(nome: &str) -> Destino {
         let base = std::env::temp_dir().join(format!("tarja-teste-instalacao-{nome}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&base);
@@ -419,6 +538,8 @@ mod testes {
             area: base.join("Area"),
             dados: base.join(DADOS),
             chave: format!(r"Software\TarjaLivreTeste\{nome}-{}", std::process::id()),
+            sobras: vec![base.join("temp"), base.join("Programs").join(PASTA_SOBRAS)],
+            tentativas: 4,
         }
     }
 
@@ -456,7 +577,124 @@ mod testes {
         let sobrou: Vec<_> = fs::read_dir(&d.programa).unwrap().flatten().map(|e| e.file_name()).collect();
         assert_eq!(sobrou, vec![std::ffi::OsString::from("meu.pdf")]);
         assert!(d.dados.join("guardado").exists());
-        apagar_chave(HKCU, r"Software\TarjaLivreTeste");
+        apagar_teste(&d);
+        let _ = fs::remove_dir_all(base);
+    }
+
+    // o exe instalado aberto (aqui, uma cópia do ping.exe do Windows rodando com o nome do Tarja) e a pasta temporária
+    // em "outro disco" (aqui, um caminho onde não dá para criar pasta): ele vai para a pasta ao lado da do programa
+    #[test]
+    fn desinstala_com_o_exe_aberto_e_temp_noutro_disco() {
+        let mut d = destino_de_teste("aberto");
+        let base = d.programa.parent().unwrap().parent().unwrap().to_path_buf();
+        let origem = base.join("baixado").join("TarjaLivre-9.9.9.exe");
+        fs::create_dir_all(origem.parent().unwrap()).unwrap();
+        fs::write(&origem, b"programa").unwrap();
+        instalar(&d, &origem).unwrap();
+        // a "pasta temporária" fica embaixo de um arquivo: não dá para criá-la, como um disco que não aceita a mudança
+        fs::write(base.join("arquivo"), b"x").unwrap();
+        d.sobras[0] = base.join("arquivo").join("temp");
+        let ping = std::path::Path::new(&std::env::var("SystemRoot").unwrap()).join("System32").join("PING.EXE");
+        fs::copy(&ping, d.exe()).unwrap();
+        let mut aberto = std::process::Command::new(d.exe()).args(["-n", "30", "127.0.0.1"])
+            .stdout(std::process::Stdio::null()).spawn().unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(300));
+        desinstalar(&d, &d.exe(), true).unwrap();
+        assert!(!d.exe().exists(), "o exe aberto saiu da pasta do programa");
+        assert!(ler_texto(HKCU, &d.chave, "DisplayVersion").is_none());
+        let sobras: Vec<_> = fs::read_dir(&d.sobras[1]).unwrap().flatten().collect();
+        assert_eq!(sobras.len(), 1, "a cópia aberta foi para a pasta ao lado, no mesmo disco");
+        let _ = aberto.kill();
+        let _ = aberto.wait();
+        limpar_sobras(&d);
+        assert!(!d.sobras[1].exists(), "na próxima vez, a cópia antiga e a pasta somem");
+        apagar_teste(&d);
+        let _ = fs::remove_dir_all(base);
+    }
+
+    // auditoria da rc.1, N-C2: a troca do exe novo pelo nome instalado falha depois que o antigo já saiu do lugar.
+    // Antes, a pasta ficava sem o exe; agora o antigo volta, o .novo some e a versão registrada continua a mesma.
+    #[test]
+    fn troca_que_falha_volta_o_antigo() {
+        let d = destino_de_teste("troca");
+        let base = d.programa.parent().unwrap().parent().unwrap().to_path_buf();
+        let origem = base.join("baixado").join("TarjaLivre-9.9.9.exe");
+        fs::create_dir_all(origem.parent().unwrap()).unwrap();
+        fs::write(&origem, b"programa antigo").unwrap();
+        instalar(&d, &origem).unwrap();
+        fs::write(&origem, b"programa novo").unwrap();
+        FALHAR_TROCA.with(|f| f.set(true));
+        assert!(instalar(&d, &origem).is_err(), "a troca falhou e a atualização avisa");
+        FALHAR_TROCA.with(|f| f.set(false));
+        assert_eq!(fs::read(d.exe()).unwrap(), b"programa antigo", "o exe antigo voltou para o lugar");
+        assert!(!d.programa.join(format!("{EXE}.novo")).exists() && !d.programa.join(format!("{EXE}.antigo")).exists());
+        assert_eq!(ler_texto(HKCU, &d.chave, "DisplayVersion").as_deref(), Some(VERSAO), "continua em Aplicativos instalados");
+        // sem a falha, a mesma atualização dá certo e não deixa a reserva
+        instalar(&d, &origem).unwrap();
+        assert_eq!(fs::read(d.exe()).unwrap(), b"programa novo");
+        assert!(!d.programa.join(format!("{EXE}.antigo")).exists());
+        desinstalar(&d, &d.exe(), true).unwrap();
+        apagar_teste(&d);
+        let _ = fs::remove_dir_all(base);
+    }
+
+    // auditoria da rc.2, N-R1: a troca anterior parou com o exe fora do lugar e só a reserva. Antes, a nova tentativa
+    // apagava a reserva primeiro; com a troca falhando de novo, não sobrava cópia nenhuma.
+    #[test]
+    fn retomada_nunca_fica_sem_copia() {
+        let d = destino_de_teste("retomada");
+        let base = d.programa.parent().unwrap().parent().unwrap().to_path_buf();
+        let origem = base.join("baixado").join("TarjaLivre-9.9.9.exe");
+        fs::create_dir_all(origem.parent().unwrap()).unwrap();
+        fs::write(&origem, b"programa antigo").unwrap();
+        instalar(&d, &origem).unwrap();
+        let reserva = d.programa.join(format!("{EXE}.antigo"));
+        let copia_valida = || [d.exe(), reserva.clone()].iter().any(|p| fs::read(p).ok().as_deref() == Some(b"programa antigo"));
+        // estado de uma troca interrompida: o exe fora do lugar, só a reserva
+        fs::rename(d.exe(), &reserva).unwrap();
+        fs::write(&origem, b"programa novo").unwrap();
+        FALHAR_TROCA.with(|f| f.set(true));
+        for vez in 1..=3 {
+            assert!(instalar(&d, &origem).is_err(), "tentativa {vez}: a troca falhou e a atualização avisa");
+            assert!(copia_valida(), "tentativa {vez}: sobrou ao menos uma cópia que abre");
+            assert_eq!(fs::read(d.exe()).unwrap(), b"programa antigo", "tentativa {vez}: o anterior voltou ao lugar");
+        }
+        FALHAR_TROCA.with(|f| f.set(false));
+        // a volta da reserva falha: o erro diz onde está a cópia, e ela fica
+        fs::rename(d.exe(), &reserva).unwrap();
+        FALHAR_VOLTA.with(|f| f.set(true));
+        let erro = instalar(&d, &origem).unwrap_err().to_string();
+        FALHAR_VOLTA.with(|f| f.set(false));
+        assert!(erro.contains(&reserva.display().to_string()), "o erro diz o caminho da cópia: {erro}");
+        assert!(copia_valida());
+        // sem falha: a retomada traz a reserva de volta e a troca vai até o fim, sem sobrar reserva
+        instalar(&d, &origem).unwrap();
+        assert_eq!(fs::read(d.exe()).unwrap(), b"programa novo");
+        assert!(!reserva.exists() && !d.programa.join(format!("{EXE}.novo")).exists());
+        desinstalar(&d, &d.exe(), true).unwrap();
+        apagar_teste(&d);
+        let _ = fs::remove_dir_all(base);
+    }
+
+    // o exe preso (aberto por outro programa sem deixar mover nem apagar): a desinstalação falha sem mexer em nada
+    #[test]
+    fn exe_preso_nao_deixa_desinstalacao_pela_metade() {
+        use std::os::windows::fs::OpenOptionsExt;
+        let d = destino_de_teste("preso");
+        let base = d.programa.parent().unwrap().parent().unwrap().to_path_buf();
+        let origem = base.join("baixado").join("TarjaLivre-9.9.9.exe");
+        fs::create_dir_all(origem.parent().unwrap()).unwrap();
+        fs::write(&origem, b"programa").unwrap();
+        instalar(&d, &origem).unwrap();
+        let preso = fs::OpenOptions::new().read(true).share_mode(0).open(d.exe()).unwrap();
+        assert!(desinstalar(&d, &d.exe(), true).is_err(), "com o exe preso, a desinstalação avisa que falhou");
+        assert!(d.exe().exists() && d.programa.join("LICENSE").exists(), "o programa continua inteiro");
+        assert!(d.menu.join(ATALHO).exists() && d.area.join(ATALHO).exists(), "os atalhos continuam");
+        assert_eq!(ler_texto(HKCU, &d.chave, "DisplayVersion").as_deref(), Some(VERSAO), "continua em Aplicativos instalados");
+        drop(preso);
+        desinstalar(&d, &d.exe(), true).unwrap();
+        assert!(!d.exe().exists() && ler_texto(HKCU, &d.chave, "DisplayVersion").is_none(), "solto, desinstala");
+        apagar_teste(&d);
         let _ = fs::remove_dir_all(base);
     }
 }

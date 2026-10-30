@@ -9,17 +9,22 @@ arquivo (file://) é barrado pelo navegador.
 
 Uso: python scripts/montar.py [--release]
      --release também gera dist/release/ com TarjaLivre-<versão>.html, TarjaLivre-OCR-<versão>.html,
-     TarjaLivre-<versão>.exe (janela própria, portátil, com OCR; precisa do Rust), Criar-atalho-TarjaLivre.cmd (com o
-     ícone docs/img/icone.ico embutido) e SHA256SUMS.txt, os anexos da release. --sem-exe pula o exe.
+     Instalar-TarjaLivre-<versão>.zip (o exe de janela própria, com OCR, que se instala sozinho, mais a LICENSE, os
+     avisos de terceiros e o LEIA-ME; precisa do Rust), Criar-atalho-TarjaLivre.cmd (com o ícone docs/img/icone.ico
+     embutido) e SHA256SUMS.txt, os anexos da release. O exe solto fica em dist/, só para os testes. --sem-exe pula o
+     exe e o zip.
 """
 
 import base64
+import os
 import hashlib
+import json
 import html as html_lib
 import re
 import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -177,8 +182,40 @@ def exe(saida_ocr: Path, versao: str) -> Path:
     shutil.copyfile(saida_ocr, app / "web" / "index.html")
     (app / "icons").mkdir(exist_ok=True)
     shutil.copyfile(RAIZ / "docs" / "img" / "icone.ico", app / "icons" / "icon.ico")
-    subprocess.run(["cargo", "build", "--release", "--locked"], cwd=app, check=True)
-    return app / "target" / "release" / "TarjaLivre.exe"
+    # sem caminho do PC dentro do exe (as mensagens de erro do Rust levam o caminho dos fontes: a pasta da pessoa e
+    # a do projeto). CARGO_ENCODED_RUSTFLAGS (separado por \x1f) porque o caminho do projeto tem espaço.
+    trocas = [f"--remap-path-prefix={RAIZ}=.", f"--remap-path-prefix={Path.home()}=~"]
+    ambiente = {**os.environ, "CARGO_ENCODED_RUSTFLAGS": "\x1f".join(trocas)}
+    subprocess.run(["cargo", "build", "--release", "--locked"], cwd=app, check=True, env=ambiente)
+    feito = app / "target" / "release" / "TarjaLivre.exe"
+    dados = feito.read_bytes()
+    for pista in (str(Path.home()), str(RAIZ), str(Path.home()).replace("\\", "/"), str(RAIZ).replace("\\", "/")):
+        for forma in (pista.encode("utf-8"), pista.encode("utf-16-le")):
+            if forma.lower() in dados.lower():
+                sys.exit(f"o exe ainda leva o caminho {pista}: confira o --remap-path-prefix")
+    return feito
+
+
+def zip_instalar(feito: Path, destino: Path, versao: str) -> None:
+    """Instalar-TarjaLivre-<versão>.zip, igual nos quatro programas (decisão do professor, 29/10/2026): nenhum exe solto
+    na release. Sem data nem dono da máquina: cada arquivo leva a data da versão no CHANGELOG, e o mesmo exe dá o mesmo
+    zip nesta máquina, a cada montagem. Não é byte a byte igual em outra: o exe não é reproduzível entre máquinas, e a
+    compressão (deflate) depende da versão do zlib do Python que monta (auditoria da rc.2)."""
+    data = re.search(rf"^## \[{re.escape(versao)}\] - (\d{{4}})-(\d\d)-(\d\d)", ler(RAIZ / "CHANGELOG.md"), flags=re.M)
+    if not data:
+        sys.exit(f"CHANGELOG.md sem a data da versão {versao}")
+    quando = tuple(int(x) for x in data.groups()) + (12, 0, 0)
+    leia = ler(SRC / "LEIA-ME-instalar.txt").replace("__VERSAO__", versao).replace("\r\n", "\n").replace("\n", "\r\n")
+    conteudo = [(f"TarjaLivre-{versao}.exe", feito.read_bytes()),
+                ("LEIA-ME.txt", "\ufeff".encode("utf-8") + leia.encode("utf-8")),   # BOM: o Bloco de Notas antigo lê certo
+                ("LICENSE", (RAIZ / "LICENSE").read_bytes()),
+                ("THIRD-PARTY-NOTICES.md", (RAIZ / "THIRD-PARTY-NOTICES.md").read_bytes())]
+    with zipfile.ZipFile(destino, "w") as z:
+        for nome, dados in conteudo:
+            info = zipfile.ZipInfo(nome, quando)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            z.writestr(info, dados, compresslevel=9)
 
 
 def release(saida: Path, saida_ocr: Path) -> Path:
@@ -193,8 +230,10 @@ def release(saida: Path, saida_ocr: Path) -> Path:
         shutil.copyfile(origem, pasta / nome)
         linhas.append(f"{hashlib.sha256((pasta / nome).read_bytes()).hexdigest()}  {nome}\n")
     if "--sem-exe" not in sys.argv:
-        nome = f"TarjaLivre-{versao}.exe"
-        shutil.copyfile(exe(saida_ocr, versao), pasta / nome)
+        feito = exe(saida_ocr, versao)
+        shutil.copyfile(feito, saida.parent / f"TarjaLivre-{versao}.exe")   # para os testes, fora da release
+        nome = f"Instalar-TarjaLivre-{versao}.zip"
+        zip_instalar(feito, pasta / nome, versao)
         linhas.append(f"{hashlib.sha256((pasta / nome).read_bytes()).hexdigest()}  {nome}\n")
     atalho = pasta / "Criar-atalho-TarjaLivre.cmd"
     atalho.write_bytes(criar_atalho().encode("utf-8"))
@@ -210,3 +249,15 @@ if __name__ == "__main__":
     if "--release" in sys.argv:
         pasta = release(*saidas)
         print(f"{pasta.relative_to(RAIZ)}: " + ", ".join(sorted(p.name for p in pasta.iterdir())))
+        # de que commit saiu esta montagem, com o que estava sem commit (vai para o manifesto do pacote da auditoria)
+        git = lambda *a: subprocess.run(["git", "-C", str(RAIZ), *a], capture_output=True, text=True).stdout.strip()
+        montagem = {
+            "versao": re.search(r"VERSAO = '([^']+)'", ler(SRC / "versao.js")).group(1),
+            "commit": git("rev-parse", "HEAD"),
+            "sem_commit": [l[3:] for l in subprocess.run(["git", "-C", str(RAIZ), "status", "--porcelain"], capture_output=True,
+                           text=True).stdout.splitlines() if l[3:].split("/")[0] not in ("dist", "files", "para-virustotal", "pacote")],
+            "arquivos": {l.split("  ", 1)[1]: l.split("  ", 1)[0] for l in (pasta / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines()},
+        }
+        (pasta.parent / "MONTAGEM.json").write_text(json.dumps(montagem, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if montagem["sem_commit"]:
+            print("atenção: montado com mudanças sem commit: " + ", ".join(montagem["sem_commit"]))

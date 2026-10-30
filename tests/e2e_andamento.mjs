@@ -87,8 +87,14 @@ for (let i = 0; i < 8; i++) {
   await n.ate(`document.getElementById('tela').dataset.pagina === '${i + 1}'`, 'ver a página ' + (i + 1));
 }
 await n.clicar('revisei');
+// queda no meio do salvamento, sem depender do tempo: o lugar escolhido na caixa "Salvar como" (substituta) nunca
+// termina de abrir para gravar, e o salvamento fica parado ali, já com o PDF gerado e conferido, até a queda. Antes era
+// o processador freado e uma espera fixa; com o PC parado, o PDF pequeno terminava de salvar antes do kill e o teste
+// falhava por isso (29/10/2026, noite).
+await n.js(`window.showSaveFilePicker = async () => ({ name: 'preso.pdf', createWritable: () => new Promise(() => {}) })`);
 await n.clicar('btSalvar');
-await espera(400);
+await n.ate(`document.getElementById('btSalvar').textContent === 'Conferindo o PDF gerado...'`, 'chegar à conferência', 60000);
+await espera(1500);
 assert.ok(await n.js(`document.body.classList.contains('ocupado')`), 'salvamento em andamento na hora da queda');
 await n.matar();
 n = await abrir();
