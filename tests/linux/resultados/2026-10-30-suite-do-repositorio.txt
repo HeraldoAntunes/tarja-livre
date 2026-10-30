@@ -1,0 +1,18 @@
+# python -X utf8 tests/todos.py, Ubuntu 24.04.5, Node 22.22.0, Python 3.13.17, 30/10/2026
+# os 9 e2e param em 'Microsoft Edge não encontrado' (procuram o Edge no caminho do Windows); ver docs/LINUX.md
+== rápidos: passou em 1 s
+== e2e: FALHOU (saída 1) em 0 s
+== e2e_pdf_teste: FALHOU (saída 1) em 0 s
+== e2e_varios: FALHOU (saída 1) em 0 s
+== e2e_ocr: FALHOU (saída 1) em 0 s
+== e2e_andamento: FALHOU (saída 1) em 0 s
+== e2e_auditoria: FALHOU (saída 1) em 0 s
+== e2e_auditoria2: FALHOU (saída 1) em 0 s
+== e2e_export_real: FALHOU (saída 1) em 0 s
+== e2e_telas: FALHOU (saída 1) em 0 s
+== ampliada (18 cenários): passou
+== regressões antigas (27): passou
+== exportação real do auditor: passou
+== auditoria externa: passou em 52 s
+2 de 11 passaram; falharam: e2e, e2e_pdf_teste, e2e_varios, e2e_ocr, e2e_andamento, e2e_auditoria, e2e_auditoria2, e2e_export_real, e2e_telas
+saida 1

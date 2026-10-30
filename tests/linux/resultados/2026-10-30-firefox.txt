@@ -1,0 +1,16 @@
+navegador: firefox (firefox/136.0), sem janela
+HTML: aaebc730624fb7cd34c3ce75906d3cf2bad9ef74d1e64b706250c4cfd6ade8dd  /home/user/tarja-livre/dist/Tarja Livre.html
+OCR:  63833d056d91b9447c17d52580a7c65d23817d6db836f5472869e1dd4999608e  /home/user/tarja-livre/dist/Tarja Livre com OCR.html
+PASSOU  fluxo (6 s): 4 sugestões, 1 tarja à mão, salvo 43339 bytes sem os dados
+PASSOU  ab (6 s): abas: A.pdf, B.pdf; na tela depois de abrir: B.pdf; salvo A-tarjado.pdf com 2 páginas + folha e o SHA-256 de A
+PASSOU  ab-rapido (6 s): abas: B.pdf, A.pdf; na tela depois de abrir: A.pdf; salvo A-tarjado.pdf com 2 páginas + folha e o SHA-256 de A
+PASSOU  recuperar (10 s): oferta com 3 marcas depois de recarregar; recuperado e salvo sem os dados; selo logo depois de Recuperar: nenhum
+PASSOU  termos (5 s): F5 sem Guardar: 2 termo(s) na lista.; F5 depois de apagar: 2 termo(s) na lista.; abrir de novo: Nenhum termo.; pergunta: "Qualquer pessoa que usar este mesmo usuário do Windows depoi..."
+PASSOU  ocr (6 s): OCR em 1 s; sugestões: 3 pendente(s): CPF 1, Telefone 1, Termo da lista 1; 0 pixel descoberto nos dados sugeridos
+ACHADO  recuperar: selo da miniatura logo depois de Recuperar = nenhum (esperado 3)
+ACHADO  termos: lista nunca guardada voltou depois de recarregar (F5): 2 termo(s) na lista.
+ACHADO  termos: lista apagada (Guardar desmarcado) voltou depois de recarregar (F5): 2 termo(s) na lista.
+ACHADO  ocr: e-mail da página digitalizada não sugerido (resumo: 3 pendente(s): CPF 1, Telefone 1, Termo da lista 1)
+
+6 de 6 passaram; 4 achado(s)
+saida 0
