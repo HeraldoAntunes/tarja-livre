@@ -52,7 +52,9 @@ texto só (a parte nossa, o núcleo e o worker do Tesseract) que vira um worker 
 Campos de formulário e caixas de texto anotadas são procurados à parte; se acharem algo, a sugestão cobre o campo
 inteiro. A lista de termos do usuário é procurada antes dos padrões; um achado só é descartado se estiver inteiro
 dentro de outro, e caixas vizinhas do mesmo achado viram um retângulo só. Na versão com OCR, cada palavra reconhecida
-vira um pedaço de texto com a caixa tirada da imagem, e entra na mesma procura. A seleção com o cursor usa o mesmo
+vira um pedaço de texto com a caixa tirada da imagem, marcado como lido pelo OCR, e entra na mesma procura. Como o
+português do Tesseract não tem o @, nessas páginas o e-mail também é aceito com o @ lido como `&`, `(D`, `Q` e
+outras sequências medidas (`docs/PROPOSTA-OCR-EMAIL.md`). A seleção com o cursor usa o mesmo
 texto da página, pedido ao PDF.js uma vez só.
 
 ## Vários arquivos
@@ -71,7 +73,7 @@ pode rodar em todos. O carimbo é comum a todos.
 | `tests/e2e.mjs` | o fluxo completo no Microsoft Edge, com a página aberta por `file://` |
 | `tests/e2e_pdf_teste.mjs` | o PDF de teste padronizado: cobertura pixel a pixel contra a máscara, arquivos hostis, nada do original no salvo |
 | `tests/e2e_varios.mjs` | vários arquivos: abas, estado por arquivo, carimbo comum, salvar um a um, texto nas tarjas |
-| `tests/e2e_ocr.mjs` | versão com OCR: página digitalizada lida, sugestões, cobertura pixel a pixel contra a máscara, sem rede |
+| `tests/e2e_ocr.mjs` | versão com OCR: página digitalizada lida, sugestões, cobertura pixel a pixel contra a máscara, sem rede; e a página fixa `tests/fixtures/ocr-email.pdf`, com e-mails de @ lido errado entre textos comuns |
 
 O PDF de teste e a máscara são gerados byte a byte por `tests/fixtures/gerar_pdf_teste.py`; veja
 `tests/fixtures/LEIA-ME.md`.

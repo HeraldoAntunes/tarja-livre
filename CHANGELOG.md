@@ -5,6 +5,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+### Corrigido
+- **E-mail em página digitalizada vira sugestão de tarja** (versão com OCR). O OCR não sabe escrever o @ e o lia
+  como `&`, `(D`, `Q`...; quase nenhum e-mail dessas páginas era sugerido. Agora a maioria é: nas páginas de teste,
+  de 7% para 56% dos e-mails, sem textos comuns virarem e-mail. Quando o @ sai como uma letra sozinha (comum nas
+  fontes de largura fixa), o e-mail ainda pode passar: confira os e-mails das páginas digitalizadas.
+- Numa página digitalizada, um nome de arquivo com Q, como `ARQUITETURA.md`, não é mais sugerido como e-mail.
+
 ## [1.2.1] - 2026-10-29
 
 ### Corrigido

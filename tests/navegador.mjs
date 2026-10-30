@@ -16,11 +16,21 @@ export const HTML = join(RAIZ, 'dist', 'Tarja Livre.html');
 export const HTML_OCR = join(RAIZ, 'dist', 'Tarja Livre com OCR.html');
 export const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const EDGE = ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+// Com TARJA_NAVEGADOR=<caminho>, outro navegador do Chromium no lugar do Edge (por exemplo o Chromium no Linux).
+const EDGE = process.env.TARJA_NAVEGADOR || ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(existsSync);
+const WINDOWS = process.platform === 'win32';
+// fecha o navegador e os filhos dele: taskkill no Windows, o sinal para o grupo do processo nos outros sistemas
+function encerrar(pid) {
+  if (WINDOWS) {
+    try { execFileSync('taskkill', ['/F', '/T', '/PID', String(pid)], { stdio: 'ignore' }); } catch { /* já saiu */ }
+  } else {
+    try { process.kill(-pid, 'SIGKILL'); } catch { /* já saiu */ }
+  }
+}
 
 export function montar() {
-  execFileSync('python', ['-X', 'utf8', join(RAIZ, 'scripts', 'montar.py')], { stdio: 'inherit' });
+  execFileSync(WINDOWS ? 'python' : 'python3', ['-X', 'utf8', join(RAIZ, 'scripts', 'montar.py')], { stdio: 'inherit' });
 }
 
 const portaLivre = () => new Promise((ok) => {
@@ -39,6 +49,7 @@ const abertos = new Map();     // pid do navegador ou do exe → pastas do teste
 const pastasDoFim = new Set(); // perfis fixos (sobrevivem entre aberturas): só saem no fim do processo
 const pausa = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 function fecharProcessosDa(pasta) {
+  if (!WINDOWS) return;
   try {
     execFileSync('powershell', ['-NoProfile', '-Command', `Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^msedge' -and $_.CommandLine -like '*${pasta.replace(/'/g, "''")}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`], { stdio: 'ignore' });
   } catch { /* nada a fechar */ }
@@ -52,7 +63,7 @@ function apagarPasta(pasta) {
   }
 }
 function limpar(pid, pastas) {
-  try { execFileSync('taskkill', ['/F', '/T', '/PID', String(pid)], { stdio: 'ignore' }); } catch { /* já saiu */ }
+  encerrar(pid);
   for (const p of pastas) { fecharProcessosDa(p); apagarPasta(p); }
   abertos.delete(pid);
 }
@@ -70,7 +81,8 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     ? spawn(EXE, ['--sem-instalar'], { stdio: 'ignore', env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: perfil,
       WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${porta}` } })
     : spawn(EDGE, ['--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`,
-      '--no-first-run', '--no-default-browser-check', `--window-size=${largura},${altura}`, 'about:blank'], { stdio: 'ignore' });
+      '--no-first-run', '--no-default-browser-check', `--window-size=${largura},${altura}`,
+      ...(WINDOWS ? [] : ['--no-sandbox']), 'about:blank'], { stdio: 'ignore', detached: !WINDOWS });
   const erros = [];
   const respostas = [];   // respostas combinadas para as próximas perguntas (confirm) da página
   const perguntas = [];   // o texto de cada pergunta respondida assim
@@ -196,7 +208,7 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     // queda brusca: mata o processo e os filhos pelo PID, sem dar à página a chance de gravar nada
     async matar() {
       try { ws.close(); } catch { /* já fechado */ }
-      try { execFileSync('taskkill', ['/F', '/T', '/PID', String(edge.pid)], { stdio: 'ignore' }); } catch { /* já saiu */ }
+      encerrar(edge.pid);
       await espera(1500);
     },
     async fechar() {

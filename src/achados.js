@@ -80,14 +80,19 @@ function acharTermos(texto, { lista = [], palavraInteira = true, semAcento = tru
   return trechos.sort((x, y) => (y[1] - y[0]) - (x[1] - x[0]) || x[0] - y[0]);
 }
 
+// Fim de nome de arquivo: "ARQUITETURA.md" lido pelo OCR não ganha um "@" no lugar do Q, nem "Edital&Anexo.pdf" um e-mail.
+const EXTENSOES = new Set(['pdf', 'doc', 'docx', 'odt', 'ods', 'odp', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg',
+  'png', 'gif', 'bmp', 'tif', 'tiff', 'txt', 'md', 'rtf', 'csv', 'xml', 'json', 'zip', 'rar', 'html', 'htm', 'mp3', 'mp4']);
+
 // Palavra lida pelo OCR, com as trocas de letra mais comuns desfeitas para a procura (o tamanho não muda, então a
-// posição de cada letra continua valendo): "@" que sai como "Q" ou "©" antes de um domínio, e letras parecidas com
-// algarismos dentro de um número (O e o viram 0, l, I e | viram 1, S e s viram 5, B vira 8).
+// posição de cada letra continua valendo): "@" que sai como "Q" ou "©" antes de um domínio (que não seja nome de
+// arquivo), e letras parecidas com algarismos dentro de um número (O e o viram 0, l, I e | viram 1, S e s viram 5,
+// B vira 8).
 export function corrigirOcr(palavra) {
   let s = String(palavra);
   if (!s.includes('@')) {
-    const m = s.match(/^(.*[A-Za-z0-9._%+-])[Q©®](?=[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}[.,;:)]*$)/);
-    if (m) s = m[1] + '@' + s.slice(m[1].length + 1);
+    const m = s.match(/^(.*[A-Za-z0-9._%+-])[Q©®](?=[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.([A-Za-z]{2,})[.,;:)]*$)/);
+    if (m && !EXTENSOES.has(m[2].toLowerCase())) s = m[1] + '@' + s.slice(m[1].length + 1);
   }
   const algarismos = (s.match(/[0-9]/g) || []).length;
   const resto = s.replace(/[.\-/()\s]/g, '').length;
@@ -95,6 +100,38 @@ export function corrigirOcr(palavra) {
     s = s.replace(/[Oo]/g, '0').replace(/[lI|]/g, '1').replace(/[Ss]/g, '5').replace(/B/g, '8');
   }
   return s;
+}
+
+// E-mail em página lida pelo OCR. O português do Tesseract embutido não tem o "@" entre os caracteres que sabe
+// escrever: no lugar dele sai outra coisa. Estas são as leituras aceitas, medidas em 9.606 e-mails de páginas
+// fictícias (docs/PROPOSTA-OCR-EMAIL.md). O "&" também cobre "G&", "&Q", "t&"... (a letra colada fica na parte de
+// antes ou no domínio); o "(" só vale com a letra que o OCR tira do desenho do @, nunca sozinho. Letra sozinha
+// ("G", "g", "O") fica de fora: "fulanogexemplo.test" não se distingue de um endereço de site. O "Q" é a troca de
+// corrigirOcr(), para quando ele cai entre duas palavras ("fulano.teste" + "Qexemplo.test"), coladas ou não.
+const ARROBA_OCR = ['&&', '(&', '(D', '(Q', '(O', '(o', '(d', '(P', '(E', '&', 'ê', 'Q'];
+const EMAIL_OCR = new RegExp(String.raw`(?<![A-Za-z0-9._%+\-\/\\=?#])([A-Za-z0-9._%+\-]*[A-Za-z0-9])( ?)(` +
+  ARROBA_OCR.map((a) => a.replace(/[(]/g, '\\(')).join('|') +
+  String.raw`)( ?)([A-Za-z0-9][A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)*\.([A-Za-z]{2,}))(?![A-Za-z0-9\-]|\.[A-Za-z0-9])`, 'g');
+
+// Trechos [ini, fim) do texto juntado da página (o de juntarTexto, palavras separadas por um espaço) que são
+// e-mail com o "@" lido como uma das sequências de ARROBA_OCR. O trecho vai como foi lido, do começo da parte de
+// antes ao fim do domínio; o tamanho do texto não muda.
+function emailsDoOcr(texto) {
+  const trechos = [];
+  for (const m of texto.matchAll(EMAIL_OCR)) {
+    const [tudo, antes, esp1, seq, esp2, dominio, final] = m;
+    if (antes.length < 2) continue;
+    if (EXTENSOES.has(final.toLowerCase())) continue;
+    // espaço de um lado só: "Silva & Souza" é texto comum
+    if (esp1 && esp2) continue;
+    // "(" sem ")" depois: "Portal(exemplo.gov.br)" é texto comum
+    if (seq[0] === '(' && /\)/.test(texto.slice(m.index + tudo.length).split(/\s/)[0])) continue;
+    // "Q": nunca com espaço depois; com espaço antes, só com cara de usuário de e-mail antes (ponto, hífen,
+    // sublinhado ou algarismo) e o domínio em minúscula, para "Acesse Qualidade.gov.br" não virar e-mail
+    if (seq === 'Q' && (esp2 || (esp1 && (!/[._\-0-9]/.test(antes) || !/^[a-z0-9]/.test(dominio))))) continue;
+    trechos.push([m.index, m.index + tudo.length]);
+  }
+  return trechos;
 }
 
 // a ordem decide quem fica quando dois padrões pegam o mesmo trecho (um CPF não vira telefone)
@@ -277,7 +314,7 @@ function desgirar(k, ang) {
   return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
 }
 
-// pedacos: [{str, x, y, w, h, eol, ang?}], ang = direção do texto em radianos (0 = deitado, da esquerda para a
+// pedacos: [{str, x, y, w, h, eol, ang?, ocr?}], ocr = lido pelo OCR; ang = direção do texto em radianos (0 = deitado, da esquerda para a
 // direita); tipos: lista de chaves de TIPOS a procurar; medir(texto, pedaço): ver caixas().
 // Devolve [{tipo, ini, fim, caixas}] sem trechos repetidos.
 // termos (opcional): { lista, palavraInteira, semAcento }, a lista de nomes e endereços do usuário.
@@ -299,8 +336,17 @@ export function procurar(pedacosPagina, tipos = Object.keys(TIPOS), medir = null
       achados.push({ tipo: 'termo', ini, fim, trecho: texto.slice(ini, fim), caixas: caixas(pedacos, origem, ini, fim, medir) });
     }
   }
+  // página lida pelo OCR (os pedaços vêm marcados por lerComOcr): o e-mail também pode ter o "@" lido errado
+  const ocr = pedacosPagina.some((p) => p.ocr);
   for (const tipo of ORDEM) {
     if (!tipos.includes(tipo)) continue;
+    if (tipo === 'email' && ocr) {
+      for (const [ini, fim] of emailsDoOcr(texto)) {
+        if (dentroDeOutro(tomados, ini, fim)) continue;
+        tomados.push([ini, fim]);
+        achados.push({ tipo, ini, fim, trecho: texto.slice(ini, fim), caixas: caixas(pedacos, origem, ini, fim, medir) });
+      }
+    }
     const re = new RegExp(PADROES[tipo].source, PADROES[tipo].flags);
     for (const m of texto.matchAll(re)) {
       let ini = m.index;

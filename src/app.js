@@ -1320,7 +1320,7 @@ async function lerComOcr(pg, p) {
           const { x0, y0, x1, y1 } = w.bbox;
           // a caixa da palavra vem da imagem: base na parte de baixo dela, altura inteira
           pedacos.push({ str: corrigirOcr(w.text.trim()), x: x0 / s, y: y1 / s, w: (x1 - x0) / s, h: Math.max(3, (y1 - y0) / s),
-                         eol: j === palavras.length - 1, ang: 0, familia: 'sans' });
+                         eol: j === palavras.length - 1, ang: 0, familia: 'sans', ocr: true });
         });
       }
     }
