@@ -6,6 +6,8 @@ node_modules/
 *.pdf
 # exceção: o PDF de teste e a máscara, inventados para os testes e gerados por gerar_pdf_teste.py
 !tests/fixtures/*.pdf
+# e os PDFs fictícios da auditoria externa (tests/fixtures/auditoria/LEIA-ME.md), usados pelos testes no CI
+!tests/fixtures/auditoria/*.pdf
 # Python
 __pycache__/
 *.pyc

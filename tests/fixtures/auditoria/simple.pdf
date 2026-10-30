@@ -1,0 +1,141 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+/Title (SEGREDO\137METADATA\137TESTE)
+/Author (AUTOR\137FICTICIO\137TESTE)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+/Outlines 8 0 R
+/Names <<
+/JavaScript <<
+/Names [ (295df971\055be47\05545e8\055bfcb\055aff0f41463af) 9 0 R ]
+>>
+/EmbeddedFiles 12 0 R
+>>
+>>
+endobj
+4 0 obj
+<<
+/Contents 5 0 R
+/MediaBox [ 0 0 595 842 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+/Annots [ 13 0 R ]
+>>
+endobj
+5 0 obj
+<<
+/Length 184
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+BT /F1 20 Tf 24 TL ET
+BT 1 0 0 1 60 730 Tm (sintetico@exemplo.test) Tj T* ET
+BT 1 0 0 1 60 680 Tm (Conteudo publico para comparacao) Tj T* ET
+ 
+
+endstream
+endobj
+6 0 obj
+<<
+/F1 7 0 R
+>>
+endobj
+7 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+8 0 obj
+<<
+>>
+endobj
+9 0 obj
+<<
+/Type /Action
+/S /JavaScript
+/JS (app\056alert\050\047SEGREDO\137SCRIPT\137TESTE\047\051)
+>>
+endobj
+10 0 obj
+<<
+/Type /EmbeddedFile
+/Length 19
+>>
+stream
+SEGREDO_ANEXO_TESTE
+endstream
+endobj
+11 0 obj
+<<
+/Type /Filespec
+/F (segredo\055ficticio\056txt)
+/EF <<
+/F 10 0 R
+>>
+>>
+endobj
+12 0 obj
+<<
+/Names [ (segredo\055ficticio\056txt) 11 0 R ]
+>>
+endobj
+13 0 obj
+<<
+/Subtype /Text
+/Rect [ 40 40 60 60 ]
+/Contents (SEGREDO\137COMENTARIO\137TESTE)
+/Open false
+/Flags 0
+/P 4 0 R
+>>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000129 00000 n 
+0000000188 00000 n 
+0000000374 00000 n 
+0000000582 00000 n 
+0000000817 00000 n 
+0000000848 00000 n 
+0000000955 00000 n 
+0000000976 00000 n 
+0000001087 00000 n 
+0000001177 00000 n 
+0000001267 00000 n 
+0000001336 00000 n 
+trailer
+<<
+/Size 14
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1468
+%%EOF
