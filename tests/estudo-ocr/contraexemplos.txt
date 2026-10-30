@@ -1,0 +1,108 @@
+# Textos comuns de documento que a regra do @ NÃO pode transformar em e-mail. Dados fictícios.
+# Uma linha por texto; linhas com # são comentário. Usado por analisar.mjs (origem "escrito").
+# Números e datas
+CPF: 831.975.872-60
+CPF 514.334.988-55, RG 12.345.678-9
+CNPJ 19.808.456/0001-00
+Data: 30/10/2026
+Fortaleza, 12 de março de 2025.
+R$ 1.234,56 pagos em 05/11/2026
+Lei nº 13.709/2018 (LGPD), art. 5º, § 2º
+Processo 23000.000000/2026-00
+Matrícula 2026.1.0042, turma 2026.2
+Versão 1.2.1 de 30/10/2026
+Telefone (00) 91234-5678 / (00) 3456-7890
+CEP 00010-000
+Nota 8.5, média 7.25 e conceito B
+Tabela 3.2.1 e Figura 4.1
+# Nomes e cargos
+Nome: Fulano de Teste
+Fulana Beltrana da Silva Teste
+Prof. Dr. Ciclano Teste, Coordenador
+Sr. Q. Teste e Sra. G. Teste
+Assinado: Fulano de Teste QD
+# Endereços com QD, Q, Bloco
+Endereço: QD 05 Lote 12, Setor Teste
+Quadra QD 12 Conjunto B, casa 4
+QD05 LT12 Setor Teste
+Qd. 5, Conj. Q, casa 7
+SQS 308 Bloco WO, apto. 101
+SQN 210 Bloco G, apto. 302
+Q.E. 32 Conjunto Q, casa 7
+Rua QD Dez, 100, Bairro Teste
+Bloco Q, sala 12.3
+Item QD.3.2 do anexo
+Ofício nº 12/2026-QD
+# Siglas e frases com &, WO, QD, G&Q
+Q&A do edital 3/2026
+P&D e inovação no campus
+Silva & Souza Ltda.
+Barros&Lima Advogados
+AT&T e Q&A são siglas
+Ciência & Tecnologia
+Pesquisa&Extensão 2026
+S&P 500 subiu 2%
+Veja G&Q em exemplo.test
+WO 1234 Ordem de serviço
+Modelo WO-2024 em teste
+O WO foi aberto em 30/10
+Fiz o QD da turma e o WO do setor
+G&Q Consultoria Teste
+Q&Q e QD&WO
+Programa C&T, edital 5
+# Endereços de site, arquivos e caminhos
+Acesse www.exemplo.gov.br
+Acesse o gov.br com sua conta
+Portal Gov.br
+Portal (exemplo.gov.br)
+Portal(exemplo.gov.br)
+Site: exemplo.edu.br/edital
+https://www.exemplo.edu.br/edital?ano=2026&fase=2
+https://exemplo.gov.br/sei/consulta&id=5
+Consulte exemplo.gov.br ou exemplo.edu.br
+SEI (sei.exemplo.gov.br)
+sistema.exemplo.gov.br
+Pesquisa & Extensão: exemplo.edu.br
+Campus Q exemplo.edu.br
+Arquivo relatorio.final.pdf
+Arquivo Q&A.pdf
+Anexo P&D.final.pdf
+Anexo Edital&Anexo.pdf
+Ata(Reunião).pdf
+Ata(Original.pdf
+Relatório(D.final.docx
+Planilha G&Q.xlsx
+Foto(O.jpg
+C:\Documentos\Q&A\edital.pdf
+/home/teste/P&D/relatorio.odt
+www.exemplo.com.br
+exemplo.com.br/contato
+blog.exemplo.test
+M&M.com.br
+Q&A.exemplo.test
+# Palavras coladas pelo OCR
+Fulano(Diretor)de Teste
+Setor(DTI) e Setor(Ouvidoria)
+Reunião(Ordinária).Pauta.doc
+TesteGexemplo
+Portal da Transparência (www.exemplo.gov.br)
+gov.br/servicos
+Contato (00) 91234-5678 ou exemplo.gov.br
+# Endereços com letra maiúscula no meio (o caso que a regra das maiúsculas coladas erra)
+portalEducacao.gov.br
+SistemaOnline.edu.br
+www.portalEducacao.gov.br
+Acesse meuGov.gov.br
+https://sigaa.exemplo.edu.br/sigaa/portalDocente.jsf
+exemploDigital.com.br
+cursoOnline.exemplo.edu.br
+# Casos que a regra proposta erra de propósito (endereço de site com & no meio): medidos para a taxa ser honesta
+barros&lima.adv.br
+Silva&Souza.com.br
+Consulte o QEdu.org.br
+Acesse Qualidade.gov.br
+# Endereços de site com letras no meio do domínio (o caso das letras sozinhas)
+Site: programa.exemplo.gov.br
+Agenda em agenda.exemplo.edu.br
+Inscrições: sigaa.exemplo.edu.br e gestao.exemplo.gov.br
+Portal do Programa: programateste.gov.br

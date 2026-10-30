@@ -1,0 +1,967 @@
+pagina,desenho,fonte,tipo_fonte,tamanho_pt,dpi,estado,angulo_graus,largura_px,altura_px
+p0000,pil,DejaVu Sans,sem serifa,8,150,limpa,0.000,1240,1754
+p0001,pil,DejaVu Sans,sem serifa,8,150,ruido,-0.972,1240,1754
+p0002,pil,DejaVu Sans,sem serifa,8,200,limpa,0.000,1654,2338
+p0003,pil,DejaVu Sans,sem serifa,8,200,ruido,-1.181,1654,2338
+p0004,pil,DejaVu Sans,sem serifa,8,300,limpa,0.000,2481,3507
+p0005,pil,DejaVu Sans,sem serifa,8,300,ruido,0.448,2481,3507
+p0006,pil,DejaVu Sans,sem serifa,10,150,limpa,0.000,1240,1754
+p0007,pil,DejaVu Sans,sem serifa,10,150,ruido,-1.475,1240,1754
+p0008,pil,DejaVu Sans,sem serifa,10,200,limpa,0.000,1654,2338
+p0009,pil,DejaVu Sans,sem serifa,10,200,ruido,-0.330,1654,2338
+p0010,pil,DejaVu Sans,sem serifa,10,300,limpa,0.000,2481,3507
+p0011,pil,DejaVu Sans,sem serifa,10,300,ruido,1.410,2481,3507
+p0012,pil,DejaVu Sans,sem serifa,12,150,limpa,0.000,1240,1754
+p0013,pil,DejaVu Sans,sem serifa,12,150,ruido,0.772,1240,1754
+p0014,pil,DejaVu Sans,sem serifa,12,200,limpa,0.000,1654,2338
+p0015,pil,DejaVu Sans,sem serifa,12,200,ruido,-1.361,1654,2338
+p0016,pil,DejaVu Sans,sem serifa,12,300,limpa,0.000,2481,3507
+p0017,pil,DejaVu Sans,sem serifa,12,300,ruido,0.966,2481,3507
+p0018,pil,DejaVu Sans,sem serifa,14,150,limpa,0.000,1240,1754
+p0019,pil,DejaVu Sans,sem serifa,14,150,ruido,1.398,1240,1754
+p0020,pil,DejaVu Sans,sem serifa,14,200,limpa,0.000,1654,2338
+p0021,pil,DejaVu Sans,sem serifa,14,200,ruido,-1.170,1654,2338
+p0022,pil,DejaVu Sans,sem serifa,14,300,limpa,0.000,2481,3507
+p0023,pil,DejaVu Sans,sem serifa,14,300,ruido,0.591,2481,3507
+p0024,pil,DejaVu Sans,sem serifa,16,150,limpa,0.000,1240,1754
+p0025,pil,DejaVu Sans,sem serifa,16,150,ruido,1.007,1240,1754
+p0026,pil,DejaVu Sans,sem serifa,16,200,limpa,0.000,1654,2338
+p0027,pil,DejaVu Sans,sem serifa,16,200,ruido,-0.412,1654,2338
+p0028,pil,DejaVu Sans,sem serifa,16,300,limpa,0.000,2481,3507
+p0029,pil,DejaVu Sans,sem serifa,16,300,ruido,-0.551,2481,3507
+p0030,pil,DejaVu Serif,serifa,8,150,limpa,0.000,1240,1754
+p0031,pil,DejaVu Serif,serifa,8,150,ruido,-1.218,1240,1754
+p0032,pil,DejaVu Serif,serifa,8,200,limpa,0.000,1654,2338
+p0033,pil,DejaVu Serif,serifa,8,200,ruido,0.542,1654,2338
+p0034,pil,DejaVu Serif,serifa,8,300,limpa,0.000,2481,3507
+p0035,pil,DejaVu Serif,serifa,8,300,ruido,0.724,2481,3507
+p0036,pil,DejaVu Serif,serifa,10,150,limpa,0.000,1240,1754
+p0037,pil,DejaVu Serif,serifa,10,150,ruido,-1.447,1240,1754
+p0038,pil,DejaVu Serif,serifa,10,200,limpa,0.000,1654,2338
+p0039,pil,DejaVu Serif,serifa,10,200,ruido,0.849,1654,2338
+p0040,pil,DejaVu Serif,serifa,10,300,limpa,0.000,2481,3507
+p0041,pil,DejaVu Serif,serifa,10,300,ruido,1.302,2481,3507
+p0042,pil,DejaVu Serif,serifa,12,150,limpa,0.000,1240,1754
+p0043,pil,DejaVu Serif,serifa,12,150,ruido,-1.382,1240,1754
+p0044,pil,DejaVu Serif,serifa,12,200,limpa,0.000,1654,2338
+p0045,pil,DejaVu Serif,serifa,12,200,ruido,-0.754,1654,2338
+p0046,pil,DejaVu Serif,serifa,12,300,limpa,0.000,2481,3507
+p0047,pil,DejaVu Serif,serifa,12,300,ruido,-0.647,2481,3507
+p0048,pil,DejaVu Serif,serifa,14,150,limpa,0.000,1240,1754
+p0049,pil,DejaVu Serif,serifa,14,150,ruido,-1.372,1240,1754
+p0050,pil,DejaVu Serif,serifa,14,200,limpa,0.000,1654,2338
+p0051,pil,DejaVu Serif,serifa,14,200,ruido,1.440,1654,2338
+p0052,pil,DejaVu Serif,serifa,14,300,limpa,0.000,2481,3507
+p0053,pil,DejaVu Serif,serifa,14,300,ruido,-0.596,2481,3507
+p0054,pil,DejaVu Serif,serifa,16,150,limpa,0.000,1240,1754
+p0055,pil,DejaVu Serif,serifa,16,150,ruido,1.475,1240,1754
+p0056,pil,DejaVu Serif,serifa,16,200,limpa,0.000,1654,2338
+p0057,pil,DejaVu Serif,serifa,16,200,ruido,0.454,1654,2338
+p0058,pil,DejaVu Serif,serifa,16,300,limpa,0.000,2481,3507
+p0059,pil,DejaVu Serif,serifa,16,300,ruido,-0.406,2481,3507
+p0060,pil,DejaVu Sans Mono,mono,8,150,limpa,0.000,1240,1754
+p0061,pil,DejaVu Sans Mono,mono,8,150,ruido,-0.950,1240,1754
+p0062,pil,DejaVu Sans Mono,mono,8,200,limpa,0.000,1654,2338
+p0063,pil,DejaVu Sans Mono,mono,8,200,ruido,-0.595,1654,2338
+p0064,pil,DejaVu Sans Mono,mono,8,300,limpa,0.000,2481,3507
+p0065,pil,DejaVu Sans Mono,mono,8,300,ruido,-1.067,2481,3507
+p0066,pil,DejaVu Sans Mono,mono,10,150,limpa,0.000,1240,1754
+p0067,pil,DejaVu Sans Mono,mono,10,150,ruido,-1.315,1240,1754
+p0068,pil,DejaVu Sans Mono,mono,10,200,limpa,0.000,1654,2338
+p0069,pil,DejaVu Sans Mono,mono,10,200,ruido,-1.449,1654,2338
+p0070,pil,DejaVu Sans Mono,mono,10,300,limpa,0.000,2481,3507
+p0071,pil,DejaVu Sans Mono,mono,10,300,ruido,-1.284,2481,3507
+p0072,pil,DejaVu Sans Mono,mono,12,150,limpa,0.000,1240,1754
+p0073,pil,DejaVu Sans Mono,mono,12,150,ruido,-0.495,1240,1754
+p0074,pil,DejaVu Sans Mono,mono,12,200,limpa,0.000,1654,2338
+p0075,pil,DejaVu Sans Mono,mono,12,200,ruido,-1.208,1654,2338
+p0076,pil,DejaVu Sans Mono,mono,12,300,limpa,0.000,2481,3507
+p0077,pil,DejaVu Sans Mono,mono,12,300,ruido,0.644,2481,3507
+p0078,pil,DejaVu Sans Mono,mono,14,150,limpa,0.000,1240,1754
+p0079,pil,DejaVu Sans Mono,mono,14,150,ruido,0.578,1240,1754
+p0080,pil,DejaVu Sans Mono,mono,14,200,limpa,0.000,1654,2338
+p0081,pil,DejaVu Sans Mono,mono,14,200,ruido,1.207,1654,2338
+p0082,pil,DejaVu Sans Mono,mono,14,300,limpa,0.000,2481,3507
+p0083,pil,DejaVu Sans Mono,mono,14,300,ruido,1.455,2481,3507
+p0084,pil,DejaVu Sans Mono,mono,16,150,limpa,0.000,1240,1754
+p0085,pil,DejaVu Sans Mono,mono,16,150,ruido,1.308,1240,1754
+p0086,pil,DejaVu Sans Mono,mono,16,200,limpa,0.000,1654,2338
+p0087,pil,DejaVu Sans Mono,mono,16,200,ruido,-0.372,1654,2338
+p0088,pil,DejaVu Sans Mono,mono,16,300,limpa,0.000,2481,3507
+p0089,pil,DejaVu Sans Mono,mono,16,300,ruido,-1.252,2481,3507
+p0090,pil,Liberation Sans,sem serifa,8,150,limpa,0.000,1240,1754
+p0091,pil,Liberation Sans,sem serifa,8,150,ruido,1.008,1240,1754
+p0092,pil,Liberation Sans,sem serifa,8,200,limpa,0.000,1654,2338
+p0093,pil,Liberation Sans,sem serifa,8,200,ruido,-0.769,1654,2338
+p0094,pil,Liberation Sans,sem serifa,8,300,limpa,0.000,2481,3507
+p0095,pil,Liberation Sans,sem serifa,8,300,ruido,-1.099,2481,3507
+p0096,pil,Liberation Sans,sem serifa,10,150,limpa,0.000,1240,1754
+p0097,pil,Liberation Sans,sem serifa,10,150,ruido,-1.157,1240,1754
+p0098,pil,Liberation Sans,sem serifa,10,200,limpa,0.000,1654,2338
+p0099,pil,Liberation Sans,sem serifa,10,200,ruido,-1.284,1654,2338
+p0100,pil,Liberation Sans,sem serifa,10,300,limpa,0.000,2481,3507
+p0101,pil,Liberation Sans,sem serifa,10,300,ruido,-1.330,2481,3507
+p0102,pil,Liberation Sans,sem serifa,12,150,limpa,0.000,1240,1754
+p0103,pil,Liberation Sans,sem serifa,12,150,ruido,-0.861,1240,1754
+p0104,pil,Liberation Sans,sem serifa,12,200,limpa,0.000,1654,2338
+p0105,pil,Liberation Sans,sem serifa,12,200,ruido,0.810,1654,2338
+p0106,pil,Liberation Sans,sem serifa,12,300,limpa,0.000,2481,3507
+p0107,pil,Liberation Sans,sem serifa,12,300,ruido,-1.414,2481,3507
+p0108,pil,Liberation Sans,sem serifa,14,150,limpa,0.000,1240,1754
+p0109,pil,Liberation Sans,sem serifa,14,150,ruido,-0.493,1240,1754
+p0110,pil,Liberation Sans,sem serifa,14,200,limpa,0.000,1654,2338
+p0111,pil,Liberation Sans,sem serifa,14,200,ruido,1.246,1654,2338
+p0112,pil,Liberation Sans,sem serifa,14,300,limpa,0.000,2481,3507
+p0113,pil,Liberation Sans,sem serifa,14,300,ruido,-1.399,2481,3507
+p0114,pil,Liberation Sans,sem serifa,16,150,limpa,0.000,1240,1754
+p0115,pil,Liberation Sans,sem serifa,16,150,ruido,1.074,1240,1754
+p0116,pil,Liberation Sans,sem serifa,16,200,limpa,0.000,1654,2338
+p0117,pil,Liberation Sans,sem serifa,16,200,ruido,1.116,1654,2338
+p0118,pil,Liberation Sans,sem serifa,16,300,limpa,0.000,2481,3507
+p0119,pil,Liberation Sans,sem serifa,16,300,ruido,-0.568,2481,3507
+p0120,pil,Liberation Serif,serifa,8,150,limpa,0.000,1240,1754
+p0121,pil,Liberation Serif,serifa,8,150,ruido,-0.979,1240,1754
+p0122,pil,Liberation Serif,serifa,8,200,limpa,0.000,1654,2338
+p0123,pil,Liberation Serif,serifa,8,200,ruido,-0.688,1654,2338
+p0124,pil,Liberation Serif,serifa,8,300,limpa,0.000,2481,3507
+p0125,pil,Liberation Serif,serifa,8,300,ruido,1.456,2481,3507
+p0126,pil,Liberation Serif,serifa,10,150,limpa,0.000,1240,1754
+p0127,pil,Liberation Serif,serifa,10,150,ruido,-0.594,1240,1754
+p0128,pil,Liberation Serif,serifa,10,200,limpa,0.000,1654,2338
+p0129,pil,Liberation Serif,serifa,10,200,ruido,0.412,1654,2338
+p0130,pil,Liberation Serif,serifa,10,300,limpa,0.000,2481,3507
+p0131,pil,Liberation Serif,serifa,10,300,ruido,-1.449,2481,3507
+p0132,pil,Liberation Serif,serifa,12,150,limpa,0.000,1240,1754
+p0133,pil,Liberation Serif,serifa,12,150,ruido,-0.914,1240,1754
+p0134,pil,Liberation Serif,serifa,12,200,limpa,0.000,1654,2338
+p0135,pil,Liberation Serif,serifa,12,200,ruido,-1.159,1654,2338
+p0136,pil,Liberation Serif,serifa,12,300,limpa,0.000,2481,3507
+p0137,pil,Liberation Serif,serifa,12,300,ruido,-0.451,2481,3507
+p0138,pil,Liberation Serif,serifa,14,150,limpa,0.000,1240,1754
+p0139,pil,Liberation Serif,serifa,14,150,ruido,1.301,1240,1754
+p0140,pil,Liberation Serif,serifa,14,200,limpa,0.000,1654,2338
+p0141,pil,Liberation Serif,serifa,14,200,ruido,1.371,1654,2338
+p0142,pil,Liberation Serif,serifa,14,300,limpa,0.000,2481,3507
+p0143,pil,Liberation Serif,serifa,14,300,ruido,0.339,2481,3507
+p0144,pil,Liberation Serif,serifa,16,150,limpa,0.000,1240,1754
+p0145,pil,Liberation Serif,serifa,16,150,ruido,-0.329,1240,1754
+p0146,pil,Liberation Serif,serifa,16,200,limpa,0.000,1654,2338
+p0147,pil,Liberation Serif,serifa,16,200,ruido,-0.782,1654,2338
+p0148,pil,Liberation Serif,serifa,16,300,limpa,0.000,2481,3507
+p0149,pil,Liberation Serif,serifa,16,300,ruido,-1.181,2481,3507
+p0150,pil,Liberation Mono,mono,8,150,limpa,0.000,1240,1754
+p0151,pil,Liberation Mono,mono,8,150,ruido,-0.959,1240,1754
+p0152,pil,Liberation Mono,mono,8,200,limpa,0.000,1654,2338
+p0153,pil,Liberation Mono,mono,8,200,ruido,-0.836,1654,2338
+p0154,pil,Liberation Mono,mono,8,300,limpa,0.000,2481,3507
+p0155,pil,Liberation Mono,mono,8,300,ruido,-1.027,2481,3507
+p0156,pil,Liberation Mono,mono,10,150,limpa,0.000,1240,1754
+p0157,pil,Liberation Mono,mono,10,150,ruido,-1.121,1240,1754
+p0158,pil,Liberation Mono,mono,10,200,limpa,0.000,1654,2338
+p0159,pil,Liberation Mono,mono,10,200,ruido,1.158,1654,2338
+p0160,pil,Liberation Mono,mono,10,300,limpa,0.000,2481,3507
+p0161,pil,Liberation Mono,mono,10,300,ruido,0.577,2481,3507
+p0162,pil,Liberation Mono,mono,12,150,limpa,0.000,1240,1754
+p0163,pil,Liberation Mono,mono,12,150,ruido,0.523,1240,1754
+p0164,pil,Liberation Mono,mono,12,200,limpa,0.000,1654,2338
+p0165,pil,Liberation Mono,mono,12,200,ruido,-0.750,1654,2338
+p0166,pil,Liberation Mono,mono,12,300,limpa,0.000,2481,3507
+p0167,pil,Liberation Mono,mono,12,300,ruido,0.317,2481,3507
+p0168,pil,Liberation Mono,mono,14,150,limpa,0.000,1240,1754
+p0169,pil,Liberation Mono,mono,14,150,ruido,0.601,1240,1754
+p0170,pil,Liberation Mono,mono,14,200,limpa,0.000,1654,2338
+p0171,pil,Liberation Mono,mono,14,200,ruido,-0.640,1654,2338
+p0172,pil,Liberation Mono,mono,14,300,limpa,0.000,2481,3507
+p0173,pil,Liberation Mono,mono,14,300,ruido,1.094,2481,3507
+p0174,pil,Liberation Mono,mono,16,150,limpa,0.000,1240,1754
+p0175,pil,Liberation Mono,mono,16,150,ruido,-0.437,1240,1754
+p0176,pil,Liberation Mono,mono,16,200,limpa,0.000,1654,2338
+p0177,pil,Liberation Mono,mono,16,200,ruido,-1.126,1654,2338
+p0178,pil,Liberation Mono,mono,16,300,limpa,0.000,2481,3507
+p0179,pil,Liberation Mono,mono,16,300,ruido,0.548,2481,3507
+p0180,pil,FreeSans,sem serifa,8,150,limpa,0.000,1240,1754
+p0181,pil,FreeSans,sem serifa,8,150,ruido,-0.492,1240,1754
+p0182,pil,FreeSans,sem serifa,8,200,limpa,0.000,1654,2338
+p0183,pil,FreeSans,sem serifa,8,200,ruido,-1.133,1654,2338
+p0184,pil,FreeSans,sem serifa,8,300,limpa,0.000,2481,3507
+p0185,pil,FreeSans,sem serifa,8,300,ruido,0.457,2481,3507
+p0186,pil,FreeSans,sem serifa,10,150,limpa,0.000,1240,1754
+p0187,pil,FreeSans,sem serifa,10,150,ruido,-0.487,1240,1754
+p0188,pil,FreeSans,sem serifa,10,200,limpa,0.000,1654,2338
+p0189,pil,FreeSans,sem serifa,10,200,ruido,-0.671,1654,2338
+p0190,pil,FreeSans,sem serifa,10,300,limpa,0.000,2481,3507
+p0191,pil,FreeSans,sem serifa,10,300,ruido,-0.444,2481,3507
+p0192,pil,FreeSans,sem serifa,12,150,limpa,0.000,1240,1754
+p0193,pil,FreeSans,sem serifa,12,150,ruido,-1.030,1240,1754
+p0194,pil,FreeSans,sem serifa,12,200,limpa,0.000,1654,2338
+p0195,pil,FreeSans,sem serifa,12,200,ruido,0.718,1654,2338
+p0196,pil,FreeSans,sem serifa,12,300,limpa,0.000,2481,3507
+p0197,pil,FreeSans,sem serifa,12,300,ruido,0.329,2481,3507
+p0198,pil,FreeSans,sem serifa,14,150,limpa,0.000,1240,1754
+p0199,pil,FreeSans,sem serifa,14,150,ruido,-0.660,1240,1754
+p0200,pil,FreeSans,sem serifa,14,200,limpa,0.000,1654,2338
+p0201,pil,FreeSans,sem serifa,14,200,ruido,-1.035,1654,2338
+p0202,pil,FreeSans,sem serifa,14,300,limpa,0.000,2481,3507
+p0203,pil,FreeSans,sem serifa,14,300,ruido,1.161,2481,3507
+p0204,pil,FreeSans,sem serifa,16,150,limpa,0.000,1240,1754
+p0205,pil,FreeSans,sem serifa,16,150,ruido,-0.444,1240,1754
+p0206,pil,FreeSans,sem serifa,16,200,limpa,0.000,1654,2338
+p0207,pil,FreeSans,sem serifa,16,200,ruido,1.234,1654,2338
+p0208,pil,FreeSans,sem serifa,16,300,limpa,0.000,2481,3507
+p0209,pil,FreeSans,sem serifa,16,300,ruido,-0.478,2481,3507
+p0210,pil,FreeSerif,serifa,8,150,limpa,0.000,1240,1754
+p0211,pil,FreeSerif,serifa,8,150,ruido,-0.349,1240,1754
+p0212,pil,FreeSerif,serifa,8,200,limpa,0.000,1654,2338
+p0213,pil,FreeSerif,serifa,8,200,ruido,0.798,1654,2338
+p0214,pil,FreeSerif,serifa,8,300,limpa,0.000,2481,3507
+p0215,pil,FreeSerif,serifa,8,300,ruido,-0.488,2481,3507
+p0216,pil,FreeSerif,serifa,10,150,limpa,0.000,1240,1754
+p0217,pil,FreeSerif,serifa,10,150,ruido,-1.213,1240,1754
+p0218,pil,FreeSerif,serifa,10,200,limpa,0.000,1654,2338
+p0219,pil,FreeSerif,serifa,10,200,ruido,-0.918,1654,2338
+p0220,pil,FreeSerif,serifa,10,300,limpa,0.000,2481,3507
+p0221,pil,FreeSerif,serifa,10,300,ruido,-0.519,2481,3507
+p0222,pil,FreeSerif,serifa,12,150,limpa,0.000,1240,1754
+p0223,pil,FreeSerif,serifa,12,150,ruido,0.722,1240,1754
+p0224,pil,FreeSerif,serifa,12,200,limpa,0.000,1654,2338
+p0225,pil,FreeSerif,serifa,12,200,ruido,-0.861,1654,2338
+p0226,pil,FreeSerif,serifa,12,300,limpa,0.000,2481,3507
+p0227,pil,FreeSerif,serifa,12,300,ruido,-0.971,2481,3507
+p0228,pil,FreeSerif,serifa,14,150,limpa,0.000,1240,1754
+p0229,pil,FreeSerif,serifa,14,150,ruido,1.054,1240,1754
+p0230,pil,FreeSerif,serifa,14,200,limpa,0.000,1654,2338
+p0231,pil,FreeSerif,serifa,14,200,ruido,-1.094,1654,2338
+p0232,pil,FreeSerif,serifa,14,300,limpa,0.000,2481,3507
+p0233,pil,FreeSerif,serifa,14,300,ruido,1.377,2481,3507
+p0234,pil,FreeSerif,serifa,16,150,limpa,0.000,1240,1754
+p0235,pil,FreeSerif,serifa,16,150,ruido,1.429,1240,1754
+p0236,pil,FreeSerif,serifa,16,200,limpa,0.000,1654,2338
+p0237,pil,FreeSerif,serifa,16,200,ruido,0.570,1654,2338
+p0238,pil,FreeSerif,serifa,16,300,limpa,0.000,2481,3507
+p0239,pil,FreeSerif,serifa,16,300,ruido,-1.168,2481,3507
+p0240,pil,FreeMono,mono,8,150,limpa,0.000,1240,1754
+p0241,pil,FreeMono,mono,8,150,ruido,-0.734,1240,1754
+p0242,pil,FreeMono,mono,8,200,limpa,0.000,1654,2338
+p0243,pil,FreeMono,mono,8,200,ruido,1.193,1654,2338
+p0244,pil,FreeMono,mono,8,300,limpa,0.000,2481,3507
+p0245,pil,FreeMono,mono,8,300,ruido,-0.592,2481,3507
+p0246,pil,FreeMono,mono,10,150,limpa,0.000,1240,1754
+p0247,pil,FreeMono,mono,10,150,ruido,-1.448,1240,1754
+p0248,pil,FreeMono,mono,10,200,limpa,0.000,1654,2338
+p0249,pil,FreeMono,mono,10,200,ruido,1.172,1654,2338
+p0250,pil,FreeMono,mono,10,300,limpa,0.000,2481,3507
+p0251,pil,FreeMono,mono,10,300,ruido,0.598,2481,3507
+p0252,pil,FreeMono,mono,12,150,limpa,0.000,1240,1754
+p0253,pil,FreeMono,mono,12,150,ruido,-1.006,1240,1754
+p0254,pil,FreeMono,mono,12,200,limpa,0.000,1654,2338
+p0255,pil,FreeMono,mono,12,200,ruido,1.496,1654,2338
+p0256,pil,FreeMono,mono,12,300,limpa,0.000,2481,3507
+p0257,pil,FreeMono,mono,12,300,ruido,0.511,2481,3507
+p0258,pil,FreeMono,mono,14,150,limpa,0.000,1240,1754
+p0259,pil,FreeMono,mono,14,150,ruido,-1.161,1240,1754
+p0260,pil,FreeMono,mono,14,200,limpa,0.000,1654,2338
+p0261,pil,FreeMono,mono,14,200,ruido,-1.281,1654,2338
+p0262,pil,FreeMono,mono,14,300,limpa,0.000,2481,3507
+p0263,pil,FreeMono,mono,14,300,ruido,1.125,2481,3507
+p0264,pil,FreeMono,mono,16,150,limpa,0.000,1240,1754
+p0265,pil,FreeMono,mono,16,150,ruido,0.804,1240,1754
+p0266,pil,FreeMono,mono,16,200,limpa,0.000,1654,2338
+p0267,pil,FreeMono,mono,16,200,ruido,-0.788,1654,2338
+p0268,pil,FreeMono,mono,16,300,limpa,0.000,2481,3507
+p0269,pil,FreeMono,mono,16,300,ruido,1.418,2481,3507
+p0270,pil,Noto Sans,sem serifa,8,150,limpa,0.000,1240,1754
+p0271,pil,Noto Sans,sem serifa,8,150,ruido,-1.374,1240,1754
+p0272,pil,Noto Sans,sem serifa,8,200,limpa,0.000,1654,2338
+p0273,pil,Noto Sans,sem serifa,8,200,ruido,-0.593,1654,2338
+p0274,pil,Noto Sans,sem serifa,8,300,limpa,0.000,2481,3507
+p0275,pil,Noto Sans,sem serifa,8,300,ruido,1.033,2481,3507
+p0276,pil,Noto Sans,sem serifa,10,150,limpa,0.000,1240,1754
+p0277,pil,Noto Sans,sem serifa,10,150,ruido,0.972,1240,1754
+p0278,pil,Noto Sans,sem serifa,10,200,limpa,0.000,1654,2338
+p0279,pil,Noto Sans,sem serifa,10,200,ruido,-0.847,1654,2338
+p0280,pil,Noto Sans,sem serifa,10,300,limpa,0.000,2481,3507
+p0281,pil,Noto Sans,sem serifa,10,300,ruido,0.482,2481,3507
+p0282,pil,Noto Sans,sem serifa,12,150,limpa,0.000,1240,1754
+p0283,pil,Noto Sans,sem serifa,12,150,ruido,-0.919,1240,1754
+p0284,pil,Noto Sans,sem serifa,12,200,limpa,0.000,1654,2338
+p0285,pil,Noto Sans,sem serifa,12,200,ruido,0.424,1654,2338
+p0286,pil,Noto Sans,sem serifa,12,300,limpa,0.000,2481,3507
+p0287,pil,Noto Sans,sem serifa,12,300,ruido,-0.494,2481,3507
+p0288,pil,Noto Sans,sem serifa,14,150,limpa,0.000,1240,1754
+p0289,pil,Noto Sans,sem serifa,14,150,ruido,1.270,1240,1754
+p0290,pil,Noto Sans,sem serifa,14,200,limpa,0.000,1654,2338
+p0291,pil,Noto Sans,sem serifa,14,200,ruido,-0.739,1654,2338
+p0292,pil,Noto Sans,sem serifa,14,300,limpa,0.000,2481,3507
+p0293,pil,Noto Sans,sem serifa,14,300,ruido,0.963,2481,3507
+p0294,pil,Noto Sans,sem serifa,16,150,limpa,0.000,1240,1754
+p0295,pil,Noto Sans,sem serifa,16,150,ruido,0.445,1240,1754
+p0296,pil,Noto Sans,sem serifa,16,200,limpa,0.000,1654,2338
+p0297,pil,Noto Sans,sem serifa,16,200,ruido,0.543,1654,2338
+p0298,pil,Noto Sans,sem serifa,16,300,limpa,0.000,2481,3507
+p0299,pil,Noto Sans,sem serifa,16,300,ruido,-1.298,2481,3507
+p0300,pil,Noto Serif,serifa,8,150,limpa,0.000,1240,1754
+p0301,pil,Noto Serif,serifa,8,150,ruido,-0.828,1240,1754
+p0302,pil,Noto Serif,serifa,8,200,limpa,0.000,1654,2338
+p0303,pil,Noto Serif,serifa,8,200,ruido,-0.592,1654,2338
+p0304,pil,Noto Serif,serifa,8,300,limpa,0.000,2481,3507
+p0305,pil,Noto Serif,serifa,8,300,ruido,1.442,2481,3507
+p0306,pil,Noto Serif,serifa,10,150,limpa,0.000,1240,1754
+p0307,pil,Noto Serif,serifa,10,150,ruido,-0.781,1240,1754
+p0308,pil,Noto Serif,serifa,10,200,limpa,0.000,1654,2338
+p0309,pil,Noto Serif,serifa,10,200,ruido,1.371,1654,2338
+p0310,pil,Noto Serif,serifa,10,300,limpa,0.000,2481,3507
+p0311,pil,Noto Serif,serifa,10,300,ruido,-1.352,2481,3507
+p0312,pil,Noto Serif,serifa,12,150,limpa,0.000,1240,1754
+p0313,pil,Noto Serif,serifa,12,150,ruido,-1.237,1240,1754
+p0314,pil,Noto Serif,serifa,12,200,limpa,0.000,1654,2338
+p0315,pil,Noto Serif,serifa,12,200,ruido,-1.317,1654,2338
+p0316,pil,Noto Serif,serifa,12,300,limpa,0.000,2481,3507
+p0317,pil,Noto Serif,serifa,12,300,ruido,-1.121,2481,3507
+p0318,pil,Noto Serif,serifa,14,150,limpa,0.000,1240,1754
+p0319,pil,Noto Serif,serifa,14,150,ruido,0.521,1240,1754
+p0320,pil,Noto Serif,serifa,14,200,limpa,0.000,1654,2338
+p0321,pil,Noto Serif,serifa,14,200,ruido,-0.673,1654,2338
+p0322,pil,Noto Serif,serifa,14,300,limpa,0.000,2481,3507
+p0323,pil,Noto Serif,serifa,14,300,ruido,-0.510,2481,3507
+p0324,pil,Noto Serif,serifa,16,150,limpa,0.000,1240,1754
+p0325,pil,Noto Serif,serifa,16,150,ruido,1.318,1240,1754
+p0326,pil,Noto Serif,serifa,16,200,limpa,0.000,1654,2338
+p0327,pil,Noto Serif,serifa,16,200,ruido,-1.387,1654,2338
+p0328,pil,Noto Serif,serifa,16,300,limpa,0.000,2481,3507
+p0329,pil,Noto Serif,serifa,16,300,ruido,-0.364,2481,3507
+p0330,pil,Noto Sans Mono,mono,8,150,limpa,0.000,1240,1754
+p0331,pil,Noto Sans Mono,mono,8,150,ruido,-1.252,1240,1754
+p0332,pil,Noto Sans Mono,mono,8,200,limpa,0.000,1654,2338
+p0333,pil,Noto Sans Mono,mono,8,200,ruido,-0.349,1654,2338
+p0334,pil,Noto Sans Mono,mono,8,300,limpa,0.000,2481,3507
+p0335,pil,Noto Sans Mono,mono,8,300,ruido,0.625,2481,3507
+p0336,pil,Noto Sans Mono,mono,10,150,limpa,0.000,1240,1754
+p0337,pil,Noto Sans Mono,mono,10,150,ruido,-0.919,1240,1754
+p0338,pil,Noto Sans Mono,mono,10,200,limpa,0.000,1654,2338
+p0339,pil,Noto Sans Mono,mono,10,200,ruido,0.423,1654,2338
+p0340,pil,Noto Sans Mono,mono,10,300,limpa,0.000,2481,3507
+p0341,pil,Noto Sans Mono,mono,10,300,ruido,-1.156,2481,3507
+p0342,pil,Noto Sans Mono,mono,12,150,limpa,0.000,1240,1754
+p0343,pil,Noto Sans Mono,mono,12,150,ruido,0.372,1240,1754
+p0344,pil,Noto Sans Mono,mono,12,200,limpa,0.000,1654,2338
+p0345,pil,Noto Sans Mono,mono,12,200,ruido,1.219,1654,2338
+p0346,pil,Noto Sans Mono,mono,12,300,limpa,0.000,2481,3507
+p0347,pil,Noto Sans Mono,mono,12,300,ruido,0.694,2481,3507
+p0348,pil,Noto Sans Mono,mono,14,150,limpa,0.000,1240,1754
+p0349,pil,Noto Sans Mono,mono,14,150,ruido,-1.358,1240,1754
+p0350,pil,Noto Sans Mono,mono,14,200,limpa,0.000,1654,2338
+p0351,pil,Noto Sans Mono,mono,14,200,ruido,0.419,1654,2338
+p0352,pil,Noto Sans Mono,mono,14,300,limpa,0.000,2481,3507
+p0353,pil,Noto Sans Mono,mono,14,300,ruido,1.198,2481,3507
+p0354,pil,Noto Sans Mono,mono,16,150,limpa,0.000,1240,1754
+p0355,pil,Noto Sans Mono,mono,16,150,ruido,0.808,1240,1754
+p0356,pil,Noto Sans Mono,mono,16,200,limpa,0.000,1654,2338
+p0357,pil,Noto Sans Mono,mono,16,200,ruido,-1.275,1654,2338
+p0358,pil,Noto Sans Mono,mono,16,300,limpa,0.000,2481,3507
+p0359,pil,Noto Sans Mono,mono,16,300,ruido,-1.345,2481,3507
+p0360,pil,Carlito,sem serifa,8,150,limpa,0.000,1240,1754
+p0361,pil,Carlito,sem serifa,8,150,ruido,0.846,1240,1754
+p0362,pil,Carlito,sem serifa,8,200,limpa,0.000,1654,2338
+p0363,pil,Carlito,sem serifa,8,200,ruido,-1.348,1654,2338
+p0364,pil,Carlito,sem serifa,8,300,limpa,0.000,2481,3507
+p0365,pil,Carlito,sem serifa,8,300,ruido,0.774,2481,3507
+p0366,pil,Carlito,sem serifa,10,150,limpa,0.000,1240,1754
+p0367,pil,Carlito,sem serifa,10,150,ruido,0.391,1240,1754
+p0368,pil,Carlito,sem serifa,10,200,limpa,0.000,1654,2338
+p0369,pil,Carlito,sem serifa,10,200,ruido,0.448,1654,2338
+p0370,pil,Carlito,sem serifa,10,300,limpa,0.000,2481,3507
+p0371,pil,Carlito,sem serifa,10,300,ruido,-0.447,2481,3507
+p0372,pil,Carlito,sem serifa,12,150,limpa,0.000,1240,1754
+p0373,pil,Carlito,sem serifa,12,150,ruido,-0.880,1240,1754
+p0374,pil,Carlito,sem serifa,12,200,limpa,0.000,1654,2338
+p0375,pil,Carlito,sem serifa,12,200,ruido,0.658,1654,2338
+p0376,pil,Carlito,sem serifa,12,300,limpa,0.000,2481,3507
+p0377,pil,Carlito,sem serifa,12,300,ruido,0.613,2481,3507
+p0378,pil,Carlito,sem serifa,14,150,limpa,0.000,1240,1754
+p0379,pil,Carlito,sem serifa,14,150,ruido,0.888,1240,1754
+p0380,pil,Carlito,sem serifa,14,200,limpa,0.000,1654,2338
+p0381,pil,Carlito,sem serifa,14,200,ruido,0.312,1654,2338
+p0382,pil,Carlito,sem serifa,14,300,limpa,0.000,2481,3507
+p0383,pil,Carlito,sem serifa,14,300,ruido,-1.138,2481,3507
+p0384,pil,Carlito,sem serifa,16,150,limpa,0.000,1240,1754
+p0385,pil,Carlito,sem serifa,16,150,ruido,1.171,1240,1754
+p0386,pil,Carlito,sem serifa,16,200,limpa,0.000,1654,2338
+p0387,pil,Carlito,sem serifa,16,200,ruido,-0.640,1654,2338
+p0388,pil,Carlito,sem serifa,16,300,limpa,0.000,2481,3507
+p0389,pil,Carlito,sem serifa,16,300,ruido,-1.352,2481,3507
+p0390,pil,Caladea,serifa,8,150,limpa,0.000,1240,1754
+p0391,pil,Caladea,serifa,8,150,ruido,-1.393,1240,1754
+p0392,pil,Caladea,serifa,8,200,limpa,0.000,1654,2338
+p0393,pil,Caladea,serifa,8,200,ruido,-0.733,1654,2338
+p0394,pil,Caladea,serifa,8,300,limpa,0.000,2481,3507
+p0395,pil,Caladea,serifa,8,300,ruido,-0.499,2481,3507
+p0396,pil,Caladea,serifa,10,150,limpa,0.000,1240,1754
+p0397,pil,Caladea,serifa,10,150,ruido,1.438,1240,1754
+p0398,pil,Caladea,serifa,10,200,limpa,0.000,1654,2338
+p0399,pil,Caladea,serifa,10,200,ruido,-1.464,1654,2338
+p0400,pil,Caladea,serifa,10,300,limpa,0.000,2481,3507
+p0401,pil,Caladea,serifa,10,300,ruido,-0.902,2481,3507
+p0402,pil,Caladea,serifa,12,150,limpa,0.000,1240,1754
+p0403,pil,Caladea,serifa,12,150,ruido,-1.052,1240,1754
+p0404,pil,Caladea,serifa,12,200,limpa,0.000,1654,2338
+p0405,pil,Caladea,serifa,12,200,ruido,-0.821,1654,2338
+p0406,pil,Caladea,serifa,12,300,limpa,0.000,2481,3507
+p0407,pil,Caladea,serifa,12,300,ruido,0.899,2481,3507
+p0408,pil,Caladea,serifa,14,150,limpa,0.000,1240,1754
+p0409,pil,Caladea,serifa,14,150,ruido,-1.262,1240,1754
+p0410,pil,Caladea,serifa,14,200,limpa,0.000,1654,2338
+p0411,pil,Caladea,serifa,14,200,ruido,0.558,1654,2338
+p0412,pil,Caladea,serifa,14,300,limpa,0.000,2481,3507
+p0413,pil,Caladea,serifa,14,300,ruido,-0.446,2481,3507
+p0414,pil,Caladea,serifa,16,150,limpa,0.000,1240,1754
+p0415,pil,Caladea,serifa,16,150,ruido,0.630,1240,1754
+p0416,pil,Caladea,serifa,16,200,limpa,0.000,1654,2338
+p0417,pil,Caladea,serifa,16,200,ruido,-1.387,1654,2338
+p0418,pil,Caladea,serifa,16,300,limpa,0.000,2481,3507
+p0419,pil,Caladea,serifa,16,300,ruido,1.219,2481,3507
+p0420,pil,Roboto,sem serifa,8,150,limpa,0.000,1240,1754
+p0421,pil,Roboto,sem serifa,8,150,ruido,-0.804,1240,1754
+p0422,pil,Roboto,sem serifa,8,200,limpa,0.000,1654,2338
+p0423,pil,Roboto,sem serifa,8,200,ruido,-1.146,1654,2338
+p0424,pil,Roboto,sem serifa,8,300,limpa,0.000,2481,3507
+p0425,pil,Roboto,sem serifa,8,300,ruido,0.968,2481,3507
+p0426,pil,Roboto,sem serifa,10,150,limpa,0.000,1240,1754
+p0427,pil,Roboto,sem serifa,10,150,ruido,0.552,1240,1754
+p0428,pil,Roboto,sem serifa,10,200,limpa,0.000,1654,2338
+p0429,pil,Roboto,sem serifa,10,200,ruido,-0.480,1654,2338
+p0430,pil,Roboto,sem serifa,10,300,limpa,0.000,2481,3507
+p0431,pil,Roboto,sem serifa,10,300,ruido,-0.696,2481,3507
+p0432,pil,Roboto,sem serifa,12,150,limpa,0.000,1240,1754
+p0433,pil,Roboto,sem serifa,12,150,ruido,1.002,1240,1754
+p0434,pil,Roboto,sem serifa,12,200,limpa,0.000,1654,2338
+p0435,pil,Roboto,sem serifa,12,200,ruido,1.172,1654,2338
+p0436,pil,Roboto,sem serifa,12,300,limpa,0.000,2481,3507
+p0437,pil,Roboto,sem serifa,12,300,ruido,-1.427,2481,3507
+p0438,pil,Roboto,sem serifa,14,150,limpa,0.000,1240,1754
+p0439,pil,Roboto,sem serifa,14,150,ruido,0.678,1240,1754
+p0440,pil,Roboto,sem serifa,14,200,limpa,0.000,1654,2338
+p0441,pil,Roboto,sem serifa,14,200,ruido,-1.036,1654,2338
+p0442,pil,Roboto,sem serifa,14,300,limpa,0.000,2481,3507
+p0443,pil,Roboto,sem serifa,14,300,ruido,1.023,2481,3507
+p0444,pil,Roboto,sem serifa,16,150,limpa,0.000,1240,1754
+p0445,pil,Roboto,sem serifa,16,150,ruido,1.291,1240,1754
+p0446,pil,Roboto,sem serifa,16,200,limpa,0.000,1654,2338
+p0447,pil,Roboto,sem serifa,16,200,ruido,0.961,1654,2338
+p0448,pil,Roboto,sem serifa,16,300,limpa,0.000,2481,3507
+p0449,pil,Roboto,sem serifa,16,300,ruido,-1.295,2481,3507
+p0450,pil,Open Sans,sem serifa,8,150,limpa,0.000,1240,1754
+p0451,pil,Open Sans,sem serifa,8,150,ruido,-1.424,1240,1754
+p0452,pil,Open Sans,sem serifa,8,200,limpa,0.000,1654,2338
+p0453,pil,Open Sans,sem serifa,8,200,ruido,-1.306,1654,2338
+p0454,pil,Open Sans,sem serifa,8,300,limpa,0.000,2481,3507
+p0455,pil,Open Sans,sem serifa,8,300,ruido,-1.016,2481,3507
+p0456,pil,Open Sans,sem serifa,10,150,limpa,0.000,1240,1754
+p0457,pil,Open Sans,sem serifa,10,150,ruido,-0.751,1240,1754
+p0458,pil,Open Sans,sem serifa,10,200,limpa,0.000,1654,2338
+p0459,pil,Open Sans,sem serifa,10,200,ruido,-1.007,1654,2338
+p0460,pil,Open Sans,sem serifa,10,300,limpa,0.000,2481,3507
+p0461,pil,Open Sans,sem serifa,10,300,ruido,1.222,2481,3507
+p0462,pil,Open Sans,sem serifa,12,150,limpa,0.000,1240,1754
+p0463,pil,Open Sans,sem serifa,12,150,ruido,-0.569,1240,1754
+p0464,pil,Open Sans,sem serifa,12,200,limpa,0.000,1654,2338
+p0465,pil,Open Sans,sem serifa,12,200,ruido,-1.050,1654,2338
+p0466,pil,Open Sans,sem serifa,12,300,limpa,0.000,2481,3507
+p0467,pil,Open Sans,sem serifa,12,300,ruido,-0.657,2481,3507
+p0468,pil,Open Sans,sem serifa,14,150,limpa,0.000,1240,1754
+p0469,pil,Open Sans,sem serifa,14,150,ruido,-0.815,1240,1754
+p0470,pil,Open Sans,sem serifa,14,200,limpa,0.000,1654,2338
+p0471,pil,Open Sans,sem serifa,14,200,ruido,0.367,1654,2338
+p0472,pil,Open Sans,sem serifa,14,300,limpa,0.000,2481,3507
+p0473,pil,Open Sans,sem serifa,14,300,ruido,-1.170,2481,3507
+p0474,pil,Open Sans,sem serifa,16,150,limpa,0.000,1240,1754
+p0475,pil,Open Sans,sem serifa,16,150,ruido,-1.384,1240,1754
+p0476,pil,Open Sans,sem serifa,16,200,limpa,0.000,1654,2338
+p0477,pil,Open Sans,sem serifa,16,200,ruido,1.044,1654,2338
+p0478,pil,Open Sans,sem serifa,16,300,limpa,0.000,2481,3507
+p0479,pil,Open Sans,sem serifa,16,300,ruido,1.338,2481,3507
+p0480,pil,Ubuntu,sem serifa,8,150,limpa,0.000,1240,1754
+p0481,pil,Ubuntu,sem serifa,8,150,ruido,0.916,1240,1754
+p0482,pil,Ubuntu,sem serifa,8,200,limpa,0.000,1654,2338
+p0483,pil,Ubuntu,sem serifa,8,200,ruido,1.409,1654,2338
+p0484,pil,Ubuntu,sem serifa,8,300,limpa,0.000,2481,3507
+p0485,pil,Ubuntu,sem serifa,8,300,ruido,0.786,2481,3507
+p0486,pil,Ubuntu,sem serifa,10,150,limpa,0.000,1240,1754
+p0487,pil,Ubuntu,sem serifa,10,150,ruido,1.402,1240,1754
+p0488,pil,Ubuntu,sem serifa,10,200,limpa,0.000,1654,2338
+p0489,pil,Ubuntu,sem serifa,10,200,ruido,1.246,1654,2338
+p0490,pil,Ubuntu,sem serifa,10,300,limpa,0.000,2481,3507
+p0491,pil,Ubuntu,sem serifa,10,300,ruido,-0.503,2481,3507
+p0492,pil,Ubuntu,sem serifa,12,150,limpa,0.000,1240,1754
+p0493,pil,Ubuntu,sem serifa,12,150,ruido,-0.402,1240,1754
+p0494,pil,Ubuntu,sem serifa,12,200,limpa,0.000,1654,2338
+p0495,pil,Ubuntu,sem serifa,12,200,ruido,1.056,1654,2338
+p0496,pil,Ubuntu,sem serifa,12,300,limpa,0.000,2481,3507
+p0497,pil,Ubuntu,sem serifa,12,300,ruido,0.391,2481,3507
+p0498,pil,Ubuntu,sem serifa,14,150,limpa,0.000,1240,1754
+p0499,pil,Ubuntu,sem serifa,14,150,ruido,1.314,1240,1754
+p0500,pil,Ubuntu,sem serifa,14,200,limpa,0.000,1654,2338
+p0501,pil,Ubuntu,sem serifa,14,200,ruido,1.139,1654,2338
+p0502,pil,Ubuntu,sem serifa,14,300,limpa,0.000,2481,3507
+p0503,pil,Ubuntu,sem serifa,14,300,ruido,-1.446,2481,3507
+p0504,pil,Ubuntu,sem serifa,16,150,limpa,0.000,1240,1754
+p0505,pil,Ubuntu,sem serifa,16,150,ruido,0.382,1240,1754
+p0506,pil,Ubuntu,sem serifa,16,200,limpa,0.000,1654,2338
+p0507,pil,Ubuntu,sem serifa,16,200,ruido,-1.137,1654,2338
+p0508,pil,Ubuntu,sem serifa,16,300,limpa,0.000,2481,3507
+p0509,pil,Ubuntu,sem serifa,16,300,ruido,0.437,2481,3507
+p0510,pil,Ubuntu Mono,mono,8,150,limpa,0.000,1240,1754
+p0511,pil,Ubuntu Mono,mono,8,150,ruido,1.029,1240,1754
+p0512,pil,Ubuntu Mono,mono,8,200,limpa,0.000,1654,2338
+p0513,pil,Ubuntu Mono,mono,8,200,ruido,0.939,1654,2338
+p0514,pil,Ubuntu Mono,mono,8,300,limpa,0.000,2481,3507
+p0515,pil,Ubuntu Mono,mono,8,300,ruido,-1.439,2481,3507
+p0516,pil,Ubuntu Mono,mono,10,150,limpa,0.000,1240,1754
+p0517,pil,Ubuntu Mono,mono,10,150,ruido,0.333,1240,1754
+p0518,pil,Ubuntu Mono,mono,10,200,limpa,0.000,1654,2338
+p0519,pil,Ubuntu Mono,mono,10,200,ruido,0.579,1654,2338
+p0520,pil,Ubuntu Mono,mono,10,300,limpa,0.000,2481,3507
+p0521,pil,Ubuntu Mono,mono,10,300,ruido,-0.614,2481,3507
+p0522,pil,Ubuntu Mono,mono,12,150,limpa,0.000,1240,1754
+p0523,pil,Ubuntu Mono,mono,12,150,ruido,1.478,1240,1754
+p0524,pil,Ubuntu Mono,mono,12,200,limpa,0.000,1654,2338
+p0525,pil,Ubuntu Mono,mono,12,200,ruido,1.168,1654,2338
+p0526,pil,Ubuntu Mono,mono,12,300,limpa,0.000,2481,3507
+p0527,pil,Ubuntu Mono,mono,12,300,ruido,-0.630,2481,3507
+p0528,pil,Ubuntu Mono,mono,14,150,limpa,0.000,1240,1754
+p0529,pil,Ubuntu Mono,mono,14,150,ruido,1.047,1240,1754
+p0530,pil,Ubuntu Mono,mono,14,200,limpa,0.000,1654,2338
+p0531,pil,Ubuntu Mono,mono,14,200,ruido,-1.184,1654,2338
+p0532,pil,Ubuntu Mono,mono,14,300,limpa,0.000,2481,3507
+p0533,pil,Ubuntu Mono,mono,14,300,ruido,0.694,2481,3507
+p0534,pil,Ubuntu Mono,mono,16,150,limpa,0.000,1240,1754
+p0535,pil,Ubuntu Mono,mono,16,150,ruido,-1.108,1240,1754
+p0536,pil,Ubuntu Mono,mono,16,200,limpa,0.000,1654,2338
+p0537,pil,Ubuntu Mono,mono,16,200,ruido,-1.168,1654,2338
+p0538,pil,Ubuntu Mono,mono,16,300,limpa,0.000,2481,3507
+p0539,pil,Ubuntu Mono,mono,16,300,ruido,1.073,2481,3507
+p0540,pil,Inter,sem serifa,8,150,limpa,0.000,1240,1754
+p0541,pil,Inter,sem serifa,8,150,ruido,-0.887,1240,1754
+p0542,pil,Inter,sem serifa,8,200,limpa,0.000,1654,2338
+p0543,pil,Inter,sem serifa,8,200,ruido,-0.490,1654,2338
+p0544,pil,Inter,sem serifa,8,300,limpa,0.000,2481,3507
+p0545,pil,Inter,sem serifa,8,300,ruido,0.598,2481,3507
+p0546,pil,Inter,sem serifa,10,150,limpa,0.000,1240,1754
+p0547,pil,Inter,sem serifa,10,150,ruido,0.472,1240,1754
+p0548,pil,Inter,sem serifa,10,200,limpa,0.000,1654,2338
+p0549,pil,Inter,sem serifa,10,200,ruido,-1.134,1654,2338
+p0550,pil,Inter,sem serifa,10,300,limpa,0.000,2481,3507
+p0551,pil,Inter,sem serifa,10,300,ruido,1.154,2481,3507
+p0552,pil,Inter,sem serifa,12,150,limpa,0.000,1240,1754
+p0553,pil,Inter,sem serifa,12,150,ruido,1.067,1240,1754
+p0554,pil,Inter,sem serifa,12,200,limpa,0.000,1654,2338
+p0555,pil,Inter,sem serifa,12,200,ruido,0.456,1654,2338
+p0556,pil,Inter,sem serifa,12,300,limpa,0.000,2481,3507
+p0557,pil,Inter,sem serifa,12,300,ruido,-0.887,2481,3507
+p0558,pil,Inter,sem serifa,14,150,limpa,0.000,1240,1754
+p0559,pil,Inter,sem serifa,14,150,ruido,0.773,1240,1754
+p0560,pil,Inter,sem serifa,14,200,limpa,0.000,1654,2338
+p0561,pil,Inter,sem serifa,14,200,ruido,0.678,1654,2338
+p0562,pil,Inter,sem serifa,14,300,limpa,0.000,2481,3507
+p0563,pil,Inter,sem serifa,14,300,ruido,0.515,2481,3507
+p0564,pil,Inter,sem serifa,16,150,limpa,0.000,1240,1754
+p0565,pil,Inter,sem serifa,16,150,ruido,-0.523,1240,1754
+p0566,pil,Inter,sem serifa,16,200,limpa,0.000,1654,2338
+p0567,pil,Inter,sem serifa,16,200,ruido,-0.485,1654,2338
+p0568,pil,Inter,sem serifa,16,300,limpa,0.000,2481,3507
+p0569,pil,Inter,sem serifa,16,300,ruido,1.003,2481,3507
+p0570,pil,JetBrains Mono,mono,8,150,limpa,0.000,1240,1754
+p0571,pil,JetBrains Mono,mono,8,150,ruido,-1.471,1240,1754
+p0572,pil,JetBrains Mono,mono,8,200,limpa,0.000,1654,2338
+p0573,pil,JetBrains Mono,mono,8,200,ruido,-0.905,1654,2338
+p0574,pil,JetBrains Mono,mono,8,300,limpa,0.000,2481,3507
+p0575,pil,JetBrains Mono,mono,8,300,ruido,-0.341,2481,3507
+p0576,pil,JetBrains Mono,mono,10,150,limpa,0.000,1240,1754
+p0577,pil,JetBrains Mono,mono,10,150,ruido,1.211,1240,1754
+p0578,pil,JetBrains Mono,mono,10,200,limpa,0.000,1654,2338
+p0579,pil,JetBrains Mono,mono,10,200,ruido,-0.924,1654,2338
+p0580,pil,JetBrains Mono,mono,10,300,limpa,0.000,2481,3507
+p0581,pil,JetBrains Mono,mono,10,300,ruido,-1.446,2481,3507
+p0582,pil,JetBrains Mono,mono,12,150,limpa,0.000,1240,1754
+p0583,pil,JetBrains Mono,mono,12,150,ruido,-0.318,1240,1754
+p0584,pil,JetBrains Mono,mono,12,200,limpa,0.000,1654,2338
+p0585,pil,JetBrains Mono,mono,12,200,ruido,-0.880,1654,2338
+p0586,pil,JetBrains Mono,mono,12,300,limpa,0.000,2481,3507
+p0587,pil,JetBrains Mono,mono,12,300,ruido,0.622,2481,3507
+p0588,pil,JetBrains Mono,mono,14,150,limpa,0.000,1240,1754
+p0589,pil,JetBrains Mono,mono,14,150,ruido,0.437,1240,1754
+p0590,pil,JetBrains Mono,mono,14,200,limpa,0.000,1654,2338
+p0591,pil,JetBrains Mono,mono,14,200,ruido,-1.277,1654,2338
+p0592,pil,JetBrains Mono,mono,14,300,limpa,0.000,2481,3507
+p0593,pil,JetBrains Mono,mono,14,300,ruido,-0.508,2481,3507
+p0594,pil,JetBrains Mono,mono,16,150,limpa,0.000,1240,1754
+p0595,pil,JetBrains Mono,mono,16,150,ruido,0.744,1240,1754
+p0596,pil,JetBrains Mono,mono,16,200,limpa,0.000,1654,2338
+p0597,pil,JetBrains Mono,mono,16,200,ruido,0.660,1654,2338
+p0598,pil,JetBrains Mono,mono,16,300,limpa,0.000,2481,3507
+p0599,pil,JetBrains Mono,mono,16,300,ruido,0.323,2481,3507
+p0600,pil,Courier 10 Pitch,mono,8,150,limpa,0.000,1240,1754
+p0601,pil,Courier 10 Pitch,mono,8,150,ruido,-0.410,1240,1754
+p0602,pil,Courier 10 Pitch,mono,8,200,limpa,0.000,1654,2338
+p0603,pil,Courier 10 Pitch,mono,8,200,ruido,0.327,1654,2338
+p0604,pil,Courier 10 Pitch,mono,8,300,limpa,0.000,2481,3507
+p0605,pil,Courier 10 Pitch,mono,8,300,ruido,0.627,2481,3507
+p0606,pil,Courier 10 Pitch,mono,10,150,limpa,0.000,1240,1754
+p0607,pil,Courier 10 Pitch,mono,10,150,ruido,-0.589,1240,1754
+p0608,pil,Courier 10 Pitch,mono,10,200,limpa,0.000,1654,2338
+p0609,pil,Courier 10 Pitch,mono,10,200,ruido,-1.491,1654,2338
+p0610,pil,Courier 10 Pitch,mono,10,300,limpa,0.000,2481,3507
+p0611,pil,Courier 10 Pitch,mono,10,300,ruido,0.901,2481,3507
+p0612,pil,Courier 10 Pitch,mono,12,150,limpa,0.000,1240,1754
+p0613,pil,Courier 10 Pitch,mono,12,150,ruido,0.656,1240,1754
+p0614,pil,Courier 10 Pitch,mono,12,200,limpa,0.000,1654,2338
+p0615,pil,Courier 10 Pitch,mono,12,200,ruido,-0.716,1654,2338
+p0616,pil,Courier 10 Pitch,mono,12,300,limpa,0.000,2481,3507
+p0617,pil,Courier 10 Pitch,mono,12,300,ruido,0.491,2481,3507
+p0618,pil,Courier 10 Pitch,mono,14,150,limpa,0.000,1240,1754
+p0619,pil,Courier 10 Pitch,mono,14,150,ruido,-1.242,1240,1754
+p0620,pil,Courier 10 Pitch,mono,14,200,limpa,0.000,1654,2338
+p0621,pil,Courier 10 Pitch,mono,14,200,ruido,-1.049,1654,2338
+p0622,pil,Courier 10 Pitch,mono,14,300,limpa,0.000,2481,3507
+p0623,pil,Courier 10 Pitch,mono,14,300,ruido,0.410,2481,3507
+p0624,pil,Courier 10 Pitch,mono,16,150,limpa,0.000,1240,1754
+p0625,pil,Courier 10 Pitch,mono,16,150,ruido,1.313,1240,1754
+p0626,pil,Courier 10 Pitch,mono,16,200,limpa,0.000,1654,2338
+p0627,pil,Courier 10 Pitch,mono,16,200,ruido,-0.638,1654,2338
+p0628,pil,Courier 10 Pitch,mono,16,300,limpa,0.000,2481,3507
+p0629,pil,Courier 10 Pitch,mono,16,300,ruido,-0.857,2481,3507
+p0630,pil,Bitstream Charter,serifa,8,150,limpa,0.000,1240,1754
+p0631,pil,Bitstream Charter,serifa,8,150,ruido,-1.036,1240,1754
+p0632,pil,Bitstream Charter,serifa,8,200,limpa,0.000,1654,2338
+p0633,pil,Bitstream Charter,serifa,8,200,ruido,-1.221,1654,2338
+p0634,pil,Bitstream Charter,serifa,8,300,limpa,0.000,2481,3507
+p0635,pil,Bitstream Charter,serifa,8,300,ruido,-1.278,2481,3507
+p0636,pil,Bitstream Charter,serifa,10,150,limpa,0.000,1240,1754
+p0637,pil,Bitstream Charter,serifa,10,150,ruido,-0.602,1240,1754
+p0638,pil,Bitstream Charter,serifa,10,200,limpa,0.000,1654,2338
+p0639,pil,Bitstream Charter,serifa,10,200,ruido,-1.122,1654,2338
+p0640,pil,Bitstream Charter,serifa,10,300,limpa,0.000,2481,3507
+p0641,pil,Bitstream Charter,serifa,10,300,ruido,1.229,2481,3507
+p0642,pil,Bitstream Charter,serifa,12,150,limpa,0.000,1240,1754
+p0643,pil,Bitstream Charter,serifa,12,150,ruido,-0.666,1240,1754
+p0644,pil,Bitstream Charter,serifa,12,200,limpa,0.000,1654,2338
+p0645,pil,Bitstream Charter,serifa,12,200,ruido,0.598,1654,2338
+p0646,pil,Bitstream Charter,serifa,12,300,limpa,0.000,2481,3507
+p0647,pil,Bitstream Charter,serifa,12,300,ruido,0.907,2481,3507
+p0648,pil,Bitstream Charter,serifa,14,150,limpa,0.000,1240,1754
+p0649,pil,Bitstream Charter,serifa,14,150,ruido,-0.581,1240,1754
+p0650,pil,Bitstream Charter,serifa,14,200,limpa,0.000,1654,2338
+p0651,pil,Bitstream Charter,serifa,14,200,ruido,-1.103,1654,2338
+p0652,pil,Bitstream Charter,serifa,14,300,limpa,0.000,2481,3507
+p0653,pil,Bitstream Charter,serifa,14,300,ruido,0.801,2481,3507
+p0654,pil,Bitstream Charter,serifa,16,150,limpa,0.000,1240,1754
+p0655,pil,Bitstream Charter,serifa,16,150,ruido,-0.978,1240,1754
+p0656,pil,Bitstream Charter,serifa,16,200,limpa,0.000,1654,2338
+p0657,pil,Bitstream Charter,serifa,16,200,ruido,0.424,1654,2338
+p0658,pil,Bitstream Charter,serifa,16,300,limpa,0.000,2481,3507
+p0659,pil,Bitstream Charter,serifa,16,300,ruido,1.337,2481,3507
+n0660,navegador,DejaVu Sans,sem serifa,8,150,limpa,0.000,1240,1754
+n0661,navegador,DejaVu Sans,sem serifa,8,200,limpa,0.000,1654,2338
+n0662,navegador,DejaVu Sans,sem serifa,8,300,limpa,0.000,2481,3507
+n0663,navegador,DejaVu Sans,sem serifa,10,150,limpa,0.000,1240,1754
+n0664,navegador,DejaVu Sans,sem serifa,10,200,limpa,0.000,1654,2338
+n0665,navegador,DejaVu Sans,sem serifa,10,300,limpa,0.000,2481,3507
+n0666,navegador,DejaVu Sans,sem serifa,12,150,limpa,0.000,1240,1754
+n0667,navegador,DejaVu Sans,sem serifa,12,200,limpa,0.000,1654,2338
+n0668,navegador,DejaVu Sans,sem serifa,12,300,limpa,0.000,2481,3507
+n0669,navegador,DejaVu Sans,sem serifa,14,150,limpa,0.000,1240,1754
+n0670,navegador,DejaVu Sans,sem serifa,14,200,limpa,0.000,1654,2338
+n0671,navegador,DejaVu Sans,sem serifa,14,300,limpa,0.000,2481,3507
+n0672,navegador,DejaVu Sans,sem serifa,16,150,limpa,0.000,1240,1754
+n0673,navegador,DejaVu Sans,sem serifa,16,200,limpa,0.000,1654,2338
+n0674,navegador,DejaVu Sans,sem serifa,16,300,limpa,0.000,2481,3507
+n0675,navegador,DejaVu Serif,serifa,8,150,limpa,0.000,1240,1754
+n0676,navegador,DejaVu Serif,serifa,8,200,limpa,0.000,1654,2338
+n0677,navegador,DejaVu Serif,serifa,8,300,limpa,0.000,2481,3507
+n0678,navegador,DejaVu Serif,serifa,10,150,limpa,0.000,1240,1754
+n0679,navegador,DejaVu Serif,serifa,10,200,limpa,0.000,1654,2338
+n0680,navegador,DejaVu Serif,serifa,10,300,limpa,0.000,2481,3507
+n0681,navegador,DejaVu Serif,serifa,12,150,limpa,0.000,1240,1754
+n0682,navegador,DejaVu Serif,serifa,12,200,limpa,0.000,1654,2338
+n0683,navegador,DejaVu Serif,serifa,12,300,limpa,0.000,2481,3507
+n0684,navegador,DejaVu Serif,serifa,14,150,limpa,0.000,1240,1754
+n0685,navegador,DejaVu Serif,serifa,14,200,limpa,0.000,1654,2338
+n0686,navegador,DejaVu Serif,serifa,14,300,limpa,0.000,2481,3507
+n0687,navegador,DejaVu Serif,serifa,16,150,limpa,0.000,1240,1754
+n0688,navegador,DejaVu Serif,serifa,16,200,limpa,0.000,1654,2338
+n0689,navegador,DejaVu Serif,serifa,16,300,limpa,0.000,2481,3507
+n0690,navegador,DejaVu Sans Mono,mono,8,150,limpa,0.000,1240,1754
+n0691,navegador,DejaVu Sans Mono,mono,8,200,limpa,0.000,1654,2338
+n0692,navegador,DejaVu Sans Mono,mono,8,300,limpa,0.000,2481,3507
+n0693,navegador,DejaVu Sans Mono,mono,10,150,limpa,0.000,1240,1754
+n0694,navegador,DejaVu Sans Mono,mono,10,200,limpa,0.000,1654,2338
+n0695,navegador,DejaVu Sans Mono,mono,10,300,limpa,0.000,2481,3507
+n0696,navegador,DejaVu Sans Mono,mono,12,150,limpa,0.000,1240,1754
+n0697,navegador,DejaVu Sans Mono,mono,12,200,limpa,0.000,1654,2338
+n0698,navegador,DejaVu Sans Mono,mono,12,300,limpa,0.000,2481,3507
+n0699,navegador,DejaVu Sans Mono,mono,14,150,limpa,0.000,1240,1754
+n0700,navegador,DejaVu Sans Mono,mono,14,200,limpa,0.000,1654,2338
+n0701,navegador,DejaVu Sans Mono,mono,14,300,limpa,0.000,2481,3507
+n0702,navegador,DejaVu Sans Mono,mono,16,150,limpa,0.000,1240,1754
+n0703,navegador,DejaVu Sans Mono,mono,16,200,limpa,0.000,1654,2338
+n0704,navegador,DejaVu Sans Mono,mono,16,300,limpa,0.000,2481,3507
+n0705,navegador,Liberation Sans,sem serifa,8,150,limpa,0.000,1240,1754
+n0706,navegador,Liberation Sans,sem serifa,8,200,limpa,0.000,1654,2338
+n0707,navegador,Liberation Sans,sem serifa,8,300,limpa,0.000,2481,3507
+n0708,navegador,Liberation Sans,sem serifa,10,150,limpa,0.000,1240,1754
+n0709,navegador,Liberation Sans,sem serifa,10,200,limpa,0.000,1654,2338
+n0710,navegador,Liberation Sans,sem serifa,10,300,limpa,0.000,2481,3507
+n0711,navegador,Liberation Sans,sem serifa,12,150,limpa,0.000,1240,1754
+n0712,navegador,Liberation Sans,sem serifa,12,200,limpa,0.000,1654,2338
+n0713,navegador,Liberation Sans,sem serifa,12,300,limpa,0.000,2481,3507
+n0714,navegador,Liberation Sans,sem serifa,14,150,limpa,0.000,1240,1754
+n0715,navegador,Liberation Sans,sem serifa,14,200,limpa,0.000,1654,2338
+n0716,navegador,Liberation Sans,sem serifa,14,300,limpa,0.000,2481,3507
+n0717,navegador,Liberation Sans,sem serifa,16,150,limpa,0.000,1240,1754
+n0718,navegador,Liberation Sans,sem serifa,16,200,limpa,0.000,1654,2338
+n0719,navegador,Liberation Sans,sem serifa,16,300,limpa,0.000,2481,3507
+n0720,navegador,Liberation Serif,serifa,8,150,limpa,0.000,1240,1754
+n0721,navegador,Liberation Serif,serifa,8,200,limpa,0.000,1654,2338
+n0722,navegador,Liberation Serif,serifa,8,300,limpa,0.000,2481,3507
+n0723,navegador,Liberation Serif,serifa,10,150,limpa,0.000,1240,1754
+n0724,navegador,Liberation Serif,serifa,10,200,limpa,0.000,1654,2338
+n0725,navegador,Liberation Serif,serifa,10,300,limpa,0.000,2481,3507
+n0726,navegador,Liberation Serif,serifa,12,150,limpa,0.000,1240,1754
+n0727,navegador,Liberation Serif,serifa,12,200,limpa,0.000,1654,2338
+n0728,navegador,Liberation Serif,serifa,12,300,limpa,0.000,2481,3507
+n0729,navegador,Liberation Serif,serifa,14,150,limpa,0.000,1240,1754
+n0730,navegador,Liberation Serif,serifa,14,200,limpa,0.000,1654,2338
+n0731,navegador,Liberation Serif,serifa,14,300,limpa,0.000,2481,3507
+n0732,navegador,Liberation Serif,serifa,16,150,limpa,0.000,1240,1754
+n0733,navegador,Liberation Serif,serifa,16,200,limpa,0.000,1654,2338
+n0734,navegador,Liberation Serif,serifa,16,300,limpa,0.000,2481,3507
+n0735,navegador,Liberation Mono,mono,8,150,limpa,0.000,1240,1754
+n0736,navegador,Liberation Mono,mono,8,200,limpa,0.000,1654,2338
+n0737,navegador,Liberation Mono,mono,8,300,limpa,0.000,2481,3507
+n0738,navegador,Liberation Mono,mono,10,150,limpa,0.000,1240,1754
+n0739,navegador,Liberation Mono,mono,10,200,limpa,0.000,1654,2338
+n0740,navegador,Liberation Mono,mono,10,300,limpa,0.000,2481,3507
+n0741,navegador,Liberation Mono,mono,12,150,limpa,0.000,1240,1754
+n0742,navegador,Liberation Mono,mono,12,200,limpa,0.000,1654,2338
+n0743,navegador,Liberation Mono,mono,12,300,limpa,0.000,2481,3507
+n0744,navegador,Liberation Mono,mono,14,150,limpa,0.000,1240,1754
+n0745,navegador,Liberation Mono,mono,14,200,limpa,0.000,1654,2338
+n0746,navegador,Liberation Mono,mono,14,300,limpa,0.000,2481,3507
+n0747,navegador,Liberation Mono,mono,16,150,limpa,0.000,1240,1754
+n0748,navegador,Liberation Mono,mono,16,200,limpa,0.000,1654,2338
+n0749,navegador,Liberation Mono,mono,16,300,limpa,0.000,2481,3507
+n0750,navegador,FreeSans,sem serifa,8,150,limpa,0.000,1240,1754
+n0751,navegador,FreeSans,sem serifa,8,200,limpa,0.000,1654,2338
+n0752,navegador,FreeSans,sem serifa,8,300,limpa,0.000,2481,3507
+n0753,navegador,FreeSans,sem serifa,10,150,limpa,0.000,1240,1754
+n0754,navegador,FreeSans,sem serifa,10,200,limpa,0.000,1654,2338
+n0755,navegador,FreeSans,sem serifa,10,300,limpa,0.000,2481,3507
+n0756,navegador,FreeSans,sem serifa,12,150,limpa,0.000,1240,1754
+n0757,navegador,FreeSans,sem serifa,12,200,limpa,0.000,1654,2338
+n0758,navegador,FreeSans,sem serifa,12,300,limpa,0.000,2481,3507
+n0759,navegador,FreeSans,sem serifa,14,150,limpa,0.000,1240,1754
+n0760,navegador,FreeSans,sem serifa,14,200,limpa,0.000,1654,2338
+n0761,navegador,FreeSans,sem serifa,14,300,limpa,0.000,2481,3507
+n0762,navegador,FreeSans,sem serifa,16,150,limpa,0.000,1240,1754
+n0763,navegador,FreeSans,sem serifa,16,200,limpa,0.000,1654,2338
+n0764,navegador,FreeSans,sem serifa,16,300,limpa,0.000,2481,3507
+n0765,navegador,FreeSerif,serifa,8,150,limpa,0.000,1240,1754
+n0766,navegador,FreeSerif,serifa,8,200,limpa,0.000,1654,2338
+n0767,navegador,FreeSerif,serifa,8,300,limpa,0.000,2481,3507
+n0768,navegador,FreeSerif,serifa,10,150,limpa,0.000,1240,1754
+n0769,navegador,FreeSerif,serifa,10,200,limpa,0.000,1654,2338
+n0770,navegador,FreeSerif,serifa,10,300,limpa,0.000,2481,3507
+n0771,navegador,FreeSerif,serifa,12,150,limpa,0.000,1240,1754
+n0772,navegador,FreeSerif,serifa,12,200,limpa,0.000,1654,2338
+n0773,navegador,FreeSerif,serifa,12,300,limpa,0.000,2481,3507
+n0774,navegador,FreeSerif,serifa,14,150,limpa,0.000,1240,1754
+n0775,navegador,FreeSerif,serifa,14,200,limpa,0.000,1654,2338
+n0776,navegador,FreeSerif,serifa,14,300,limpa,0.000,2481,3507
+n0777,navegador,FreeSerif,serifa,16,150,limpa,0.000,1240,1754
+n0778,navegador,FreeSerif,serifa,16,200,limpa,0.000,1654,2338
+n0779,navegador,FreeSerif,serifa,16,300,limpa,0.000,2481,3507
+n0780,navegador,FreeMono,mono,8,150,limpa,0.000,1240,1754
+n0781,navegador,FreeMono,mono,8,200,limpa,0.000,1654,2338
+n0782,navegador,FreeMono,mono,8,300,limpa,0.000,2481,3507
+n0783,navegador,FreeMono,mono,10,150,limpa,0.000,1240,1754
+n0784,navegador,FreeMono,mono,10,200,limpa,0.000,1654,2338
+n0785,navegador,FreeMono,mono,10,300,limpa,0.000,2481,3507
+n0786,navegador,FreeMono,mono,12,150,limpa,0.000,1240,1754
+n0787,navegador,FreeMono,mono,12,200,limpa,0.000,1654,2338
+n0788,navegador,FreeMono,mono,12,300,limpa,0.000,2481,3507
+n0789,navegador,FreeMono,mono,14,150,limpa,0.000,1240,1754
+n0790,navegador,FreeMono,mono,14,200,limpa,0.000,1654,2338
+n0791,navegador,FreeMono,mono,14,300,limpa,0.000,2481,3507
+n0792,navegador,FreeMono,mono,16,150,limpa,0.000,1240,1754
+n0793,navegador,FreeMono,mono,16,200,limpa,0.000,1654,2338
+n0794,navegador,FreeMono,mono,16,300,limpa,0.000,2481,3507
+n0795,navegador,Noto Sans,sem serifa,8,150,limpa,0.000,1240,1754
+n0796,navegador,Noto Sans,sem serifa,8,200,limpa,0.000,1654,2338
+n0797,navegador,Noto Sans,sem serifa,8,300,limpa,0.000,2481,3507
+n0798,navegador,Noto Sans,sem serifa,10,150,limpa,0.000,1240,1754
+n0799,navegador,Noto Sans,sem serifa,10,200,limpa,0.000,1654,2338
+n0800,navegador,Noto Sans,sem serifa,10,300,limpa,0.000,2481,3507
+n0801,navegador,Noto Sans,sem serifa,12,150,limpa,0.000,1240,1754
+n0802,navegador,Noto Sans,sem serifa,12,200,limpa,0.000,1654,2338
+n0803,navegador,Noto Sans,sem serifa,12,300,limpa,0.000,2481,3507
+n0804,navegador,Noto Sans,sem serifa,14,150,limpa,0.000,1240,1754
+n0805,navegador,Noto Sans,sem serifa,14,200,limpa,0.000,1654,2338
+n0806,navegador,Noto Sans,sem serifa,14,300,limpa,0.000,2481,3507
+n0807,navegador,Noto Sans,sem serifa,16,150,limpa,0.000,1240,1754
+n0808,navegador,Noto Sans,sem serifa,16,200,limpa,0.000,1654,2338
+n0809,navegador,Noto Sans,sem serifa,16,300,limpa,0.000,2481,3507
+n0810,navegador,Noto Serif,serifa,8,150,limpa,0.000,1240,1754
+n0811,navegador,Noto Serif,serifa,8,200,limpa,0.000,1654,2338
+n0812,navegador,Noto Serif,serifa,8,300,limpa,0.000,2481,3507
+n0813,navegador,Noto Serif,serifa,10,150,limpa,0.000,1240,1754
+n0814,navegador,Noto Serif,serifa,10,200,limpa,0.000,1654,2338
+n0815,navegador,Noto Serif,serifa,10,300,limpa,0.000,2481,3507
+n0816,navegador,Noto Serif,serifa,12,150,limpa,0.000,1240,1754
+n0817,navegador,Noto Serif,serifa,12,200,limpa,0.000,1654,2338
+n0818,navegador,Noto Serif,serifa,12,300,limpa,0.000,2481,3507
+n0819,navegador,Noto Serif,serifa,14,150,limpa,0.000,1240,1754
+n0820,navegador,Noto Serif,serifa,14,200,limpa,0.000,1654,2338
+n0821,navegador,Noto Serif,serifa,14,300,limpa,0.000,2481,3507
+n0822,navegador,Noto Serif,serifa,16,150,limpa,0.000,1240,1754
+n0823,navegador,Noto Serif,serifa,16,200,limpa,0.000,1654,2338
+n0824,navegador,Noto Serif,serifa,16,300,limpa,0.000,2481,3507
+n0825,navegador,Noto Sans Mono,mono,8,150,limpa,0.000,1240,1754
+n0826,navegador,Noto Sans Mono,mono,8,200,limpa,0.000,1654,2338
+n0827,navegador,Noto Sans Mono,mono,8,300,limpa,0.000,2481,3507
+n0828,navegador,Noto Sans Mono,mono,10,150,limpa,0.000,1240,1754
+n0829,navegador,Noto Sans Mono,mono,10,200,limpa,0.000,1654,2338
+n0830,navegador,Noto Sans Mono,mono,10,300,limpa,0.000,2481,3507
+n0831,navegador,Noto Sans Mono,mono,12,150,limpa,0.000,1240,1754
+n0832,navegador,Noto Sans Mono,mono,12,200,limpa,0.000,1654,2338
+n0833,navegador,Noto Sans Mono,mono,12,300,limpa,0.000,2481,3507
+n0834,navegador,Noto Sans Mono,mono,14,150,limpa,0.000,1240,1754
+n0835,navegador,Noto Sans Mono,mono,14,200,limpa,0.000,1654,2338
+n0836,navegador,Noto Sans Mono,mono,14,300,limpa,0.000,2481,3507
+n0837,navegador,Noto Sans Mono,mono,16,150,limpa,0.000,1240,1754
+n0838,navegador,Noto Sans Mono,mono,16,200,limpa,0.000,1654,2338
+n0839,navegador,Noto Sans Mono,mono,16,300,limpa,0.000,2481,3507
+n0840,navegador,Carlito,sem serifa,8,150,limpa,0.000,1240,1754
+n0841,navegador,Carlito,sem serifa,8,200,limpa,0.000,1654,2338
+n0842,navegador,Carlito,sem serifa,8,300,limpa,0.000,2481,3507
+n0843,navegador,Carlito,sem serifa,10,150,limpa,0.000,1240,1754
+n0844,navegador,Carlito,sem serifa,10,200,limpa,0.000,1654,2338
+n0845,navegador,Carlito,sem serifa,10,300,limpa,0.000,2481,3507
+n0846,navegador,Carlito,sem serifa,12,150,limpa,0.000,1240,1754
+n0847,navegador,Carlito,sem serifa,12,200,limpa,0.000,1654,2338
+n0848,navegador,Carlito,sem serifa,12,300,limpa,0.000,2481,3507
+n0849,navegador,Carlito,sem serifa,14,150,limpa,0.000,1240,1754
+n0850,navegador,Carlito,sem serifa,14,200,limpa,0.000,1654,2338
+n0851,navegador,Carlito,sem serifa,14,300,limpa,0.000,2481,3507
+n0852,navegador,Carlito,sem serifa,16,150,limpa,0.000,1240,1754
+n0853,navegador,Carlito,sem serifa,16,200,limpa,0.000,1654,2338
+n0854,navegador,Carlito,sem serifa,16,300,limpa,0.000,2481,3507
+n0855,navegador,Caladea,serifa,8,150,limpa,0.000,1240,1754
+n0856,navegador,Caladea,serifa,8,200,limpa,0.000,1654,2338
+n0857,navegador,Caladea,serifa,8,300,limpa,0.000,2481,3507
+n0858,navegador,Caladea,serifa,10,150,limpa,0.000,1240,1754
+n0859,navegador,Caladea,serifa,10,200,limpa,0.000,1654,2338
+n0860,navegador,Caladea,serifa,10,300,limpa,0.000,2481,3507
+n0861,navegador,Caladea,serifa,12,150,limpa,0.000,1240,1754
+n0862,navegador,Caladea,serifa,12,200,limpa,0.000,1654,2338
+n0863,navegador,Caladea,serifa,12,300,limpa,0.000,2481,3507
+n0864,navegador,Caladea,serifa,14,150,limpa,0.000,1240,1754
+n0865,navegador,Caladea,serifa,14,200,limpa,0.000,1654,2338
+n0866,navegador,Caladea,serifa,14,300,limpa,0.000,2481,3507
+n0867,navegador,Caladea,serifa,16,150,limpa,0.000,1240,1754
+n0868,navegador,Caladea,serifa,16,200,limpa,0.000,1654,2338
+n0869,navegador,Caladea,serifa,16,300,limpa,0.000,2481,3507
+n0870,navegador,Roboto,sem serifa,8,150,limpa,0.000,1240,1754
+n0871,navegador,Roboto,sem serifa,8,200,limpa,0.000,1654,2338
+n0872,navegador,Roboto,sem serifa,8,300,limpa,0.000,2481,3507
+n0873,navegador,Roboto,sem serifa,10,150,limpa,0.000,1240,1754
+n0874,navegador,Roboto,sem serifa,10,200,limpa,0.000,1654,2338
+n0875,navegador,Roboto,sem serifa,10,300,limpa,0.000,2481,3507
+n0876,navegador,Roboto,sem serifa,12,150,limpa,0.000,1240,1754
+n0877,navegador,Roboto,sem serifa,12,200,limpa,0.000,1654,2338
+n0878,navegador,Roboto,sem serifa,12,300,limpa,0.000,2481,3507
+n0879,navegador,Roboto,sem serifa,14,150,limpa,0.000,1240,1754
+n0880,navegador,Roboto,sem serifa,14,200,limpa,0.000,1654,2338
+n0881,navegador,Roboto,sem serifa,14,300,limpa,0.000,2481,3507
+n0882,navegador,Roboto,sem serifa,16,150,limpa,0.000,1240,1754
+n0883,navegador,Roboto,sem serifa,16,200,limpa,0.000,1654,2338
+n0884,navegador,Roboto,sem serifa,16,300,limpa,0.000,2481,3507
+n0885,navegador,Open Sans,sem serifa,8,150,limpa,0.000,1240,1754
+n0886,navegador,Open Sans,sem serifa,8,200,limpa,0.000,1654,2338
+n0887,navegador,Open Sans,sem serifa,8,300,limpa,0.000,2481,3507
+n0888,navegador,Open Sans,sem serifa,10,150,limpa,0.000,1240,1754
+n0889,navegador,Open Sans,sem serifa,10,200,limpa,0.000,1654,2338
+n0890,navegador,Open Sans,sem serifa,10,300,limpa,0.000,2481,3507
+n0891,navegador,Open Sans,sem serifa,12,150,limpa,0.000,1240,1754
+n0892,navegador,Open Sans,sem serifa,12,200,limpa,0.000,1654,2338
+n0893,navegador,Open Sans,sem serifa,12,300,limpa,0.000,2481,3507
+n0894,navegador,Open Sans,sem serifa,14,150,limpa,0.000,1240,1754
+n0895,navegador,Open Sans,sem serifa,14,200,limpa,0.000,1654,2338
+n0896,navegador,Open Sans,sem serifa,14,300,limpa,0.000,2481,3507
+n0897,navegador,Open Sans,sem serifa,16,150,limpa,0.000,1240,1754
+n0898,navegador,Open Sans,sem serifa,16,200,limpa,0.000,1654,2338
+n0899,navegador,Open Sans,sem serifa,16,300,limpa,0.000,2481,3507
+n0900,navegador,Ubuntu,sem serifa,8,150,limpa,0.000,1240,1754
+n0901,navegador,Ubuntu,sem serifa,8,200,limpa,0.000,1654,2338
+n0902,navegador,Ubuntu,sem serifa,8,300,limpa,0.000,2481,3507
+n0903,navegador,Ubuntu,sem serifa,10,150,limpa,0.000,1240,1754
+n0904,navegador,Ubuntu,sem serifa,10,200,limpa,0.000,1654,2338
+n0905,navegador,Ubuntu,sem serifa,10,300,limpa,0.000,2481,3507
+n0906,navegador,Ubuntu,sem serifa,12,150,limpa,0.000,1240,1754
+n0907,navegador,Ubuntu,sem serifa,12,200,limpa,0.000,1654,2338
+n0908,navegador,Ubuntu,sem serifa,12,300,limpa,0.000,2481,3507
+n0909,navegador,Ubuntu,sem serifa,14,150,limpa,0.000,1240,1754
+n0910,navegador,Ubuntu,sem serifa,14,200,limpa,0.000,1654,2338
+n0911,navegador,Ubuntu,sem serifa,14,300,limpa,0.000,2481,3507
+n0912,navegador,Ubuntu,sem serifa,16,150,limpa,0.000,1240,1754
+n0913,navegador,Ubuntu,sem serifa,16,200,limpa,0.000,1654,2338
+n0914,navegador,Ubuntu,sem serifa,16,300,limpa,0.000,2481,3507
+n0915,navegador,Ubuntu Mono,mono,8,150,limpa,0.000,1240,1754
+n0916,navegador,Ubuntu Mono,mono,8,200,limpa,0.000,1654,2338
+n0917,navegador,Ubuntu Mono,mono,8,300,limpa,0.000,2481,3507
+n0918,navegador,Ubuntu Mono,mono,10,150,limpa,0.000,1240,1754
+n0919,navegador,Ubuntu Mono,mono,10,200,limpa,0.000,1654,2338
+n0920,navegador,Ubuntu Mono,mono,10,300,limpa,0.000,2481,3507
+n0921,navegador,Ubuntu Mono,mono,12,150,limpa,0.000,1240,1754
+n0922,navegador,Ubuntu Mono,mono,12,200,limpa,0.000,1654,2338
+n0923,navegador,Ubuntu Mono,mono,12,300,limpa,0.000,2481,3507
+n0924,navegador,Ubuntu Mono,mono,14,150,limpa,0.000,1240,1754
+n0925,navegador,Ubuntu Mono,mono,14,200,limpa,0.000,1654,2338
+n0926,navegador,Ubuntu Mono,mono,14,300,limpa,0.000,2481,3507
+n0927,navegador,Ubuntu Mono,mono,16,150,limpa,0.000,1240,1754
+n0928,navegador,Ubuntu Mono,mono,16,200,limpa,0.000,1654,2338
+n0929,navegador,Ubuntu Mono,mono,16,300,limpa,0.000,2481,3507
+n0930,navegador,Inter,sem serifa,8,150,limpa,0.000,1240,1754
+n0931,navegador,Inter,sem serifa,8,200,limpa,0.000,1654,2338
+n0932,navegador,Inter,sem serifa,8,300,limpa,0.000,2481,3507
+n0933,navegador,Inter,sem serifa,10,150,limpa,0.000,1240,1754
+n0934,navegador,Inter,sem serifa,10,200,limpa,0.000,1654,2338
+n0935,navegador,Inter,sem serifa,10,300,limpa,0.000,2481,3507
+n0936,navegador,Inter,sem serifa,12,150,limpa,0.000,1240,1754
+n0937,navegador,Inter,sem serifa,12,200,limpa,0.000,1654,2338
+n0938,navegador,Inter,sem serifa,12,300,limpa,0.000,2481,3507
+n0939,navegador,Inter,sem serifa,14,150,limpa,0.000,1240,1754
+n0940,navegador,Inter,sem serifa,14,200,limpa,0.000,1654,2338
+n0941,navegador,Inter,sem serifa,14,300,limpa,0.000,2481,3507
+n0942,navegador,Inter,sem serifa,16,150,limpa,0.000,1240,1754
+n0943,navegador,Inter,sem serifa,16,200,limpa,0.000,1654,2338
+n0944,navegador,Inter,sem serifa,16,300,limpa,0.000,2481,3507
+n0945,navegador,JetBrains Mono,mono,8,150,limpa,0.000,1240,1754
+n0946,navegador,JetBrains Mono,mono,8,200,limpa,0.000,1654,2338
+n0947,navegador,JetBrains Mono,mono,8,300,limpa,0.000,2481,3507
+n0948,navegador,JetBrains Mono,mono,10,150,limpa,0.000,1240,1754
+n0949,navegador,JetBrains Mono,mono,10,200,limpa,0.000,1654,2338
+n0950,navegador,JetBrains Mono,mono,10,300,limpa,0.000,2481,3507
+n0951,navegador,JetBrains Mono,mono,12,150,limpa,0.000,1240,1754
+n0952,navegador,JetBrains Mono,mono,12,200,limpa,0.000,1654,2338
+n0953,navegador,JetBrains Mono,mono,12,300,limpa,0.000,2481,3507
+n0954,navegador,JetBrains Mono,mono,14,150,limpa,0.000,1240,1754
+n0955,navegador,JetBrains Mono,mono,14,200,limpa,0.000,1654,2338
+n0956,navegador,JetBrains Mono,mono,14,300,limpa,0.000,2481,3507
+n0957,navegador,JetBrains Mono,mono,16,150,limpa,0.000,1240,1754
+n0958,navegador,JetBrains Mono,mono,16,200,limpa,0.000,1654,2338
+n0959,navegador,JetBrains Mono,mono,16,300,limpa,0.000,2481,3507
+r0960,reproducao,Liberation Sans,sem serifa,17.28,150,limpa,0.000,1240,1754
+r0961,reproducao,DejaVu Sans,sem serifa,17.28,150,limpa,0.000,1240,1754
+r0962,reproducao,FreeSans,sem serifa,17.28,150,limpa,0.000,1240,1754
+r0963,reproducao,Carlito,sem serifa,17.28,150,limpa,0.000,1240,1754
+r0964,reproducao,Caladea,serifa,17.28,150,limpa,0.000,1240,1754
+r0965,reproducao,DejaVu Serif,serifa,17.28,150,limpa,0.000,1240,1754
