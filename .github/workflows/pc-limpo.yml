@@ -74,7 +74,11 @@ jobs:
           -Exe (Get-ChildItem dist/release/TarjaLivre-*.exe | Select-Object -First 1).FullName
           -Saida pc-limpo -Segundos 90 -BloquearRede -Instalar
 
+      # Por enquanto só no windows-2022: o WebView2 155 do windows-latest (Server 2025) ignora a
+      # WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS quando o exe passa as próprias opções, e o teste fica sem a porta de
+      # depuração (o programa abre normal: retrato de 31/10/2026). Voltar quando o runner tiver o WebView2 156.
       - name: Abrir um PDF, tarjar e salvar dentro do exe
+        if: matrix.windows == 'windows-2022'
         shell: pwsh
         run: |
           $env:TARJA_EXE = (Get-ChildItem dist/release/TarjaLivre-*.exe | Select-Object -First 1).FullName
