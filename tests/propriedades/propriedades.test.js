@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: MIT
 // Testes de propriedade (fuzzing por geração aleatória, fast-check): em vez de exemplos fixos, milhares de entradas
 // geradas, e a regra tem de valer em todas. Números gerados aqui são calculados na hora, nunca de pessoa real.
-// Uso: npm ci --ignore-scripts --prefix tests/propriedades && node --test tests/propriedades/propriedades.test.mjs
+// Em .js, não .mjs: o Scorecard (Fuzzing) só procura o fast-check em *.js e *.jsx; o package.json daqui é "type": "module".
+// Uso: npm ci --ignore-scripts --prefix tests/propriedades && node --test tests/propriedades/propriedades.test.js
 import { test } from 'node:test';
 import fc from 'fast-check';
 import { procurar, cpfValido, cnpjValido, juntarTexto, prepararTermos, MAX_TERMOS, MAX_LETRAS_TERMO } from '../../src/achados.js';

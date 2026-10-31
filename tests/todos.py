@@ -38,7 +38,7 @@ def rodar(nome: str, comando: list[str], limite: int) -> bool:
 
 def main() -> int:
     testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs"], 600)]
-    testes.append(("propriedades", ["node", "--test", "tests/propriedades/propriedades.test.mjs"], 600))
+    testes.append(("propriedades", ["node", "--test", "tests/propriedades/propriedades.test.js"], 600))
     testes += [(t, ["node", f"tests/{t}.mjs"], 900) for t in E2E]
     if "--sem-auditoria" not in sys.argv:
         testes.append(("auditoria externa", [sys.executable, "-X", "utf8", "tests/auditoria-ext/rodar.py"], 900))

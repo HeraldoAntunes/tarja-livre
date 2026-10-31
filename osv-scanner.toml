@@ -4,3 +4,12 @@
 [[IgnoredVulns]]
 id = "GHSA-wrw7-89jp-8q8g"
 reason = "glib 0.18.5 só entra no build Linux do Tauri (GTK); o exe publicado é só para Windows e não o compila (cargo tree -i glib sem --target all: nada). O Tauri 2 ainda fixa o gtk-rs 0.18, sem versão corrigida para subir. O programa não usa o glib diretamente (o código afetado é o VariantStrIter)."
+
+# o mesmo glib, com o identificador que o Scorecard usa
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0429"
+reason = "Mesmo aviso do GHSA-wrw7-89jp-8q8g (glib 0.18.5): só no build Linux do Tauri, fora do exe publicado para Windows."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0370"
+reason = "proc-macro-error 1.0.4 sem manutenção (não é falha de segurança): vem só do glib-macros do build Linux do Tauri (cargo tree -i proc-macro-error --target x86_64-pc-windows-msvc: nada) e roda só na compilação."

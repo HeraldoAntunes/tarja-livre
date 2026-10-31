@@ -78,7 +78,10 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
   const respostas = [];   // respostas combinadas para as próximas perguntas (confirm) da página
   const perguntas = [];   // o texto de cada pergunta respondida assim
   let alvo;
-  for (let t = 0; t < 60 && !alvo; t++) {
+  // o exe pode demorar mais: primeiro WebView2 num perfil novo, e até 3 tentativas de criar a janela (main.rs). No
+  // windows-latest do Actions (Server 2025, WebView2 156) os 15 s do Edge não bastavam (PC limpo, 30/10/2026)
+  const tentativas = EXE ? 240 : 60;
+  for (let t = 0; t < tentativas && !alvo; t++) {
     await espera(250);
     try {
       const lista = await (await fetch(`http://127.0.0.1:${porta}/json/list`)).json();
