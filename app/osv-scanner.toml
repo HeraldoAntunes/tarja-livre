@@ -1,4 +1,5 @@
-# Avisos de dependência conferidos e que não atingem o Tarja Livre (lido pelo OSV-Scanner e pelo Scorecard).
+# Avisos de dependência conferidos e que não atingem o Tarja Livre (lido pelo OSV-Scanner e pelo Scorecard, que só
+# procuram este arquivo na pasta do lockfile: por isso aqui, ao lado do Cargo.lock).
 # Cada um diz por quê; rever a cada atualização do Tauri.
 
 [[IgnoredVulns]]

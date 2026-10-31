@@ -85,8 +85,11 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force pc-limpo | Out-Null
-          $log = Join-Path $env:TEMP 'janelas.log'
-          if (Test-Path $log) { Copy-Item $log pc-limpo/janelas.log; Get-Content $log } else { 'sem janelas.log' }
+          # o do e2e (perfil em %TEMP%) e o do perfil normal, que o pc_limpo.ps1 usa
+          $logs = @{ 'janelas-e2e.log' = (Join-Path $env:TEMP 'janelas.log'); 'janelas-normal.log' = (Join-Path $env:LOCALAPPDATA 'br.tarjalivre.app/janelas.log') }
+          foreach ($nome in $logs.Keys) {
+            if (Test-Path $logs[$nome]) { Copy-Item $logs[$nome] "pc-limpo/$nome"; "== $nome"; Get-Content $logs[$nome] } else { "sem $nome" }
+          }
 
       - name: Guardar capturas e relatório
         if: always()
