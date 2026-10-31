@@ -90,7 +90,17 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
   }
   abertos.set(edge.pid, perfilFixo ? [baixados] : [perfil, baixados]);
   if (perfilFixo) pastasDoFim.add(perfilFixo);
-  if (!alvo) { limpar(edge.pid, abertos.get(edge.pid)); throw new Error('Edge não respondeu no protocolo de depuração'); }
+  if (!alvo) {
+    // com o exe, um retrato da tela e dos processos antes de encerrar, para saber por que a porta não abriu
+    if (EXE) {
+      try {
+        execFileSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', join(RAIZ, 'tests', 'diagnostico_tela.ps1'),
+          '-Saida', join(capturas, 'diagnostico')], { stdio: 'inherit', timeout: 60000 });
+      } catch (e) { console.error('diagnóstico falhou:', e.message); }
+    }
+    limpar(edge.pid, abertos.get(edge.pid));
+    throw new Error('Edge não respondeu no protocolo de depuração');
+  }
 
   const ws = new WebSocket(alvo.webSocketDebuggerUrl);
   await new Promise((r, f) => { ws.onopen = r; ws.onerror = f; });
