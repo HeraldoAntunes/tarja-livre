@@ -12,7 +12,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
-import { RAIZ, montar, abrirNavegador, espera } from './navegador.mjs';
+import { RAIZ, montar, abrirNavegador, espera, emJs } from './navegador.mjs';
 
 const ITENS = process.env.ITENS || 'ABCDEF';
 const PDF = readFileSync(join(RAIZ, 'tests', 'fixtures', 'tarja-teste.pdf'));
@@ -147,7 +147,7 @@ if (ITENS.includes('D')) {
 
 if (ITENS.includes('E')) {
   const linhas = ['Fulano de Teste', 'fulano de teste', 'a', 'X'.repeat(250), ...Array.from({ length: 505 }, (_, i) => 'Termo ' + i)];
-  await n.js(`(() => { const t = document.getElementById('termos'); t.value = ${JSON.stringify(linhas.join('\n'))}; t.dispatchEvent(new Event('input')); })()`);
+  await n.js(`(() => { const t = document.getElementById('termos'); t.value = ${emJs(linhas.join('\n'))}; t.dispatchEvent(new Event('input')); })()`);
   const info = await n.js(`document.getElementById('infoTermos').textContent`);
   assert.match(info, /^500 termo/, 'E: entram 500: ' + info);
   assert.match(info, /não entraram/, 'E: diz quantas linhas ficaram de fora: ' + info);

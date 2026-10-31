@@ -15,6 +15,9 @@ export const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const HTML = join(RAIZ, 'dist', 'Tarja Livre.html');
 export const HTML_OCR = join(RAIZ, 'dist', 'Tarja Livre com OCR.html');
 export const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+// valor do Node escrito como literal de JavaScript no código que roda na página: o JSON.stringify e mais os caracteres
+// que fecham um <script> ou quebram a linha em JavaScript antigo (CodeQL, js/bad-code-sanitization)
+export const emJs = (v) => JSON.stringify(v).replace(/[<>/\u2028\u2029]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
 
 const EDGE = ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(existsSync);

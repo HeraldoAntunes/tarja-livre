@@ -10,6 +10,8 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+// texto usado dentro de uma expressão regular, com todos os caracteres especiais escapados
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 execFileSync('python', ['-X', 'utf8', join(RAIZ, 'scripts', 'montar.py')]);
@@ -44,7 +46,7 @@ for (const { nome, scripts: quantos, wasm } of VERSOES) {
   });
 
   test(`${nome}: cada script que roda tem o seu hash na política, e nenhum vem de fora`, () => {
-    const scripts = [...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];
+    const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script[^>]*>/gi)];
     const rodam = scripts.filter(([, atrib]) => !/type="text\/plain"/.test(atrib));
     assert.equal(rodam.length, quantos, 'jsPDF, PDF.js, o programa' + (wasm ? ' e o Tesseract' : ''));
     for (const [, atrib, corpo] of rodam) {
@@ -54,7 +56,9 @@ for (const { nome, scripts: quantos, wasm } of VERSOES) {
     const [, estilo] = html.match(/<style>([\s\S]*?)<\/style>/);
     assert.ok(diretiva('style-src').includes(sha(estilo)), 'hash do estilo na CSP');
     // fora dos scripts (as bibliotecas têm textos com essas palavras, que não são marcação)
-    const pagina = html.replace(/<script[^>]*>[\s\S]*?<\/script>/g, '');
+    // repetido até não sobrar nada (um <script> partido ao meio não esconde outro: CodeQL, multi-character sanitization)
+    let pagina = html, antes;
+    do { antes = pagina; pagina = pagina.replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, ''); } while (pagina !== antes);
     assert.ok(!/<(script|link|img|iframe)[^>]+(src|href)="https?:/i.test(pagina), 'nada carregado da internet');
     assert.ok(!/\sstyle="/.test(pagina), 'sem style="" (a CSP bloquearia)');
     assert.equal(html.includes('id="ocr-worker"'), wasm, 'worker do OCR só na versão com OCR');
@@ -93,9 +97,9 @@ test('versão igual no programa, no CHANGELOG e no CITATION', () => {
   const versao = readFileSync(join(RAIZ, 'src', 'versao.js'), 'utf8').match(/VERSAO = '([^']+)'/)[1];
   const changelog = readFileSync(join(RAIZ, 'CHANGELOG.md'), 'utf8');
   const citation = readFileSync(join(RAIZ, 'CITATION.cff'), 'utf8');
-  assert.match(changelog, new RegExp(`^## \\[${versao.replace(/\./g, '\\.')}\\]`, 'm'), 'CHANGELOG com a versão');
-  assert.match(citation, new RegExp(`^version: "${versao.replace(/\./g, '\\.')}"`, 'm'), 'CITATION com a versão');
-  assert.match(readFileSync(join(RAIZ, 'app', 'Cargo.toml'), 'utf8'), new RegExp(`^version = "${versao.replace(/\./g, '\\.')}"`, 'm'), 'exe (Cargo.toml) com a versão');
+  assert.match(changelog, new RegExp(`^## \\[${escRe(versao)}\\]`, 'm'), 'CHANGELOG com a versão');
+  assert.match(citation, new RegExp(`^version: "${escRe(versao)}"`, 'm'), 'CITATION com a versão');
+  assert.match(readFileSync(join(RAIZ, 'app', 'Cargo.toml'), 'utf8'), new RegExp(`^version = "${escRe(versao)}"`, 'm'), 'exe (Cargo.toml) com a versão');
   assert.equal(JSON.parse(readFileSync(join(RAIZ, 'app', 'tauri.conf.json'), 'utf8')).version, versao, 'exe (tauri.conf.json) com a versão');
   for (const { nome } of VERSOES) assert.ok(examinar(nome).html.includes(`VERSAO = '${versao}'`), 'versão em ' + nome);
 });

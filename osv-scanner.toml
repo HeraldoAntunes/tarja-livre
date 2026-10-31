@@ -1,0 +1,6 @@
+# Avisos de dependência conferidos e que não atingem o Tarja Livre (lido pelo OSV-Scanner e pelo Scorecard).
+# Cada um diz por quê; rever a cada atualização do Tauri.
+
+[[IgnoredVulns]]
+id = "GHSA-wrw7-89jp-8q8g"
+reason = "glib 0.18.5 só entra no build Linux do Tauri (GTK); o exe publicado é só para Windows e não o compila (cargo tree -i glib sem --target all: nada). O Tauri 2 ainda fixa o gtk-rs 0.18, sem versão corrigida para subir. O programa não usa o glib diretamente (o código afetado é o VariantStrIter)."

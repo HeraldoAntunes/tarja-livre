@@ -5,6 +5,7 @@
 documentos antigos não fazia isso: o Node não expande o *, auditoria da rc.1 da 1.2.1). Usado pelo CI.
 
   rápidos      node --test: procura, montador, dados fictícios
+  propriedades fast-check nas funções puras da procura (precisa do npm ci de tests/propriedades)
   e2e          os de ponta a ponta no Edge sem janela (ou dentro do exe, com TARJA_EXE), um processo por arquivo
   auditoria    os testes da auditoria externa (tests/auditoria-ext/rodar.py; precisa do npm ci de lá)
 
@@ -37,6 +38,7 @@ def rodar(nome: str, comando: list[str], limite: int) -> bool:
 
 def main() -> int:
     testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs"], 600)]
+    testes.append(("propriedades", ["node", "--test", "tests/propriedades/propriedades.test.mjs"], 600))
     testes += [(t, ["node", f"tests/{t}.mjs"], 900) for t in E2E]
     if "--sem-auditoria" not in sys.argv:
         testes.append(("auditoria externa", [sys.executable, "-X", "utf8", "tests/auditoria-ext/rodar.py"], 900))

@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
-import { RAIZ, montar, abrirNavegador } from './navegador.mjs';
+import { RAIZ, montar, abrirNavegador, emJs } from './navegador.mjs';
 
 const CAPTURAS = process.argv[2] || join(RAIZ, 'files', 'e2e-varios');
 montar();
@@ -19,8 +19,8 @@ const { js, ate, clicar, texto, erros } = nav;
 const abas = () => js(`[...document.querySelectorAll('#abas .aba')].map((a) =>
   [a.querySelector('.txt').textContent, a.querySelector('.situacao').textContent, a.classList.contains('ativa')])`);
 const irPara = async (nome) => {
-  await js(`[...document.querySelectorAll('#abas .aba')].find((a) => a.querySelector('.txt').textContent === ${JSON.stringify(nome)}).querySelector('.aba-nome').click()`);
-  await ate(`document.getElementById('nomeArquivo').textContent === ${JSON.stringify(nome)} && !!document.getElementById('tela').dataset.pagina`, 'trocar para ' + nome);
+  await js(`[...document.querySelectorAll('#abas .aba')].find((a) => a.querySelector('.txt').textContent === ${emJs(nome)}).querySelector('.aba-nome').click()`);
+  await ate(`document.getElementById('nomeArquivo').textContent === ${emJs(nome)} && !!document.getElementById('tela').dataset.pagina`, 'trocar para ' + nome);
 };
 async function verTodas(n) {
   for (let i = 0; i < n; i++) {
@@ -36,7 +36,7 @@ try {
   await nav.abrirPrograma();
   // dois PDFs pequenos feitos na hora, com dados inventados
   const gerar = (linhas, paginas = 1) => js(`(() => { const d = new jspdf.jsPDF({ unit: 'pt', format: 'a4' }); d.setFontSize(14);
-    for (let p = 0; p < ${paginas}; p++) { if (p) d.addPage(); ${JSON.stringify(linhas)}.forEach((t, i) => d.text(t, 60, 100 + 30 * i)); }
+    for (let p = 0; p < ${paginas}; p++) { if (p) d.addPage(); ${emJs(linhas)}.forEach((t, i) => d.text(t, 60, 100 + 30 * i)); }
     const u = new Uint8Array(d.output('arraybuffer')); let s = ''; for (const c of u) s += String.fromCharCode(c); return btoa(s); })()`);
   const a = Buffer.from(await gerar(['Aluno A', 'CPF 831.975.872-60'], 2), 'base64');
   const b = Buffer.from(await gerar(['Aluna B', 'E-mail aluna.b@exemplo.test']), 'base64');

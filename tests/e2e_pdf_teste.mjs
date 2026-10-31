@@ -9,7 +9,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
-import { RAIZ, montar, abrirNavegador } from './navegador.mjs';
+import { RAIZ, montar, abrirNavegador, emJs } from './navegador.mjs';
 
 const CAPTURAS = process.argv[2] || join(RAIZ, 'files', 'e2e-pdf-teste');
 const FIX = join(RAIZ, 'tests', 'fixtures');
@@ -102,7 +102,7 @@ try {
   assert.equal(await texto('infoHash'), createHash('sha256').update(pdfTeste).digest('hex'), 'SHA-256 do original');
 
   // lista de nomes digitada pelo usuário (não fica gravada: "Guardar" desmarcado)
-  await js(`(() => { const t = document.getElementById('termos'); t.value = ${JSON.stringify(esperado.termos.join('\n'))};
+  await js(`(() => { const t = document.getElementById('termos'); t.value = ${emJs(esperado.termos.join('\n'))};
     t.dispatchEvent(new Event('input')); })()`);
   assert.equal(await js(`localStorage.getItem('tarja-livre.termos')`), null, 'lista de termos não gravada sem pedir');
   await clicar('btProcurar');
