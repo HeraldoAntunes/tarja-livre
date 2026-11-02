@@ -5,8 +5,9 @@
 # roda. Para ligar, renomeie para e2e-linux.yml (ver docs/E2E-MULTIPLATAFORMA.md, "CI no Linux").
 #
 # Os testes rápidos, os de propriedade e os 9 de ponta a ponta num Ubuntu, no Chrome e no Firefox que já vêm na
-# imagem do GitHub, pelo tests/todos.py, com TARJA_NAVEGADOR escolhendo o navegador. Não substitui o testes.yml (Windows e Edge, o navegador
-# que o programa usa de verdade): é um a mais, para pegar o que só quebra fora do Windows. Nada é publicado por aqui.
+# imagem do GitHub, pelo tests/todos.py, com TARJA_NAVEGADOR escolhendo o navegador. Não substitui o testes.yml
+# (Windows e Edge, o navegador que o programa usa de verdade): é um a mais, para pegar o que só quebra fora do Windows.
+# Nada é publicado por aqui.
 #
 # Antes de ligar: o e2e_ocr falha no Linux por um defeito do programa (o e-mail da página digitalizada não vira
 # sugestão; ver docs/E2E-MULTIPLATAFORMA.md). Ligado antes da correção, este job fica vermelho em todo PR.
