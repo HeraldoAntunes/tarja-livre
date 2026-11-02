@@ -57,7 +57,7 @@ function normalizar(texto, semAcento) {
   return { norm, mapa };
 }
 
-const escaparRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+export const escaparRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // Trechos [ini, fim) do texto juntado que casam com algum termo da lista. Entre as palavras de um termo vale
 // qualquer espaço (inclusive a quebra de linha, que juntarTexto transforma em espaço).
@@ -109,7 +109,7 @@ export function corrigirOcr(palavra) {
 // corrigirOcr(), para quando ele cai entre duas palavras ("fulano.teste" + "Qexemplo.test"), coladas ou não.
 const ARROBA_OCR = ['&&', '(&', '(D', '(Q', '(O', '(o', '(d', '(P', '(E', '&', 'ê', 'Q'];
 const EMAIL_OCR = new RegExp(String.raw`(?<![A-Za-z0-9._%+\-\/\\=?#])([A-Za-z0-9._%+\-]*[A-Za-z0-9])( ?)(` +
-  ARROBA_OCR.map((a) => a.replace(/[(]/g, '\\(')).join('|') +
+  ARROBA_OCR.map(escaparRegex).join('|') +
   String.raw`)( ?)([A-Za-z0-9][A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)*\.([A-Za-z]{2,}))(?![A-Za-z0-9\-]|\.[A-Za-z0-9])`, 'g');
 
 // Trechos [ini, fim) do texto juntado da página (o de juntarTexto, palavras separadas por um espaço) que são

@@ -5,7 +5,15 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { procurar, corrigirOcr } from '../src/achados.js';
+import { procurar, corrigirOcr, escaparRegex } from '../src/achados.js';
+
+test('escaparRegex: todo caractere especial vira literal, a barra invertida inclusive (alerta 16 do CodeQL)', () => {
+  const especiais = '\\.*+?^$' + '{}()|[]&ê';
+  const re = new RegExp('^' + escaparRegex(especiais) + '$');
+  assert.ok(re.test(especiais));
+  assert.ok(!re.test(especiais.slice(1)));
+  for (const c of especiais) assert.ok(new RegExp(`^${escaparRegex(c)}$`).test(c), `"${c}" não ficou literal`);
+});
 
 function lidaPeloOcr(texto, ocr = true) {
   let x = 50;
