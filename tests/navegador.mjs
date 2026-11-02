@@ -18,6 +18,9 @@ export const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const HTML = join(RAIZ, 'dist', 'Tarja Livre.html');
 export const HTML_OCR = join(RAIZ, 'dist', 'Tarja Livre com OCR.html');
 export const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+// valor do Node escrito como literal de JavaScript no código que roda na página: o JSON.stringify e mais os caracteres
+// que fecham um <script> ou quebram a linha em JavaScript antigo (CodeQL, js/bad-code-sanitization)
+export const emJs = (v) => JSON.stringify(v).replace(/[<>/\u2028\u2029]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
 
 const WINDOWS = process.platform === 'win32';
 // no Windows o Python se chama python; no Linux e no macOS, em geral, python3. PYTHON=<comando> escolhe outro.
@@ -263,7 +266,10 @@ async function ligarFirefox(porta, { aoRegistro, aoPerguntar, ouvintes }) {
 // Liga ao Chromium, ao Edge ou ao WebView2 pelo protocolo de depuração (o de sempre)
 async function ligarChromium(porta, { aoRegistro, aoPerguntar, ouvintes }) {
   let alvo;
-  for (let t = 0; t < 60 && !alvo; t++) {
+  // o exe pode demorar mais: primeiro WebView2 num perfil novo, e até 3 tentativas de criar a janela (main.rs). No
+  // windows-latest do Actions (Server 2025, WebView2 156) os 15 s do Edge não bastavam (PC limpo, 30/10/2026)
+  const tentativas = EXE ? 240 : 60;
+  for (let t = 0; t < tentativas && !alvo; t++) {
     await espera(250);
     try {
       const lista = await (await fetch(`http://127.0.0.1:${porta}/json/list`)).json();
@@ -334,6 +340,13 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
   abertos.set(processo.pid, perfilFixo ? [baixados] : [perfil, baixados]);
   if (perfilFixo) pastasDoFim.add(perfilFixo);
   if (!ligacao) {
+    // com o exe, um retrato da tela e dos processos antes de encerrar, para saber por que a porta não abriu
+    if (EXE) {
+      try {
+        execFileSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', join(RAIZ, 'tests', 'diagnostico_tela.ps1'),
+          '-Saida', join(capturas, 'diagnostico')], { stdio: 'inherit', timeout: 60000 });
+      } catch (e) { console.error('diagnóstico falhou:', e.message); }
+    }
     limpar(processo.pid, abertos.get(processo.pid));
     throw new Error((firefox ? 'Firefox' : EXE ? 'O exe' : WINDOWS ? 'Edge' : 'O navegador') + ' não respondeu no protocolo de depuração');
   }

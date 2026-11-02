@@ -1,0 +1,10 @@
+{
+  "name": "tarja-livre-propriedades",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Testes de propriedade (fast-check) das funções puras da procura: só para os testes, não entra no programa",
+  "devDependencies": {
+    "fast-check": "4.10.2"
+  }
+}
