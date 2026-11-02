@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Tarja Livre com OCR
+Comment=Tarjar dados pessoais (LGPD) em PDF, também digitalizado, sem internet
+Exec=tarja-livre --ocr
+Icon=tarja-livre
+Terminal=false
+Categories=Office;Utility;
+Keywords=LGPD;PDF;tarja;tarjar;dados pessoais;
+StartupNotify=false

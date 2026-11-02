@@ -1,0 +1,14 @@
+/tmp
+/usr/bin
+/usr/share
+/usr/share/doc
+/var/lib/dpkg
+/var/lib/dpkg/info
+/var/lib/dpkg/lock
+/var/lib/dpkg/lock-frontend
+/var/lib/dpkg/status
+/var/lib/dpkg/status-old
+/var/lib/dpkg/triggers/Lock
+/var/lib/dpkg/updates
+/var/log
+/var/log/dpkg.log

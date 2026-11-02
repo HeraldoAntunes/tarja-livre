@@ -1,0 +1,60 @@
+== sistema: Debian GNU/Linux 12 (bookworm) (x86_64), dpkg 1.21.23
+== .deb: 96e101af56bf28bb9bfac6f57625e6505410e11a9f71f16a7ce696c7b6fae2e1  /pacote/tarja-livre_1.2.1_all.deb
+Selecting previously unselected package tarja-livre.
+(Reading database ... 6096 files and directories currently installed.)
+Preparing to unpack .../tarja-livre_1.2.1_all.deb ...
+Unpacking tarja-livre (1.2.1) ...
+Setting up tarja-livre (1.2.1) ...
+PASSOU  deb: instalado
+PASSOU  deb: comando tarja-livre no PATH
+PASSOU  deb: HTML iguais aos do pacote .tar.gz
+PASSOU  lançador: prefere o navegador fora do snap
+PASSOU  lançador: navegador em snap recebe a cópia em ~/snap/firefox/common
+PASSOU  lançador: --ocr abre a versão com OCR
+PASSOU  lançador: TARJA_NAVEGADOR escolhe o navegador
+PASSOU  lançador: opção errada dá erro
+falhas do lançador: 0
+PASSOU  deb: lançador com navegadores de mentira (ver as linhas acima)
+(sem navegador neste sistema: deb não abre)
+tarja-livre: nenhum navegador encontrado. Instale o Firefox ou o Chromium, ou abra /usr/share/tarja-livre/TarjaLivre.html num navegador.
+PASSOU  deb: sem navegador, avisa e sai com erro
+(sem navegador neste sistema: deb-ocr não abre)
+tarja-livre: nenhum navegador encontrado. Instale o Firefox ou o Chromium, ou abra /usr/share/tarja-livre/TarjaLivre-OCR.html num navegador.
+PASSOU  deb-ocr: sem navegador, avisa e sai com erro
+(Reading database ... 6112 files and directories currently installed.)
+Removing tarja-livre (1.2.1) ...
+PASSOU  deb: desinstalado (purge)
+-- caminhos novos ou que sumiram fora da pasta pessoal depois de instalar, usar e desinstalar:
+6655a6656
+> /var/log/dpkg.log
+PASSOU  deb: nada novo fora da pasta pessoal depois de desinstalar (fora o registro do dpkg)
+-- arquivos modificados fora da pasta pessoal (do sistema, não do pacote):
+/tmp
+/usr/bin
+/usr/share
+/usr/share/doc
+/var/lib/dpkg
+/var/lib/dpkg/info
+/var/lib/dpkg/lock
+/var/lib/dpkg/lock-frontend
+/var/lib/dpkg/status
+/var/lib/dpkg/status-old
+/var/lib/dpkg/triggers/Lock
+/var/lib/dpkg/updates
+/var/log
+/var/log/dpkg.log
+-- o que ficou na pasta pessoal:
+== .tar.gz: 0299d1b582f6ef24f7fc9f63a1203795722139a6e65826fc9a47e1171ca16399  /pacote/TarjaLivre-1.2.1-linux.tar.gz
+Tarja Livre 1.2.1 instalado em /home/professor/.local/share/tarja-livre.
+Procure "Tarja Livre" no menu de aplicativos, ou rode: "/home/professor/.local/share/tarja-livre/tarja-livre"
+PASSOU  tgz: instalado em ~/.local/share/tarja-livre
+PASSOU  tgz: o atalho chama o tarja-livre da pasta pessoal
+(sem navegador neste sistema: tgz não abre)
+tarja-livre: nenhum navegador encontrado. Instale o Firefox ou o Chromium, ou abra /home/professor/.local/share/tarja-livre/TarjaLivre.html num navegador.
+PASSOU  tgz: sem navegador, avisa e sai com erro
+Tarja Livre desinstalado.
+PASSOU  tgz: desinstalado, sem sobra em ~/.local/share
+PASSOU  tgz: nada mudou fora da pasta pessoal (fora as travas do Chromium em /tmp)
+PASSOU  tgz: nenhum caminho novo fora da pasta pessoal
+
+falhas: 0

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Tarja Livre
+Comment=Tarjar dados pessoais (LGPD) em PDF, sem internet
+Exec=tarja-livre
+Icon=tarja-livre
+Terminal=false
+Categories=Office;Utility;
+Keywords=LGPD;PDF;tarja;tarjar;dados pessoais;
+StartupNotify=false

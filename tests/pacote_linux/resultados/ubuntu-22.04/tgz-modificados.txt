@@ -1,0 +1,4 @@
+/tmp
+/tmp/org.chromium.Chromium.5b64J2
+/tmp/org.chromium.Chromium.5b64J2/SingletonCookie
+/tmp/org.chromium.Chromium.5b64J2/SingletonSocket

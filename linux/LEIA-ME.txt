@@ -1,0 +1,26 @@
+Tarja Livre __VERSAO__ para Linux
+
+Este pacote traz o Tarja Livre em HTML (o mesmo programa do Windows, sem a janela própria): ele abre num navegador
+deste computador, funciona sem internet e não envia o seu PDF para lugar nenhum.
+
+  TarjaLivre.html       o programa
+  TarjaLivre-OCR.html   o mesmo, também lendo PDF digitalizado (mais pesado)
+
+Sem instalar: abra um dos dois HTML no Firefox ou no Chromium (botão direito, "Abrir com").
+
+Instalar só para você (sem administrador):
+  ./instalar.sh
+Depois procure "Tarja Livre" no menu de aplicativos. Os arquivos ficam em ~/.local/share/tarja-livre.
+
+Desinstalar:
+  ~/.local/share/tarja-livre/desinstalar.sh
+Antes, se quiser, use no programa o botão "Apagar tudo o que o Tarja Livre guardou": o que ele guarda (escolhas,
+lista de nomes, andamento) fica dentro do navegador, e o desinstalar não alcança.
+
+Navegador em snap (o Firefox padrão do Ubuntu): o snap não lê arquivos fora da pasta pessoal, por isso o atalho
+copia o HTML para ~/snap/<navegador>/common/tarja-livre antes de abrir. O desinstalar apaga essa cópia.
+
+Revise o PDF salvo antes de compartilhar.
+
+Licença: LICENSE (MIT). Avisos dos componentes de terceiros: THIRD-PARTY-NOTICES.md.
+Página do programa e versões novas: https://github.com/HeraldoAntunes/tarja-livre

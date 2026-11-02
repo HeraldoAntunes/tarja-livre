@@ -1,0 +1,4 @@
+/tmp
+/tmp/org.chromium.Chromium.ifAbhq
+/tmp/org.chromium.Chromium.ifAbhq/SingletonCookie
+/tmp/org.chromium.Chromium.ifAbhq/SingletonSocket

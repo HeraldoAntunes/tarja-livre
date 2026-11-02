@@ -1,0 +1,2 @@
+6655a6656
+> /var/log/dpkg.log

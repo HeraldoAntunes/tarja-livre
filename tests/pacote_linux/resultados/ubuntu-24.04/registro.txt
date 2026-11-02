@@ -1,0 +1,127 @@
+== sistema: Ubuntu 24.04.5 LTS (x86_64), dpkg 1.22.6ubuntu6.6
+debconf: delaying package configuration, since apt-utils is not installed
+== navegador: Google Chrome for Testing 153.0.8010.12 
+== .deb: 96e101af56bf28bb9bfac6f57625e6505410e11a9f71f16a7ce696c7b6fae2e1  /pacote/tarja-livre_1.2.1_all.deb
+Selecting previously unselected package tarja-livre.
+(Reading database ... 20059 files and directories currently installed.)
+Preparing to unpack .../tarja-livre_1.2.1_all.deb ...
+Unpacking tarja-livre (1.2.1) ...
+Setting up tarja-livre (1.2.1) ...
+Processing triggers for desktop-file-utils (0.27-2build1) ...
+Processing triggers for hicolor-icon-theme (0.17-2) ...
+PASSOU  deb: instalado
+PASSOU  deb: comando tarja-livre no PATH
+/usr/share/applications/br.tarjalivre.TarjaLivre.desktop: hint: value "Office;Utility;" for key "Categories" in group "Desktop Entry" contains more than one main category; application might appear more than once in the application menu
+/usr/share/applications/br.tarjalivre.TarjaLivreOCR.desktop: hint: value "Office;Utility;" for key "Categories" in group "Desktop Entry" contains more than one main category; application might appear more than once in the application menu
+PASSOU  deb: atalhos do menu válidos (desktop-file-validate)
+PASSOU  deb: HTML iguais aos do pacote .tar.gz
+PASSOU  lançador: prefere o navegador fora do snap
+PASSOU  lançador: navegador em snap recebe a cópia em ~/snap/firefox/common
+PASSOU  lançador: --ocr abre a versão com OCR
+PASSOU  lançador: TARJA_NAVEGADOR escolhe o navegador
+PASSOU  lançador: opção errada dá erro
+falhas do lançador: 0
+PASSOU  deb: lançador com navegadores de mentira (ver as linhas acima)
+tarjar: 3 pendente(s): CPF 1, E-mail 1, Termo da lista 1; salvo /home/professor/Downloads/ficha-ficticia-tarjado.pdf
+PASSOU  deb: abriu /usr/share/tarja-livre/TarjaLivre.html, tarjou e salvou
+PASSOU  deb: pdftotext da página 1 vazio (texto removido)
+PASSOU  deb: nenhum dado no texto do PDF salvo
+PASSOU  deb: nenhum dado nos bytes do PDF salvo
+PASSOU  deb: folha de conferência no fim
+   páginas: Pages:           2
+tarjar: 3 pendente(s): CPF 1, E-mail 1, Termo da lista 1; salvo /home/professor/Downloads/ficha-ficticia-tarjado.pdf
+PASSOU  deb-ocr: abriu /usr/share/tarja-livre/TarjaLivre-OCR.html, tarjou e salvou
+PASSOU  deb-ocr: pdftotext da página 1 vazio (texto removido)
+PASSOU  deb-ocr: nenhum dado no texto do PDF salvo
+PASSOU  deb-ocr: nenhum dado nos bytes do PDF salvo
+PASSOU  deb-ocr: folha de conferência no fim
+   páginas: Pages:           2
+(Reading database ... 20070 files and directories currently installed.)
+Removing tarja-livre (1.2.1) ...
+Processing triggers for hicolor-icon-theme (0.17-2) ...
+Processing triggers for desktop-file-utils (0.27-2build1) ...
+PASSOU  deb: desinstalado (purge)
+-- caminhos novos ou que sumiram fora da pasta pessoal depois de instalar, usar e desinstalar:
+PASSOU  deb: nada novo fora da pasta pessoal depois de desinstalar (fora o registro do dpkg)
+-- arquivos modificados fora da pasta pessoal (do sistema, não do pacote):
+/tmp
+/tmp/org.chromium.Chromium.0mYAZj
+/tmp/org.chromium.Chromium.0mYAZj/SingletonCookie
+/tmp/org.chromium.Chromium.0mYAZj/SingletonSocket
+/tmp/org.chromium.Chromium.9zMRlQ
+/tmp/org.chromium.Chromium.9zMRlQ/SingletonCookie
+/tmp/org.chromium.Chromium.9zMRlQ/SingletonSocket
+/usr/bin
+/usr/share
+/usr/share/applications
+/usr/share/applications/mimeinfo.cache
+/usr/share/doc
+/usr/share/icons/hicolor
+/usr/share/icons/hicolor/scalable/apps
+/var/lib/dpkg
+/var/lib/dpkg/info
+/var/lib/dpkg/lock
+/var/lib/dpkg/lock-frontend
+/var/lib/dpkg/status
+/var/lib/dpkg/status-old
+/var/lib/dpkg/triggers/Lock
+/var/lib/dpkg/updates
+/var/log/dpkg.log
+-- o que ficou na pasta pessoal:
+/home/professor
+/home/professor/.cache
+/home/professor/.cache/fontconfig
+/home/professor/.cache/fontconfig/3047814df9a2f067bd2d96a2b9c36e5a-le64.cache-11
+/home/professor/.cache/fontconfig/3830d5c3ddfd5cd38a049b759396e72e-le64.cache-11
+/home/professor/.cache/fontconfig/4c599c202bc5c08e2d34565a40eac3b2-le64.cache-11
+/home/professor/.cache/fontconfig/7ef2298fde41cc6eeb7af42e48b7d293-le64.cache-11
+/home/professor/.cache/fontconfig/CACHEDIR.TAG
+/home/professor/.cache/mesa_shader_cache
+/home/professor/.cache/mesa_shader_cache/37
+/home/professor/.cache/mesa_shader_cache/37/0f6b1f887c31154662b2e4a377a7784665107e
+/home/professor/.cache/mesa_shader_cache/5d
+/home/professor/.cache/mesa_shader_cache/5d/769de7ca1a0f3a831d6b9221ba3b4d826e2e05
+/home/professor/.cache/mesa_shader_cache/61
+/home/professor/.cache/mesa_shader_cache/61/a2b9ba84993f150d61f7830fcfa922b3371468
+/home/professor/.cache/mesa_shader_cache/83
+/home/professor/.cache/mesa_shader_cache/83/e138044d245ca5151652dbd57ff43e148c46ea
+/home/professor/.cache/mesa_shader_cache/c9
+/home/professor/.cache/mesa_shader_cache/c9/7f3abc2aa9c0afadb24d45f6a31f7e203be77e
+/home/professor/.cache/mesa_shader_cache/index
+/home/professor/.cache/mesa_shader_cache/marker
+/home/professor/.config
+/home/professor/.config/google-chrome-for-testing
+/home/professor/.config/google-chrome-for-testing/Crash Reports
+/home/professor/.config/google-chrome-for-testing/Crash Reports/attachments
+/home/professor/.config/google-chrome-for-testing/Crash Reports/completed
+/home/professor/.config/google-chrome-for-testing/Crash Reports/new
+/home/professor/.config/google-chrome-for-testing/Crash Reports/pending
+/home/professor/.config/google-chrome-for-testing/Crash Reports/settings.dat
+/home/professor/.local
+/home/professor/.local/share
+/home/professor/.local/share/pki
+/home/professor/.local/share/pki/nssdb
+/home/professor/.local/share/pki/nssdb/cert9.db
+/home/professor/.local/share/pki/nssdb/key4.db
+/home/professor/.local/share/pki/nssdb/pkcs11.txt
+== .tar.gz: 0299d1b582f6ef24f7fc9f63a1203795722139a6e65826fc9a47e1171ca16399  /pacote/TarjaLivre-1.2.1-linux.tar.gz
+Tarja Livre 1.2.1 instalado em /home/professor/.local/share/tarja-livre.
+Procure "Tarja Livre" no menu de aplicativos, ou rode: "/home/professor/.local/share/tarja-livre/tarja-livre"
+PASSOU  tgz: instalado em ~/.local/share/tarja-livre
+/home/professor/.local/share/applications/br.tarjalivre.TarjaLivre.desktop: hint: value "Office;Utility;" for key "Categories" in group "Desktop Entry" contains more than one main category; application might appear more than once in the application menu
+/home/professor/.local/share/applications/br.tarjalivre.TarjaLivreOCR.desktop: hint: value "Office;Utility;" for key "Categories" in group "Desktop Entry" contains more than one main category; application might appear more than once in the application menu
+PASSOU  tgz: atalhos do menu válidos
+PASSOU  tgz: o atalho chama o tarja-livre da pasta pessoal
+tarjar: 3 pendente(s): CPF 1, E-mail 1, Termo da lista 1; salvo /home/professor/Downloads/ficha-ficticia-tarjado.pdf
+PASSOU  tgz: abriu /home/professor/.local/share/tarja-livre/TarjaLivre.html, tarjou e salvou
+PASSOU  tgz: pdftotext da página 1 vazio (texto removido)
+PASSOU  tgz: nenhum dado no texto do PDF salvo
+PASSOU  tgz: nenhum dado nos bytes do PDF salvo
+PASSOU  tgz: folha de conferência no fim
+   páginas: Pages:           2
+Tarja Livre desinstalado.
+PASSOU  tgz: desinstalado, sem sobra em ~/.local/share
+PASSOU  tgz: nada mudou fora da pasta pessoal (fora as travas do Chromium em /tmp)
+PASSOU  tgz: nenhum caminho novo fora da pasta pessoal
+
+falhas: 0

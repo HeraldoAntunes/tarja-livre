@@ -1,0 +1,66 @@
+#!/bin/sh
+# Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE)
+# SPDX-License-Identifier: MIT
+# Abre o Tarja Livre (um HTML que funciona sem internet) num navegador deste computador. Não instala nada e não
+# grava nada fora da pasta pessoal.
+#
+# Uso: tarja-livre [--ocr]       --ocr abre a versão que também lê PDF digitalizado
+#      TARJA_NAVEGADOR=<programa> tarja-livre   para escolher o navegador
+#
+# Qual navegador: o de TARJA_NAVEGADOR; senão o primeiro instalado, fora do snap, da lista abaixo; senão um navegador
+# em snap (o snap não enxerga /usr/share, então o HTML vai antes para a pasta do próprio snap, dentro da pasta
+# pessoal); senão o navegador padrão (xdg-open).
+set -eu
+
+arquivo=TarjaLivre.html
+case "${1:-}" in
+  --ocr) arquivo=TarjaLivre-OCR.html ;;
+  "") ;;
+  -h|--help) sed -n '7,8p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  *) echo "tarja-livre: opção desconhecida: $1 (use --ocr ou nada)" >&2; exit 2 ;;
+esac
+
+# a pasta dos HTML: ao lado deste script (pacote .tar.gz) ou a do pacote .deb
+aqui=$(dirname "$(readlink -f "$0")")
+if [ -f "$aqui/$arquivo" ]; then pasta=$aqui; else pasta=/usr/share/tarja-livre; fi
+html=$pasta/$arquivo
+if [ ! -f "$html" ]; then
+  echo "tarja-livre: não achei $html" >&2
+  exit 1
+fi
+
+abrir() {   # abre e sai, sem prender o terminal nem mostrar as mensagens do navegador
+  nohup "$@" >/dev/null 2>&1 &
+  exit 0
+}
+
+if [ -n "${TARJA_NAVEGADOR:-}" ]; then
+  abrir "$TARJA_NAVEGADOR" "$html"
+fi
+
+NAVEGADORES="firefox firefox-esr chromium chromium-browser google-chrome google-chrome-stable microsoft-edge microsoft-edge-stable brave-browser vivaldi-stable"
+for n in $NAVEGADORES; do
+  c=$(command -v "$n" 2>/dev/null) || continue
+  case "$(readlink -f "$c")" in
+    /snap/*|*/snap/bin/*) ;;
+    *) abrir "$c" "$html" ;;
+  esac
+done
+
+for n in $NAVEGADORES; do
+  c=$(command -v "$n" 2>/dev/null) || continue
+  case "$(readlink -f "$c")" in
+    /snap/*|*/snap/bin/*)
+      # o snap só lê arquivos da pasta pessoal fora das pastas ocultas; $HOME/snap/<nome>/common é dele
+      destino=$HOME/snap/$(basename "$c")/common/tarja-livre
+      mkdir -p "$destino"
+      cp -f "$html" "$destino/$arquivo"
+      abrir "$c" "$destino/$arquivo" ;;
+  esac
+done
+
+if command -v xdg-open >/dev/null 2>&1; then
+  abrir xdg-open "$html"
+fi
+echo "tarja-livre: nenhum navegador encontrado. Instale o Firefox ou o Chromium, ou abra $html num navegador." >&2
+exit 1

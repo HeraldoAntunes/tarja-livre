@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Teste do pacote Linux do Tarja Livre (docs/PACOTE-LINUX.md).",
+  "dependencies": {
+    "puppeteer-core": "25.13.0"
+  }
+}
