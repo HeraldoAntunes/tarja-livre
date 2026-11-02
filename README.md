@@ -7,7 +7,7 @@
 Sugere CPF, e-mail, telefone e nomes da sua lista, e refaz cada página como imagem. Livre, gratuito e sem internet.</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/feito%20em-JavaScript-555" alt="Feito em JavaScript">
+  <img src="https://img.shields.io/badge/feito%20em-JavaScript-f1e05a?logo=javascript&logoColor=black" alt="Feito em JavaScript">
   <img src="https://img.shields.io/badge/testado%20no-Edge%20%C2%B7%20Windows%2011-0078D6" alt="Testado no Edge e Windows 11">
   <img src="https://img.shields.io/badge/internet-n%C3%A3o%20precisa-2b8a3e" alt="Não precisa de internet">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="Licença MIT"></a>
