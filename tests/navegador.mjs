@@ -311,8 +311,11 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
   const perfil = perfilFixo || mkdtempSync(join(tmpdir(), 'tarja-e2e-perfil-'));
   const baixados = mkdtempSync(join(tmpdir(), 'tarja-e2e-saida-'));
   if (firefox) writeFileSync(join(perfil, 'user.js'), preferenciasFirefox(baixados));
-  // fora do Windows, o navegador sobe num grupo de processos só dele, para matar() pegar também os filhos
-  const opcoes = { stdio: 'ignore', detached: !WINDOWS };
+  // fora do Windows, o navegador sobe num grupo de processos só dele, para matar() pegar também os filhos, e com uma
+  // pasta temporária só dele: o Chromium do Linux cria ali o org.chromium.Chromium.* (soquete de instância única), que
+  // só apaga ao sair por conta própria; morto com SIGKILL, ficava na /tmp para sempre
+  const temporaria = WINDOWS ? null : mkdtempSync(join(tmpdir(), 'tarja-e2e-tmp-'));
+  const opcoes = { stdio: 'ignore', detached: !WINDOWS, ...(temporaria ? { env: { ...process.env, TMPDIR: temporaria } } : {}) };
   const processo = EXE
     ? spawn(EXE, ['--sem-instalar'], { stdio: 'ignore', env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: perfil,
       WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${porta}` } })
@@ -337,7 +340,7 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     if (typeof r === 'object' && r.depois) setTimeout(() => responderCom(accept), r.depois); else responderCom(accept);
   };
   const ligacao = await (firefox ? ligarFirefox : ligarChromium)(porta, { aoRegistro: (e) => erros.push(e), aoPerguntar, ouvintes });
-  abertos.set(processo.pid, perfilFixo ? [baixados] : [perfil, baixados]);
+  abertos.set(processo.pid, [...(perfilFixo ? [baixados] : [perfil, baixados]), ...(temporaria ? [temporaria] : [])]);
   if (perfilFixo) pastasDoFim.add(perfilFixo);
   if (!ligacao) {
     // com o exe, um retrato da tela e dos processos antes de encerrar, para saber por que a porta não abriu
