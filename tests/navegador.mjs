@@ -8,7 +8,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import { createServer } from 'node:net';
 import { mkdtempSync, readdirSync, readFileSync, writeFileSync, existsSync, rmSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
+import { join, dirname, basename } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -23,6 +23,8 @@ const EDGE = ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(existsSync);
 
 export function montar() {
+  // dentro do exe a página já vem embutida: não monta nada (e a VM de testes não tem Python)
+  if (EXE) return;
   execFileSync('python', ['-X', 'utf8', join(RAIZ, 'scripts', 'montar.py')], { stdio: 'inherit' });
 }
 
@@ -37,13 +39,14 @@ const EXE = process.env.TARJA_EXE;
 // perfilFixo: pasta de perfil que sobrevive ao fechar (para testar o que fica guardado entre uma abertura e outra)
 // Limpeza no fim, também quando o teste falha (cada perfil do WebView2 ocupa uns 0,5 GB; antes ficavam na pasta
 // temporária para sempre). Fecha os processos do Edge e do WebView2 que usam a pasta do teste (só esses: a pasta é
-// única, criada aqui) e apaga as pastas, tentando de novo enquanto algum processo ainda as segura.
+// única, criada aqui, e a busca é pelo nome dela, porque a linha de comando pode trazer o caminho curto, como
+// RUNNER~1) e apaga as pastas, tentando de novo enquanto algum processo ainda as segura.
 const abertos = new Map();     // pid do navegador ou do exe → pastas do teste
 const pastasDoFim = new Set(); // perfis fixos (sobrevivem entre aberturas): só saem no fim do processo
 const pausa = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 function fecharProcessosDa(pasta) {
   try {
-    execFileSync('powershell', ['-NoProfile', '-Command', `Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^msedge' -and $_.CommandLine -like '*${pasta.replace(/'/g, "''")}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`], { stdio: 'ignore' });
+    execFileSync('powershell', ['-NoProfile', '-Command', `Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^msedge' -and $_.CommandLine -like '*${basename(pasta).replace(/'/g, "''")}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`], { stdio: 'ignore' });
   } catch { /* nada a fechar */ }
 }
 function apagarPasta(pasta) {

@@ -14,7 +14,9 @@ function Orfaos {
     $_.CommandLine -like "*--user-data-dir=`"$perfil`"*" -and $_.CommandLine -notmatch '--type=' -and
     -not (Get-Process -Id $_.ParentProcessId -ErrorAction SilentlyContinue) })
 }
-$abriu = 0; $caixas = 0; $orfaosDepois = 0; $falhas = @()
+. (Join-Path $PSScriptRoot 'rascunho.ps1')
+$abriu = 0; $caixas = 0; $orfaosDepois = 0; $falhas = @(); $p = $null; $log = @()
+try {
 for ($k = 1; $k -le $Vezes; $k++) {
   $env:WEBVIEW2_USER_DATA_FOLDER = $base
   $p = Start-Process $Exe -ArgumentList '--sem-instalar' -PassThru
@@ -35,11 +37,12 @@ for ($k = 1; $k -le $Vezes; $k++) {
   if ((Orfaos).Count) { $orfaosDepois++ }
 }
 Start-Sleep 2
-# limpeza do teste: só os WebView2 deste perfil de rascunho
-Get-CimInstance Win32_Process -Filter "Name='msedgewebview2.exe'" | Where-Object { $_.CommandLine -like "*$base*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 $log = @(Get-Content (Join-Path $base 'janelas.log') -ErrorAction SilentlyContinue)
-Start-Sleep 1
-Remove-Item $base -Recurse -Force -ErrorAction SilentlyContinue
+} finally {
+  # limpeza do teste, também se ele cair no meio: o exe e só os WebView2 deste perfil de rascunho
+  Remove-Item Env:WEBVIEW2_USER_DATA_FOLDER -ErrorAction SilentlyContinue
+  Remover-Rascunho $base -Processo $p
+}
 "abriu em $abriu de $Vezes; caixas de erro: $caixas; vezes com WebView2 órfão logo depois do kill: $orfaosDepois; linhas no janelas.log: $($log.Count)"
 $log | Select-Object -Last 3
 if ($falhas.Count) { $falhas | ForEach-Object { "FALHOU: $_" }; exit 1 }

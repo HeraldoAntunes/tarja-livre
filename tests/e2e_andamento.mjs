@@ -83,6 +83,10 @@ for (let k = 2; k <= VEZES; k++) {
   if (k === 2) await n.captura('andamento-2-oferta.png');
   await n.clicar('btRecuperar');
   assert.equal(await oferta(n), '', 'a oferta some depois de recuperar');
+  // logo depois de Recuperar, as miniaturas já mostram o selo com as marcas recuperadas (antes ficavam sem selo até
+  // a próxima mudança: validação no Linux, 30/10/2026)
+  const selos = await n.js(`[...document.querySelectorAll('.mini-pag .selo')].reduce((s, e) => s + Number(e.textContent), 0)`);
+  assert.equal(selos, total, `queda ${k - 1}: selos das miniaturas com ${total} marca(s) depois de recuperar, veio ${selos}`);
   await n.arrastar(0.1 + k * 0.1, 0.05, 0.15 + k * 0.1, 0.08);
   total += 1;
   await esperarGravar(n, total);

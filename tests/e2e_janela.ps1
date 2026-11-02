@@ -8,12 +8,15 @@
 #             no teste), e o janelas.log tem as 3.
 # Perfil e pasta de rascunho (WEBVIEW2_USER_DATA_FOLDER). Uso: tests/e2e_janela.ps1 -Exe <exe de teste (debug)>
 param([Parameter(Mandatory)] [string]$Exe)
+. (Join-Path $PSScriptRoot 'rascunho.ps1')
 $falhas = @()
 function Rodar([int]$n) {
   $perfil = Join-Path $env:TEMP "tarja-janela-$n-$([guid]::NewGuid().ToString('N').Substring(0, 6))"
   New-Item -ItemType Directory $perfil | Out-Null
   $env:WEBVIEW2_USER_DATA_FOLDER = $perfil
   $env:TARJA_TESTE_FALHAR_JANELA = "$n"
+  $p = $null
+  try {
   $p = Start-Process $Exe -ArgumentList '--sem-instalar' -PassThru
   Remove-Item Env:TARJA_TESTE_FALHAR_JANELA, Env:WEBVIEW2_USER_DATA_FOLDER
   $fim = (Get-Date).AddSeconds(40)
@@ -23,9 +26,11 @@ function Rodar([int]$n) {
     Saiu = $p.HasExited; Codigo = $(if ($p.HasExited) { $p.ExitCode } else { $null }); Janela = $p.MainWindowTitle
     Log = @(Get-Content (Join-Path $perfil 'janelas.log') -ErrorAction SilentlyContinue)
   }
-  if (-not $p.HasExited) { Stop-Process -Id $p.Id -Force; Start-Sleep 2 }
-  Remove-Item $perfil -Recurse -Force -ErrorAction SilentlyContinue
   $r
+  } finally {
+    Remove-Item Env:TARJA_TESTE_FALHAR_JANELA, Env:WEBVIEW2_USER_DATA_FOLDER -ErrorAction SilentlyContinue
+    Remover-Rascunho $perfil -Processo $p
+  }
 }
 $a = Rodar 2
 "2 falhas: janela '$($a.Janela)', saiu $($a.Saiu), $($a.Log.Count) linha(s) no janelas.log"

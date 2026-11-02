@@ -89,6 +89,16 @@ test('worker do OCR: o pedido de rede é trocado pelos dados embutidos', () => {
   assert.ok(!worker.includes('__DADOS_POR__'), 'dados do português embutidos');
 });
 
+// o Firefox devolvia a lista de nomes ao recarregar a página, mesmo com "Guardar" desmarcado (validação no Linux,
+// 30/10/2026): o campo não pode entrar na restauração de formulário do navegador
+test('lista de nomes com autocomplete="off", nas duas versões', () => {
+  for (const { nome } of VERSOES) {
+    const campo = examinar(nome).html.match(/<textarea id="termos"[^>]*>/);
+    assert.ok(campo, 'campo da lista em ' + nome);
+    assert.match(campo[0], /\sautocomplete="off"/, 'autocomplete="off" na lista de nomes em ' + nome);
+  }
+});
+
 test('PDF.js aberto com isEvalSupported desligado', () => {
   assert.match(readFileSync(join(RAIZ, 'src', 'app.js'), 'utf8'), /isEvalSupported:\s*false/);
 });
@@ -125,13 +135,15 @@ test('Criar-atalho-TarjaLivre.cmd: CRLF, ícone embutido, PowerShell sem erro de
 
 test('Instalar-TarjaLivre-<versão>.zip: o exe, a LICENSE, os avisos e o LEIA-ME, com os mesmos bytes a cada montagem', () => {
   // padrão dos quatro programas (29/10/2026): nenhum exe solto na release, o exe vai neste zip
-  const py = 'import sys, tempfile, zipfile, hashlib, pathlib; sys.path.insert(0, "scripts"); import montar\n' +
+  // a pasta temporária sai no fim do Python, também se ele falhar (atexit), e o zip é lido da memória para não
+  // ficar preso no Windows
+  const py = 'import sys, tempfile, zipfile, hashlib, pathlib, atexit, shutil, io; sys.path.insert(0, "scripts"); import montar\n' +
     'v = montar.re.search(r"VERSAO = \'([^\']+)\'", montar.ler(montar.SRC / "versao.js")).group(1)\n' +
-    'd = pathlib.Path(tempfile.mkdtemp()); exe = d / "falso.exe"; exe.write_bytes(b"MZ" + bytes(range(256)) * 64)\n' +
+    'd = pathlib.Path(tempfile.mkdtemp(prefix="tarja-teste-zip-")); atexit.register(shutil.rmtree, d, True); exe = d / "falso.exe"; exe.write_bytes(b"MZ" + bytes(range(256)) * 64)\n' +
     'hs = []\n' +
     'for k in (1, 2):\n' +
     '    montar.zip_instalar(exe, d / f"{k}.zip", v); hs.append(hashlib.sha256((d / f"{k}.zip").read_bytes()).hexdigest())\n' +
-    'z = zipfile.ZipFile(d / "1.zip"); leia = z.read("LEIA-ME.txt")\n' +
+    'z = zipfile.ZipFile(io.BytesIO((d / "1.zip").read_bytes())); leia = z.read("LEIA-ME.txt")\n' +
     'print(v); print(hs[0] == hs[1]); print("|".join(z.namelist())); print(z.read(f"TarjaLivre-{v}.exe") == exe.read_bytes())\n' +
     'print(leia.startswith(b"\\xef\\xbb\\xbf")); print(b"\\n" not in leia.replace(b"\\r\\n", b"")); print(f"TarjaLivre-{v}.exe".encode() in leia)\n' +
     'print(z.read("LICENSE") == pathlib.Path("LICENSE").read_bytes())';

@@ -4,9 +4,16 @@
 # Abre o exe do Tarja com uma pasta de perfil própria e registra, a cada 5 s, as conexões TCP e UDP de todos os
 # processos dele (o exe e os do motor WebView2 que usam essa pasta). Uso: tests/conexoes_exe.ps1 -Exe <exe> [-Segundos 240] [-PerfilNormal]
 param([string]$Exe, [int]$Segundos = 240, [switch]$PerfilNormal)
-$perfil = Join-Path $env:TEMP ("tarja-conexoes-" + [guid]::NewGuid().ToString('N').Substring(0, 8))
-New-Item -ItemType Directory $perfil | Out-Null
-if ($PerfilNormal) { $perfil = Join-Path $env:LOCALAPPDATA "br.tarjalivre.app" } else { $env:WEBVIEW2_USER_DATA_FOLDER = $perfil }
+. (Join-Path $PSScriptRoot 'rascunho.ps1')
+$rascunho = $null
+if ($PerfilNormal) { $perfil = Join-Path $env:LOCALAPPDATA "br.tarjalivre.app" }
+else {
+  $perfil = $rascunho = Join-Path $env:TEMP ("tarja-conexoes-" + [guid]::NewGuid().ToString('N').Substring(0, 8))
+  New-Item -ItemType Directory $perfil | Out-Null
+  $env:WEBVIEW2_USER_DATA_FOLDER = $perfil
+}
+$p = $null
+try {
 $p = Start-Process $Exe -ArgumentList '--sem-instalar' -PassThru
 $vistos = @{}
 $fim = (Get-Date).AddSeconds($Segundos)
@@ -31,6 +38,8 @@ while ((Get-Date) -lt $fim) {
 "processos do motor (máximo): $motorMax"
 if ($vistos.Count -eq 0) { "nenhuma conexão TCP nem porta UDP em $Segundos s" }
 else { $vistos.GetEnumerator() | Sort-Object Value | ForEach-Object { "$($_.Value)  $($_.Key)" } }
-Stop-Process -Id $p.Id -Force
-Start-Sleep 2
-if (-not $PerfilNormal) { Remove-Item $perfil -Recurse -Force -ErrorAction SilentlyContinue }
+} finally {
+  if ($p) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue }
+  Remove-Item Env:WEBVIEW2_USER_DATA_FOLDER -ErrorAction SilentlyContinue
+  Remover-Rascunho $rascunho
+}

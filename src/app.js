@@ -218,6 +218,8 @@ function recuperarAndamento() {
   registrar(a.paginas.map((p, i) => ({ pagina: i, antes: doc.paginas[i].marcas.slice(), depois: [...doc.paginas[i].marcas, ...p.marcas.map(marcaSoGeometria)] }))
     .filter((m) => m.depois.length > m.antes.length));
   montarMiniaturas();
+  // os botões das miniaturas são refeitos: o selo das marcas recuperadas tem de voltar já (como no resto do programa)
+  atualizarMiniaturas();
   avisar('Marcas de antes recuperadas. Confira as páginas antes de salvar.');
 }
 function descartarAndamento() {
@@ -523,7 +525,7 @@ function montarMiniaturas() {
   });
   // desenha uma de cada vez para não travar a janela em documento grande
   (async () => {
-    for (let i = 0; i < doc.paginas.length && minha === geracao; i++) await redesenharMiniatura(i);
+    for (let i = 0; minha === geracao && doc && i < doc.paginas.length; i++) await redesenharMiniatura(i);
   })();
 }
 
@@ -1320,7 +1322,7 @@ async function lerComOcr(pg, p) {
           const { x0, y0, x1, y1 } = w.bbox;
           // a caixa da palavra vem da imagem: base na parte de baixo dela, altura inteira
           pedacos.push({ str: corrigirOcr(w.text.trim()), x: x0 / s, y: y1 / s, w: (x1 - x0) / s, h: Math.max(3, (y1 - y0) / s),
-                         eol: j === palavras.length - 1, ang: 0, familia: 'sans' });
+                         eol: j === palavras.length - 1, ang: 0, familia: 'sans', ocr: true });
         });
       }
     }

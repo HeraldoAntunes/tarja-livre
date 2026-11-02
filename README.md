@@ -38,14 +38,14 @@ as tarjas, então o texto coberto deixa de existir no arquivo novo. O documento 
 
 ## Qual arquivo baixar
 
-Os arquivos abaixo são os da versão mais nova (versão 1.2.1), na [página de versões](https://github.com/HeraldoAntunes/tarja-livre/releases/latest).
+Os arquivos abaixo são os da versão mais nova (versão 1.2.2), na [página de versões](https://github.com/HeraldoAntunes/tarja-livre/releases/latest).
 
 | Para quê | Baixar |
 |---|---|
-| **Windows: janela própria, se instala sozinho, já com OCR** | [**Instalar-TarjaLivre-1.2.1.zip**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.1/Instalar-TarjaLivre-1.2.1.zip) (cerca de 5 MB; extraia e abra o `.exe`) |
-| Usar em qualquer sistema, sem instalar nada: abre no navegador | [**TarjaLivre-1.2.1.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.1/TarjaLivre-1.2.1.html) (cerca de 2 MB) |
-| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.2.1.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.1/TarjaLivre-OCR-1.2.1.html) (cerca de 8 MB) |
-| Atalho com o ícone do Tarja para o arquivo HTML (o .exe cria o dele ao instalar) | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.1/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
+| **Windows: janela própria, se instala sozinho, já com OCR** | [**Instalar-TarjaLivre-1.2.2.zip**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/Instalar-TarjaLivre-1.2.2.zip) (cerca de 5 MB; extraia e abra o `.exe`) |
+| Usar em qualquer sistema, sem instalar nada: abre no navegador | [**TarjaLivre-1.2.2.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/TarjaLivre-1.2.2.html) (cerca de 2 MB) |
+| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.2.2.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/TarjaLivre-OCR-1.2.2.html) (cerca de 8 MB) |
+| Atalho com o ícone do Tarja para o arquivo HTML (o .exe cria o dele ao instalar) | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
 | Conferir se o arquivo é legítimo | `SHA256SUMS.txt`, na mesma [página da versão](https://github.com/HeraldoAntunes/tarja-livre/releases/latest) |
 
 É um arquivo só: baixe, abra com dois cliques e pronto. Dá para levar num pendrive ou guardar na rede da escola.

@@ -11,7 +11,8 @@ documentos antigos não fazia isso: o Node não expande o *, auditoria da rc.1 d
 
 Fora daqui, rodados à parte na bateria da versão: e2e_fechar (só no exe), e2e_longo (30 min), e2e_pesado (minutos),
 os .ps1 (janela, quedas, instalação e conexões) e o cargo test do app/.
-Uso: python -X utf8 tests/todos.py [--sem-auditoria]
+Uso: python -X utf8 tests/todos.py [--sem-auditoria] [--sem-janela]
+--sem-janela roda só rápidos e propriedades; não inicia navegador nem auditoria externa.
 """
 
 import subprocess
@@ -37,11 +38,12 @@ def rodar(nome: str, comando: list[str], limite: int) -> bool:
 
 
 def main() -> int:
-    testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs"], 600)]
+    testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs", "tests/ocr-email.test.mjs", "tests/miniaturas.test.mjs"], 600)]
     testes.append(("propriedades", ["node", "--test", "tests/propriedades/propriedades.test.js"], 600))
-    testes += [(t, ["node", f"tests/{t}.mjs"], 900) for t in E2E]
-    if "--sem-auditoria" not in sys.argv:
-        testes.append(("auditoria externa", [sys.executable, "-X", "utf8", "tests/auditoria-ext/rodar.py"], 900))
+    if "--sem-janela" not in sys.argv:
+        testes += [(t, ["node", f"tests/{t}.mjs"], 900) for t in E2E]
+        if "--sem-auditoria" not in sys.argv:
+            testes.append(("auditoria externa", [sys.executable, "-X", "utf8", "tests/auditoria-ext/rodar.py"], 900))
     falhas = [nome for nome, comando, limite in testes if not rodar(nome, comando, limite)]
     print(f"\n{len(testes) - len(falhas)} de {len(testes)} passaram" + (f"; falharam: {', '.join(falhas)}" if falhas else ""))
     return 1 if falhas else 0

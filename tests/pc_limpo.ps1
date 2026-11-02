@@ -81,6 +81,8 @@ function Desenhada($a, [int]$limite = 40) {
 $desenhada = { param($r) $r -and $r.Cores -ge 6 -and $r.NaoBrancos -ge 0.03 }
 
 # abre o exe com uma pasta de perfil só deste cenário e devolve o processo e essa pasta
+# tudo o que o teste abriu, para o finally do fim limpar mesmo se ele cair no meio
+$abertos = [System.Collections.ArrayList]@()
 function Abrir([string]$cenario, [hashtable]$ambiente = @{}, [string]$Programa = $Exe, [string[]]$Argumentos = @('--sem-instalar')) {
   $perfil = Join-Path $env:TEMP "tarja-pc-limpo-$cenario-$([guid]::NewGuid().ToString('N').Substring(0, 6))"
   New-Item -ItemType Directory $perfil | Out-Null
@@ -89,7 +91,9 @@ function Abrir([string]$cenario, [hashtable]$ambiente = @{}, [string]$Programa =
   $p = if ($Argumentos.Count) { Start-Process $Programa -ArgumentList $Argumentos -PassThru } else { Start-Process $Programa -PassThru }
   foreach ($k in $ambiente.Keys) { Remove-Item "Env:$k" }
   Remove-Item Env:WEBVIEW2_USER_DATA_FOLDER
-  [pscustomobject]@{ P = $p; Perfil = $perfil }
+  $a = [pscustomobject]@{ P = $p; Perfil = $perfil }
+  [void]$abertos.Add($a)
+  $a
 }
 
 function Pids($a) {
@@ -115,12 +119,12 @@ function Observar($a) {
   [pscustomobject]@{ Vivo = $true; Motor = $motor; Conexoes = @($conexoes.Keys) }
 }
 
+. (Join-Path $PSScriptRoot 'rascunho.ps1')
 function Fechar($a) {
-  if (-not $a.P.HasExited) { Stop-Process -Id $a.P.Id -Force }
-  Start-Sleep 2
-  Remove-Item $a.Perfil -Recurse -Force -ErrorAction SilentlyContinue
+  Remover-Rascunho $a.Perfil -Processo $a.P
 }
 
+try {
 $relatorio = [ordered]@{ windows = (Get-CimInstance Win32_OperatingSystem).Caption + ' ' + [Environment]::OSVersion.Version
   webview2 = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}' -ErrorAction SilentlyContinue).pv
   exe = (Get-FileHash $Exe -Algorithm SHA256).Hash.ToLower() }
@@ -220,3 +224,8 @@ $relatorio.falhas = $falhas
 $relatorio | ConvertTo-Json -Depth 5 | Tee-Object (Join-Path $Saida 'pc-limpo.json')
 if ($falhas) { Write-Host "PC LIMPO: FALHOU ($($falhas.Count))"; exit 1 }
 Write-Host 'PC LIMPO: tudo certo'
+} finally {
+  # também quando o teste cai no meio (o exit acima passa por aqui)
+  foreach ($a in $abertos) { Remover-Rascunho $a.Perfil -Processo $a.P }
+  Remover-Rascunho (Join-Path $env:TEMP 'tarja-pc-limpo-sem-webview2')
+}

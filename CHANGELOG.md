@@ -5,6 +5,38 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+## [1.2.2] - 2026-11-02
+
+### Corrigido
+- As miniaturas param de desenhar sem erro quando a aba é fechada ou trocada no meio do desenho.
+- Depois de **Recuperar** as marcas de antes, as miniaturas já mostram o número de marcas de cada página.
+- A lista de nomes não volta sozinha ao recarregar a página no navegador (o Firefox a devolvia mesmo sem
+  "Guardar a lista neste computador").
+- A procura sugere mais e-mails em páginas digitalizadas quando o OCR lê o @ como &, (D, ê ou outras sequências
+  previstas, inclusive entre duas palavras. Nomes de arquivo como ARQUITETURA.md não são convertidos em e-mail.
+  A leitura ainda pode errar e precisa de conferência visual.
+
+### Manutenção
+- Os testes passam a limpar suas pastas temporárias ao terminar, inclusive em caminhos de falha tratados.
+  Uma conferência separada compara a pasta temporária antes e depois dos testes sem janela e do Rust, sem apagar
+  arquivos que já estavam lá.
+- Novos testes de propriedades exercitam a procura com textos variados; testes de regressão conferem os e-mails
+  do OCR e a interrupção do desenho das miniaturas. A suíte tem a opção de rodar sem iniciar navegador.
+- Atualização do PDF.js usado apenas nos testes da auditoria e ajustes nos textos montados pelos testes para
+  tratar os avisos do CodeQL. O PDF.js incorporado ao programa permanece na mesma versão.
+- Os motivos das exceções de dependências do build Linux ficam registrados ao lado do Cargo.lock para a análise
+  de dependências. Uma exceção documentada não significa que a dependência foi corrigida.
+- O teste de recuperação espera a oferta aparecer antes de conferir a tela; o CI instala também a biblioteca de
+  cálculo usada na conferência dos pixels.
+- O teste do programa em PC limpo guarda mais diagnósticos da janela. Por enquanto, o teste de abrir PDF, tarjar e
+  salvar dentro do exe roda só no windows-2022: o WebView2 do windows-latest não oferece a porta de depuração
+  esperada por esse teste. Isso não representa uma correção aplicada à janela do programa.
+
+### Documentação
+- Roteiro para conferir o HTML no Linux e rascunho do manifesto da 1.2.1 para o winget. O manifesto ainda precisa
+  da decisão de envio; o roteiro não certifica compatibilidade com todos os navegadores.
+- Registro das correções e dispensas dos avisos do GitHub, com os motivos e as limitações de cada caso.
+
 ## [1.2.1] - 2026-10-29
 
 ### Corrigido

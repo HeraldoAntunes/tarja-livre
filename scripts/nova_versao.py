@@ -33,6 +33,8 @@ def main(argv: list[str]) -> int:
     trocar(RAIZ / "src" / "versao.js", r"VERSAO = '[^']+'", f"VERSAO = '{v}'")
     trocar(RAIZ / "CITATION.cff", r'^version: "[^"]+"', f'version: "{v}"')
     trocar(RAIZ / "app" / "Cargo.toml", r'^version = "[^"]+"', f'version = "{v}"')
+    # o Cargo.lock guarda a versão do próprio pacote: sem trocar aqui, o cargo build --locked do montar.py falha (1.2.2-rc.1)
+    trocar(RAIZ / "app" / "Cargo.lock", r'^(name = "tarja-livre"\nversion = )"[^"]+"', rf'\1"{v}"')
     trocar(RAIZ / "app" / "tauri.conf.json", r'^  "version": "[^"]+"', f'  "version": "{v}"')
     citation = (RAIZ / "CITATION.cff").read_text(encoding="utf-8")
     if "date-released:" in citation:
