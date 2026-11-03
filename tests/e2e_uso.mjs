@@ -245,27 +245,44 @@ d=fitz.open(stream=sys.stdin.buffer.read(), filetype="pdf"); print(json.dumps({"
   await clicar('btFechar');
   await espera(1500);
   r.fecharNoMeio.abasDepoisDeFecharNaAbertura = await abas();
+  if (r.fecharNoMeio.abasDepoisDeFecharNaAbertura.length) anotar('Fechar logo depois de escolher o arquivo não cancela: o arquivo abre assim mesmo');
   await fecharTudo();
   t0 = agora();
   await n.enviarArquivo(pdf300, 'trezentas.pdf');
   await ate(`document.getElementById('infoPaginas').textContent === '300' && document.getElementById('tela').dataset.pagina === '1'`, 'H1: reabrir depois de fechar na abertura', 120000);
   r.fecharNoMeio.abertura = { reabriu: true, tempo: agora() - t0 };
-  // H2. durante a procura
-  // o X da aba 50 ms depois de pedir a procura (as 300 páginas são procuradas em menos de 1 s)
-  r.fecharNoMeio.naHoraDeFechar = await js(`new Promise((ok) => { document.getElementById('btProcurar').click();
-    setTimeout(() => { const estado = { procurando: !/pendente/.test(document.getElementById('resumoAchados').textContent),
-      ocupado: document.body.classList.contains('ocupado') }; document.querySelectorAll('#abas .aba-fechar')[0]?.click(); ok(estado); }, 50); })`);
-  await espera(1500);
-  r.fecharNoMeio.abasDepoisDeFecharNaProcura = (await abas()).length;
-  await ate(`!document.body.classList.contains('ocupado')`, 'H2: procura parar', 120000);
+  // H2. durante a procura: o X da aba 20 ou 50 ms depois de pedir a procura (as 300 páginas são procuradas em menos de
+  // 1 s), 6 vezes; a cada vez, reabre o arquivo e a procura tem de voltar a funcionar. Na 1.2.2, o botão Procurar pode
+  // ficar desligado para sempre (docs/E2E-LINUX-1.2.2.md, achado 1): o teste registra cada vez e reprova no fim
   await fecharTudo();
-  await n.enviarArquivo(pdf300, 'trezentas.pdf');
-  await ate(`document.getElementById('infoPaginas').textContent === '300' && document.getElementById('tela').dataset.pagina === '1'`, 'H2: reabrir', 120000);
-  await clicar('btProcurar');
-  await ate(`/pendente/.test(document.getElementById('resumoAchados').textContent)`, 'H2: procurar de novo', 300000);
-  assert.match(await js(`document.getElementById('resumoAchados').textContent`), /CPF 300/, 'H2: a procura de novo acha tudo');
-  r.fecharNoMeio.procura = { reabriu: true, achouTudo: true };
-  await fecharTudo();
+  r.fecharNoMeio.procura = [];
+  for (const atraso of [20, 50, 20, 50, 20, 50]) {
+    await n.enviarArquivo(pdf300, 'trezentas.pdf');
+    await ate(`document.getElementById('infoPaginas').textContent === '300' && document.querySelectorAll('#abas .aba').length === 1`, 'H2: abrir', 120000);
+    await espera(300);
+    const naHora = await js(`new Promise((ok) => { document.getElementById('btProcurar').click(); setTimeout(() => {
+      const t = document.getElementById('resumoAchados').textContent; document.querySelectorAll('#abas .aba-fechar')[0]?.click(); ok(t); }, ${atraso}); })`);
+    await espera(2000);
+    await n.enviarArquivo(pdf300, 'trezentas.pdf');
+    await ate(`document.getElementById('infoPaginas').textContent === '300' && document.querySelectorAll('#abas .aba').length === 1`, 'H2: reabrir', 120000);
+    await espera(3000);
+    const desligado = await js(`document.getElementById('btProcurar').disabled`);
+    let achou = false;
+    if (!desligado) {
+      await clicar('btProcurar');
+      await ate(`/pendente/.test(document.getElementById('resumoAchados').textContent)`, 'H2: procurar de novo', 60000);
+      achou = /CPF 300/.test(await js(`document.getElementById('resumoAchados').textContent`));
+    }
+    r.fecharNoMeio.procura.push({ atraso, naHoraDeFechar: naHora, btProcurarDesligadoDepois: desligado, procuraNovaAchouTudo: achou });
+    if (desligado) {
+      // único jeito de voltar a procurar: recarregar a página
+      await js('location.reload()').catch(() => {});
+      await espera(1500);
+      await n.abrirPrograma();
+    } else await fecharTudo();
+  }
+  const travadas = r.fecharNoMeio.procura.filter((x) => x.btProcurarDesligadoDepois).length;
+  if (travadas) anotar(`fechar a aba no meio da procura deixou o botão Procurar desligado para sempre em ${travadas} de 6 vezes`);
   // H3. durante o desenho das miniaturas, 5 vezes seguidas (o "doc is null" da 1.2.1)
   for (let k = 0; k < 5; k++) {
     await n.enviarArquivo(pdf300, 'trezentas.pdf');
@@ -332,6 +349,8 @@ d=fitz.open(stream=sys.stdin.buffer.read(), filetype="pdf"); print(json.dumps({"
   const inesperados = r.erros.filter((e) => !ESPERADOS.test(e));
   r.errosInesperados = inesperados;
   writeFileSync(join(SAIDA, `resultado-${r.navegador}.json`), JSON.stringify(r, null, 2));
+  assert.equal(r.fecharNoMeio.procura.filter((x) => x.btProcurarDesligadoDepois).length, 0,
+    'H2: depois de fechar a aba no meio da procura e reabrir, o botão Procurar volta a funcionar');
   assert.deepEqual(inesperados, [], 'console sem erro inesperado');
   console.log(`uso: tudo certo (${r.navegador}; abrir 1 pág. ${r.tempos.abrir1} ms, 300 pág. ${r.tempos.abrir300} ms, procurar 300 ${r.tempos.procurar300} ms, salvar 300 ${r.tempos.salvar300} ms)`);
 } catch (e) {
