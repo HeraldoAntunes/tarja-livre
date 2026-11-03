@@ -49,7 +49,10 @@ async function tarjarCaso(nome) {
       const e = document.getElementById('entrada'); e.files = dt.files; e.dispatchEvent(new Event('change')); })()`);
     await ate(`document.getElementById('tela').dataset.pagina === '1'`, 'abrir');
     const paginas = Number(await js(`document.getElementById('infoPaginas').textContent`));
-    await js(`(() => { const t = document.getElementById('termos'); t.value = ${JSON.stringify(caso.termos.join('\n'))}; t.dispatchEvent(new Event('input')); })()`);
+    // os termos vão como argumento, não como parte do código executado na página (alerta 17 do CodeQL)
+    await page.evaluate((termos) => {
+      const t = document.getElementById('termos'); t.value = termos; t.dispatchEvent(new Event('input'));
+    }, caso.termos.join('\n'));
     await js(`document.getElementById('btProcurar').click()`);
     await ate(`!document.body.classList.contains('ocupado') && document.getElementById('resumoAchados').textContent.length > 0
       && !/Procurando|Lendo/.test(document.getElementById('resumoAchados').textContent)`, 'procurar');
