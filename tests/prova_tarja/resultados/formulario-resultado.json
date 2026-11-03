@@ -1,0 +1,20 @@
+{
+ "caso": "formulario",
+ "html": "normal",
+ "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "1a2eccaba65f2902ef1df5e339843ea14d1f1c09ca8ecda33a9b19ee307dcb76",
+ "sha256_tarjado": "fa88918babbe99e85be7af38e6cc9467285d5ec081c763d4944ac6d998fd43b6",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 2547,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

@@ -1,0 +1,19 @@
+{
+ "caso": "camada-ocr-deslocada",
+ "html": "normal",
+ "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "58a974f5fd4b5937f9a8f3da780ad06db737f703402ea9d5fa32b856297ad3be",
+ "sha256_tarjado": "842e96e3ec6a2fb6cd691a0cddfb46d5a970eca2c3d04e67ce69ecbc63b3be83",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3761,
+   "descobertos": 294
+  }
+ ],
+ "erros": []
+}

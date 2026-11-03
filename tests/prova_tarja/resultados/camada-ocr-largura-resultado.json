@@ -1,0 +1,19 @@
+{
+ "caso": "camada-ocr-largura",
+ "html": "normal",
+ "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "cfd9d4d1d81ba53d9e286407527949965196c15bbc1e9d17a0582aba9809bf45",
+ "sha256_tarjado": "2b84c484540c0df906b4f34935756841543f9f75596d3f527fb6e9a6194866dd",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3761,
+   "descobertos": 193
+  }
+ ],
+ "erros": []
+}
