@@ -379,6 +379,8 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     prontos: () => baixadosProntos(baixados),
     // combina a resposta das próximas perguntas da página (true = OK, false = Cancelar, ou { aceitar, depois: ms })
     responder: (...r) => respostas.push(...r),
+    // descarta as respostas combinadas que a página não chegou a pedir
+    esquecerRespostas: () => { respostas.length = 0; },
     // eventos do protocolo (por exemplo, uma janela nova aberta pela página)
     aoEvento: (f) => ouvintes.push(f),
     clicar: (id) => js(`document.getElementById('${id}').click()`),
