@@ -359,7 +359,9 @@ d=fitz.open(stream=sys.stdin.buffer.read(), filetype="pdf"); print(json.dumps({"
   writeFileSync(join(SAIDA, `resultado-${r.navegador}.json`), JSON.stringify(r, null, 2));
   console.error('uso FALHOU: ' + e.message);
   if (n.erros.length) console.error('console do navegador:\n  ' + n.erros.join('\n  '));
-  try { await n.captura(`falha-${r.navegador}.png`); } catch { /* sem tela */ }
-  await n.fechar();
+  // o navegador pode já estar fechado (a reprovação do fim vem depois das telas): cada passo tem prazo
+  const comPrazo = (p) => Promise.race([p.catch(() => {}), espera(5000)]);
+  await comPrazo(n.captura(`falha-${r.navegador}.png`));
+  await comPrazo(n.fechar());
   process.exit(1);
 }
