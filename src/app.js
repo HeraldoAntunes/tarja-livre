@@ -1302,11 +1302,12 @@ async function temTextoInvisivel(pg) {
   return false;
 }
 
-// Desenha a página (na resolução do PDF salvo) e faz cada caixa dos achados cobrir também as palavras escuras da
-// imagem que encostam nela. Letras da mesma palavra ficam juntas por um vão menor que o espaço entre palavras; a
-// procura vai até 3 alturas de cada lado e 3/4 de altura acima e abaixo, para não engolir a página.
-async function ajustarAoDesenho(pg, achados) {
-  const s = DPI_SAIDA / 72;
+// Desenha a página (na resolução do PDF salvo, reduzida em página enorme como no salvar) e faz cada caixa dos
+// achados cobrir também as palavras escuras da imagem que encostam nela. Letras da mesma palavra ficam juntas por um
+// vão menor que o espaço entre palavras; a procura vai até 3 alturas de cada lado e 3/4 de altura acima e abaixo, para
+// não engolir a página.
+async function ajustarAoDesenho(pg, p, achados) {
+  const s = escalaSegura(p, DPI_SAIDA / 72);
   const v = pg.getViewport({ scale: s });
   const c = document.createElement('canvas');
   c.width = Math.max(1, Math.round(v.width));
@@ -1438,7 +1439,7 @@ async function procurarEm(d, tipos, progresso, termos = null) {
     const anotacoes = await sugestoesDeAnotacoes(pg, v, tipos, termos);
     if (!anotacoes) incompletas.push(i + 1);
     const doTexto = procurar(pedacos, tipos, medirTexto, termos);
-    if (doTexto.length && !ocr && await temTextoInvisivel(pg)) await ajustarAoDesenho(pg, doTexto);
+    if (doTexto.length && !ocr && await temTextoInvisivel(pg)) await ajustarAoDesenho(pg, d.paginas[i], doTexto);
     const achados = [...doTexto, ...(anotacoes || [])];
     if (!docs.includes(d)) return null;
     novas.push({ semTexto: pedacos.length === 0, ocr, achados });
