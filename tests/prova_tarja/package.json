@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Prova de que a tarja apaga (docs/PROVA-TARJA-1.2.2.md).",
+  "dependencies": {
+    "puppeteer-core": "25.13.0"
+  }
+}

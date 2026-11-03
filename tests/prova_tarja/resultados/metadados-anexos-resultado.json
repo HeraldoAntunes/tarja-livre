@@ -1,0 +1,20 @@
+{
+ "caso": "metadados-anexos",
+ "html": "normal",
+ "sugestoes": "1 pendente(s): CPF 1",
+ "marcas": 1,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "ae753a2bb61948762446ff9e12737f4094569f84460751e175f7cb7664692ac4",
+ "sha256_tarjado": "bfdb668287c1e2ca079958fb8d1ccbbdb9b87fe7270ce2902e2dd1288a40eeb3",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 1416,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

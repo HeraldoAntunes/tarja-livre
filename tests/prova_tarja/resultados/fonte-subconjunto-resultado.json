@@ -1,0 +1,20 @@
+{
+ "caso": "fonte-subconjunto",
+ "html": "normal",
+ "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "7d73c79c74bce434906a08a2769a180711b339f4491f2ece146b376b82fae31c",
+ "sha256_tarjado": "a0b9fc3993d0fa4f89fb18bb25846ceee8776a0f6c629188f41d19bdaee038b7",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3366,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

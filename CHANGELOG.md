@@ -5,6 +5,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+### Corrigido
+- Em PDF digitalizado que já vem com texto invisível por cima da imagem (o OCR de uma impressora ou de outro
+  programa), a tarja sugerida agora cobre as letras da imagem inteiras. Antes ela seguia o texto invisível e, quando
+  ele não coincidia com a imagem, deixava parte das letras à mostra no PDF salvo (docs/PROVA-TARJA-1.2.2.md,
+  achado 1). A tarja pode sair um pouco maior que a palavra; confira a página como sempre.
+
+### Manutenção
+- A prova da tarja (tests/prova_tarja) entra no repositório: 14 PDFs sintéticos tarjados pelo próprio programa e
+  conferidos com pdftotext, qpdf, mutool, strings, versões incrementais, metadados, anexos e pixel a pixel.
+
 ## [1.2.2] - 2026-11-02
 
 ### Corrigido

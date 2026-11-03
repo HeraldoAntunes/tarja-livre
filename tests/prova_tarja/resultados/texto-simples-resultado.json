@@ -1,0 +1,20 @@
+{
+ "caso": "texto-simples",
+ "html": "normal",
+ "sugestoes": "4 pendente(s): CPF 1, E-mail 1, Termo da lista 2",
+ "marcas": 4,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "cdf44afac7cc42b9efaa4ed8d271daa3d914b79ecb4f9190f18050d910bb7019",
+ "sha256_tarjado": "0e0856408335c31867047a1280ee122e5d8dce69aab53656a981de817cf4e59e",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 7011,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

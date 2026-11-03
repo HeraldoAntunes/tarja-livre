@@ -1,0 +1,20 @@
+{
+ "caso": "texto-girado",
+ "html": "normal",
+ "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "af86950280cea8bc78737d4cee7d1e1b9f492c26f46162500bb991bf93e1f257",
+ "sha256_tarjado": "27bc52472cda2f5735e57f780f9bf4d3bf89bf0f9cc55ff09cb1d8c04ecea492",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3283,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

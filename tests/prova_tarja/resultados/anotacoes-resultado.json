@@ -1,0 +1,20 @@
+{
+ "caso": "anotacoes",
+ "html": "normal",
+ "sugestoes": "1 pendente(s): Termo da lista 1",
+ "marcas": 1,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "a87cf0fb269a7ef000cf9827b0794f21ee0afc7ae8c6874ec6da0510738f1e02",
+ "sha256_tarjado": "5c7d0dbcb1368ea08bf93807e980755e86e2be34d5ae95579db354515e5d94e6",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 1259,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

@@ -1,0 +1,20 @@
+{
+ "caso": "fonte-sem-tounicode",
+ "html": "normal",
+ "sugestoes": "Nenhuma sugestão pendente.",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "1b5827540eebb8c007b221cd6b53e60bb7bb805a1ba894ba0c59cdbec288db40",
+ "sha256_tarjado": "3099883f073d381a228bdd429e56fb0b898b55ed2fff26078c88c9e6446bba9d",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3366,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

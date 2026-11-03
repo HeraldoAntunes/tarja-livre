@@ -1278,6 +1278,92 @@ function textoDaPagina(d, i) {
   return p.texto;
 }
 
+// ---------- camada de texto invisível ----------
+// PDF digitalizado que já vem com OCR de outro programa: a imagem tem as letras e, por cima, um texto invisível
+// (modo de desenho 3 ou 7) que é o que a procura lê. As caixas das sugestões saem desse texto, que pode não coincidir
+// com as letras da imagem (mais estreito ou fora do lugar), e a tarja deixava parte delas à mostra (achado 1 da prova
+// da tarja da 1.2.2, docs/PROVA-TARJA-1.2.2.md). Nessas páginas, cada caixa cresce até cobrir as palavras da imagem
+// que ela toca. Só cresce, nunca diminui: sobrar tarja é melhor que deixar uma letra do dado à mostra.
+const MODOS_INVISIVEIS = new Set([3, 7]);
+
+async function temTextoInvisivel(pg) {
+  const O = pdfjsLib.OPS;
+  const mostrar = new Set([O.showText, O.showSpacedText, O.nextLineShowText, O.nextLineSetSpacingShowText]);
+  const ops = await pg.getOperatorList({ intent: 'print', annotationMode: pdfjsLib.AnnotationMode.DISABLE });
+  let modo = 0;
+  const pilha = [];
+  for (let k = 0; k < ops.fnArray.length; k++) {
+    const f = ops.fnArray[k];
+    if (f === O.save) pilha.push(modo);
+    else if (f === O.restore) modo = pilha.length ? pilha.pop() : 0;
+    else if (f === O.setTextRenderingMode) modo = ops.argsArray[k][0];
+    else if (mostrar.has(f) && MODOS_INVISIVEIS.has(modo)) return true;
+  }
+  return false;
+}
+
+// Desenha a página (na resolução do PDF salvo) e faz cada caixa dos achados cobrir também as palavras escuras da
+// imagem que encostam nela. Letras da mesma palavra ficam juntas por um vão menor que o espaço entre palavras; a
+// procura vai até 3 alturas de cada lado e 3/4 de altura acima e abaixo, para não engolir a página.
+async function ajustarAoDesenho(pg, achados) {
+  const s = DPI_SAIDA / 72;
+  const v = pg.getViewport({ scale: s });
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(v.width));
+  c.height = Math.max(1, Math.round(v.height));
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, c.width, c.height);
+  await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: v }).promise;
+  const L = c.width;
+  const A = c.height;
+  const px = ctx.getImageData(0, 0, L, A).data;
+  c.width = c.height = 0;
+  const escuro = new Uint8Array(L * A);
+  for (let i = 0, k = 0; i < escuro.length; i++, k += 4) {
+    escuro[i] = 0.299 * px[k] + 0.587 * px[k + 1] + 0.114 * px[k + 2] < 140 ? 1 : 0;
+  }
+  for (const a of achados) a.caixas = a.caixas.map((k) => crescerAteAsLetras(k, s, escuro, L, A));
+}
+
+function crescerAteAsLetras(k, s, escuro, L, A) {
+  const b = { x0: Math.floor(k.x * s), y0: Math.floor(k.y * s), x1: Math.ceil((k.x + k.w) * s), y1: Math.ceil((k.y + k.h) * s) };
+  const H = b.y1 - b.y0;
+  if (H < 2) return k;
+  const r = { x0: Math.max(0, b.x0 - 3 * H), y0: Math.max(0, Math.round(b.y0 - 0.75 * H)),
+              x1: Math.min(L, b.x1 + 3 * H), y1: Math.min(A, Math.round(b.y1 + 0.75 * H)) };
+  const vaoX = Math.max(1, Math.round(0.15 * H));
+  const vaoY = Math.max(1, Math.round(0.06 * H));
+  const visto = new Uint8Array((r.x1 - r.x0) * (r.y1 - r.y0));
+  const idx = (x, y) => (y - r.y0) * (r.x1 - r.x0) + (x - r.x0);
+  const fila = [];
+  // sementes: os pixels escuros dentro da caixa
+  for (let y = Math.max(r.y0, b.y0); y < Math.min(r.y1, b.y1); y++) {
+    for (let x = Math.max(r.x0, b.x0); x < Math.min(r.x1, b.x1); x++) {
+      if (escuro[y * L + x] && !visto[idx(x, y)]) { visto[idx(x, y)] = 1; fila.push(x, y); }
+    }
+  }
+  if (!fila.length) return k;
+  let { x0, y0, x1, y1 } = b;
+  for (let q = 0; q < fila.length; q += 2) {
+    const x = fila[q];
+    const y = fila[q + 1];
+    if (x < x0) x0 = x;
+    if (x + 1 > x1) x1 = x + 1;
+    if (y < y0) y0 = y;
+    if (y + 1 > y1) y1 = y + 1;
+    for (let yy = Math.max(r.y0, y - vaoY); yy <= Math.min(r.y1 - 1, y + vaoY); yy++) {
+      for (let xx = Math.max(r.x0, x - vaoX); xx <= Math.min(r.x1 - 1, x + vaoX); xx++) {
+        const j = idx(xx, yy);
+        if (!visto[j] && escuro[yy * L + xx]) { visto[j] = 1; fila.push(xx, yy); }
+      }
+    }
+  }
+  // um pixel de folga em volta das letras
+  return { x: (x0 - 1) / s, y: (y0 - 1) / s, w: (x1 - x0 + 2) / s, h: (y1 - y0 + 2) / s };
+}
+
 // ---------- OCR (só na versão com OCR) ----------
 // O Tesseract roda num worker feito do texto embutido na página (dados do português dentro, sem rede). Só as
 // palavras e as caixas delas voltam para cá, e só ficam na memória enquanto a procura roda.
@@ -1351,7 +1437,9 @@ async function procurarEm(d, tipos, progresso, termos = null) {
     }
     const anotacoes = await sugestoesDeAnotacoes(pg, v, tipos, termos);
     if (!anotacoes) incompletas.push(i + 1);
-    const achados = [...procurar(pedacos, tipos, medirTexto, termos), ...(anotacoes || [])];
+    const doTexto = procurar(pedacos, tipos, medirTexto, termos);
+    if (doTexto.length && !ocr && await temTextoInvisivel(pg)) await ajustarAoDesenho(pg, doTexto);
+    const achados = [...doTexto, ...(anotacoes || [])];
     if (!docs.includes(d)) return null;
     novas.push({ semTexto: pedacos.length === 0, ocr, achados });
   }
