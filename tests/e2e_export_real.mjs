@@ -14,13 +14,13 @@ import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
-import { RAIZ, montar, abrirNavegador } from './navegador.mjs';
+import { RAIZ, PYTHON, montar, abrirNavegador } from './navegador.mjs';
 
 const FIX = join(RAIZ, 'tests', 'fixtures', 'auditoria');
 const SAIDA = process.argv[2] || join(RAIZ, 'files', 'e2e-export-real');
 mkdirSync(SAIDA, { recursive: true });
 const pixels = (...a) => {
-  try { return { ok: true, r: JSON.parse(execFileSync('python', [join(RAIZ, 'tests', 'conferir_pixels.py'), ...a]).toString()) }; }
+  try { return { ok: true, r: JSON.parse(execFileSync(PYTHON, [join(RAIZ, 'tests', 'conferir_pixels.py'), ...a]).toString()) }; }
   catch (e) { return { ok: false, r: (e.stdout || '').toString() + (e.stderr || '').toString() }; }
 };
 // e-mail na página de 595 × 842 pt, achado pelo PyMuPDF: (60; 90,5) a (267,04; 117,98)
@@ -64,7 +64,7 @@ rmSync(join(n.baixados, 'simple-tarjado.pdf'), { force: true });   // o próximo
 for (const marca of ['SEGREDO_', 'sintetico', 'exemplo.test', 'AUTOR_FICTICIO']) {
   assert.ok(!salvo.includes(Buffer.from(marca)), `3: "${marca}" não pode estar no PDF salvo`);
 }
-const exame = JSON.parse(execFileSync('python', ['-c', `import fitz,json,sys
+const exame = JSON.parse(execFileSync(PYTHON, ['-c', `import fitz,json,sys
 d=fitz.open(sys.argv[1]); p=d[0]
 print(json.dumps({"texto": "".join(x.get_text() for x in d).strip(), "anexos": d.embfile_count(), "comentarios": sum(len(list(x.annots())) for x in d),
   "metadados": {k: v for k, v in (d.metadata or {}).items() if v and ("SEGREDO" in v or "FICTICIO" in v)}}))`, join(SAIDA, 'simple-tarjado.pdf')]).toString());
