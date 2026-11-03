@@ -428,6 +428,7 @@ function fechar(d = doc) {
   const k = docs.indexOf(d);
   docs.splice(k, 1);
   d.pdf.destroy();
+  d.avisarFechado?.();
   // fechar o arquivo é escolher não guardar: as marcas de antes deixam de ser oferecidas
   esquecerAndamento(d.hash);
   if (d !== doc) {
@@ -1330,6 +1331,16 @@ async function lerComOcr(pg, p) {
   return pedacos;
 }
 
+// O PDF.js destruído no fechamento da aba pode deixar uma promessa pendente para sempre (nem termina nem dá erro):
+// sem isso, a procura ficava esperando e o botão Procurar desligado até recarregar a página. Corre a promessa contra
+// o fechamento do arquivo e devolve FECHADO se ele fechar antes.
+const FECHADO = Symbol('fechado');
+function enquantoAberto(d, promessa) {
+  if (!docs.includes(d)) return Promise.resolve(FECHADO);
+  if (!d.fechado) d.fechado = new Promise((ok) => { d.avisarFechado = () => ok(FECHADO); });
+  return Promise.race([promessa, d.fechado]);
+}
+
 // Procura num arquivo (na tela ou não). Para no meio, sem estragar nada, se o arquivo for fechado.
 // Devolve { total, semTexto } ou null se parou.
 async function procurarEm(d, tipos, progresso, termos = null) {
@@ -1339,17 +1350,23 @@ async function procurarEm(d, tipos, progresso, termos = null) {
   const usarOcr = ocrDisponivel() && el.ocrLigado.checked;
   for (let i = 0; i < d.paginas.length; i++) {
     progresso(i);
-    const pg = await d.pdf.getPage(i + 1);
+    const pg = await enquantoAberto(d, d.pdf.getPage(i + 1));
+    if (pg === FECHADO) return null;
     const v = pg.getViewport({ scale: 1 });
-    const pedacos = (await textoDaPagina(d, i)).slice();
+    const texto = await enquantoAberto(d, textoDaPagina(d, i));
+    if (texto === FECHADO) return null;
+    const pedacos = texto.slice();
     // página sem texto (digitalizada): o texto sai da imagem, pelo OCR, quando a versão tem e a opção está ligada
     let ocr = false;
     if (!pedacos.length && usarOcr) {
       progresso(i, true);
-      pedacos.push(...(await lerComOcr(pg, d.paginas[i])));
+      const lidos = await enquantoAberto(d, lerComOcr(pg, d.paginas[i]));
+      if (lidos === FECHADO) return null;
+      pedacos.push(...lidos);
       ocr = true;
     }
-    const anotacoes = await sugestoesDeAnotacoes(pg, v, tipos, termos);
+    const anotacoes = await enquantoAberto(d, sugestoesDeAnotacoes(pg, v, tipos, termos));
+    if (anotacoes === FECHADO) return null;
     if (!anotacoes) incompletas.push(i + 1);
     const achados = [...procurar(pedacos, tipos, medirTexto, termos), ...(anotacoes || [])];
     if (!docs.includes(d)) return null;

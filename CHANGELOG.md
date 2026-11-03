@@ -5,6 +5,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+### Corrigido
+- Fechar a aba no meio da procura não deixa mais o botão **Procurar no documento** desligado. Antes, a procura podia
+  ficar parada para sempre e só voltava recarregando a página.
+
 ## [1.2.2] - 2026-11-02
 
 ### Corrigido
