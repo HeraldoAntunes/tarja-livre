@@ -1,0 +1,20 @@
+{
+ "caso": "duas-colunas",
+ "html": "normal",
+ "sugestoes": "3 pendente(s): CPF 1, Termo da lista 2",
+ "marcas": 3,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "8eb2cdd4f13ec6e49d36a67dbb669ccdc230e781add75af3bf804990ccc86d78",
+ "sha256_tarjado": "6d868d78d8d1bf181154db91df554188c0212c60aabac4212c5b1f14942bc772",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3971,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

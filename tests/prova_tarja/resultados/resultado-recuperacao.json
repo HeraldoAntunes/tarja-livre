@@ -1,0 +1,742 @@
+{
+ "anotacoes": {
+  "original": {
+   "pdftotext": [
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [
+    "831.975.872-60",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 2,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 1259,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "1 pendente(s): Termo da lista 1"
+ },
+ "camada-ocr": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0005.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3761,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "camada-ocr-deslocada": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0005.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3761,
+    "descobertos": 294
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "camada-ocr-largura": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0005.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3761,
+    "descobertos": 193
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "duas-colunas": {
+  "original": {
+   "pdftotext": [
+    "514.334.988-55",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "514.334.988-55",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3971,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "3 pendente(s): CPF 1, Termo da lista 2"
+ },
+ "escaneado": {
+  "original": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0005.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3761,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "fonte-sem-tounicode": {
+  "original": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "font-0008.ttf"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3366,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "Nenhuma sugestão pendente."
+ },
+ "fonte-subconjunto": {
+  "original": {
+   "pdftotext": [
+    "514.334.988-55",
+    "Beltrana Ficticia"
+   ],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "font-0008.ttf"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3366,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "formulario": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [
+    "831.975.872-60",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 2,
+    "AcroForm": 1
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 2547,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "incremental": {
+  "original": {
+   "pdftotext": [
+    "Beltrana Ficticia"
+   ],
+   "qpdf --qdf": [
+    "Beltrana Ficticia"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "versões (quantas)": 2,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 2,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 1599,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "1 pendente(s): Termo da lista 1"
+ },
+ "metadados-anexos": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60"
+   ],
+   "qpdf --qdf": [
+    "514.334.988-55",
+    "831.975.872-60",
+    "Beltrana Ficticia",
+    "Fulano de Teste",
+    "MAT-2026-4471"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [
+    "514.334.988-55",
+    "Beltrana Ficticia",
+    "Fulano de Teste"
+   ],
+   "anexos (lista)": "2 embedded files\n1: boletim.txt\n2: laudo.txt",
+   "strings": [
+    "514.334.988-55",
+    "Beltrana Ficticia",
+    "Fulano de Teste",
+    "MAT-2026-4471"
+   ],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [
+    "514.334.988-55",
+    "Beltrana Ficticia",
+    "Fulano de Teste",
+    "MAT-2026-4471"
+   ],
+   "anotações e campos": {
+    "Annots": 2,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 1416,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "1 pendente(s): CPF 1"
+ },
+ "texto-claro-miudo": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 142,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "texto-girado": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Fulano de Teste"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 3283,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1"
+ },
+ "texto-simples": {
+  "original": {
+   "pdftotext": [
+    "831.975.872-60",
+    "Fulano de Teste",
+    "MAT-2026-4471",
+    "fulano.teste@exemplo.test"
+   ],
+   "qpdf --qdf": [
+    "831.975.872-60",
+    "Fulano de Teste",
+    "MAT-2026-4471",
+    "fulano.teste@exemplo.test"
+   ],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "tarjado": {
+   "pdftotext": [],
+   "qpdf --qdf": [],
+   "mutool extract": [],
+   "mutool extract (arquivos)": [
+    "image-0021.png"
+   ],
+   "anexos": [],
+   "anexos (lista)": "0 embedded files",
+   "strings": [],
+   "versões": [],
+   "versões (quantas)": 1,
+   "metadados": [],
+   "anotações e campos": {
+    "Annots": 0,
+    "AcroForm": 0
+   }
+  },
+  "pixels": [
+   {
+    "pagina": 1,
+    "dados": 7011,
+    "descobertos": 0,
+    "png": null
+   }
+  ],
+  "sugestoes": "4 pendente(s): CPF 1, E-mail 1, Termo da lista 2"
+ }
+}

@@ -21,8 +21,8 @@ import time
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-E2E = ["e2e", "e2e_pdf_teste", "e2e_varios", "e2e_ocr", "e2e_andamento", "e2e_auditoria", "e2e_auditoria2",
-       "e2e_export_real", "e2e_telas"]
+E2E = ["e2e", "e2e_pdf_teste", "e2e_varios", "e2e_ocr", "e2e_camada_ocr", "e2e_andamento", "e2e_auditoria",
+       "e2e_auditoria2", "e2e_export_real", "e2e_telas"]
 
 
 def rodar(nome: str, comando: list[str], limite: int) -> bool:

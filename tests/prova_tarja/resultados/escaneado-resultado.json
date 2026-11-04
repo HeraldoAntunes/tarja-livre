@@ -1,0 +1,20 @@
+{
+ "caso": "escaneado",
+ "html": "ocr",
+ "sugestoes": "2 pendente(s): CPF 1, Termo da lista 1",
+ "marcas": 2,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "11afcd2aa8d41ba9b2e3620f534738b73aa685501782e206abd418b586b9db68",
+ "sha256_tarjado": "4e3f307c1fdb7215fea43910c7cb9ef3d40cc54bf4daaeab6fefa8e9c8451d67",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 3761,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}

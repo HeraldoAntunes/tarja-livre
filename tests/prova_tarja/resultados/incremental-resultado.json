@@ -1,0 +1,20 @@
+{
+ "caso": "incremental",
+ "html": "normal",
+ "sugestoes": "1 pendente(s): Termo da lista 1",
+ "marcas": 1,
+ "paginas": 1,
+ "nomeSalvo": "documento-tarjado.pdf",
+ "aviso": "PDF salvo como documento-tarjado.pdf. Abra e confira antes de compartilhar.",
+ "sha256_original": "bf071bb116b95f20b67d508788967f874d197283df8c756d79f9ca6a53836b66",
+ "sha256_tarjado": "3246b7682906190f2f3ad03b1aa2afa04d7554230d679ba33d931ab5f83b7810",
+ "pixels": [
+  {
+   "pagina": 1,
+   "dados": 1599,
+   "descobertos": 0,
+   "png": null
+  }
+ ],
+ "erros": []
+}
