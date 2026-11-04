@@ -21,17 +21,20 @@ function contexto({ mostrar = true } = {}) {
     mostrarAvisos: { checked: mostrar },
     avisoTexto: { textContent: '' },
     avisoFechar: { hidden: true },
+    btAbrir: { focus() { foco.atual = el.btAbrir; } },
     aviso: { classList: {
       add: (...c) => c.forEach((x) => classes.add(x)), remove: (...c) => c.forEach((x) => classes.delete(x)),
       toggle: (c, sim) => (sim ? classes.add(c) : classes.delete(c)), contains: (c) => classes.has(c) } },
   };
+  const foco = { atual: null };
   const c = vm.createContext({
+    document: { get activeElement() { return foco.atual; } },
     el, setTimeout: (f, ms) => { relogios.push({ f, ms }); return relogios.length; },
     clearTimeout: (k) => { if (relogios[k - 1]) relogios[k - 1].f = () => {}; },
   });
   vm.runInContext(avisos + '\nObject.assign(globalThis, { avisar, avisarRecusa, fecharAviso });', c);
   const passarTempo = () => { for (const r of relogios.splice(0)) r.f(); };
-  return { c, el, classes, passarTempo };
+  return { c, el, classes, passarTempo, foco };
 }
 
 test('aviso comum some sozinho em 4,2 s, sem o botão de fechar', () => {
@@ -55,6 +58,18 @@ test('arquivo que não abriu: o aviso fica até fechar no ×, mesmo com os aviso
   c.fecharAviso();
   assert.ok(!classes.has('visivel') && !classes.has('fixo'));
   assert.equal(el.avisoFechar.hidden, true);
+});
+
+test('com o foco no ×, fechar leva o foco para o Abrir PDF; sem foco nele, não mexe no foco', () => {
+  const { c, el, foco } = contexto();
+  c.avisarRecusa('ruim.pdf: não foi possível abrir este PDF.');
+  foco.atual = el.avisoFechar;
+  c.fecharAviso();
+  assert.equal(foco.atual, el.btAbrir);
+  c.avisarRecusa('ruim.pdf: não foi possível abrir este PDF.');
+  foco.atual = null;
+  c.fecharAviso();
+  assert.equal(foco.atual, null);
 });
 
 test('um aviso comum depois do fixo toma o lugar e volta a sumir sozinho', () => {

@@ -275,6 +275,8 @@ function avisar(texto, forcar = false, fixo = false) {
 // 4 s, antes de a pessoa ler (docs/E2E-LINUX-1.2.2.md, achado 3, no ramo e2e-linux-1.2.2)
 const avisarRecusa = (texto) => avisar(texto, true, true);
 function fecharAviso() {
+  // com o foco no × (teclado, ou clique em alguns navegadores): o foco não some com o botão, vai para o Abrir PDF
+  if (document.activeElement === el.avisoFechar) el.btAbrir.focus();
   clearTimeout(tempoAviso);
   el.aviso.classList.remove('visivel', 'fixo');
   el.avisoFechar.hidden = true;
