@@ -179,7 +179,9 @@ print(json.dumps({"paginas": d.page_count, "texto": "".join(p.get_text() for p i
   };
   r.corrompidos = {};
   for (const [nome, bytes] of Object.entries(CORROMPIDOS)) {
-    await js(`document.getElementById('aviso').textContent = ''`);
+    // limpa o texto do aviso sem apagar o que está dentro dele (a partir do ramo corrige-aviso-de-erro, o aviso tem o
+    // texto num span e o botão de fechar)
+    await js(`(document.getElementById('avisoTexto') || document.getElementById('aviso')).textContent = ''`);
     t0 = agora();
     await n.enviarArquivo(bytes, nome);
     await ate(`!!document.getElementById('aviso').textContent || document.querySelectorAll('#abas .aba').length > 0`, 'F: resposta para ' + nome, 20000);
