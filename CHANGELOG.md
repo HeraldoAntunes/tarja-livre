@@ -6,6 +6,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 ## Não publicado
 
 ### Corrigido
+- Quando um arquivo não abre (com senha, com defeito, que não é PDF ou grande demais), o aviso com o motivo fica na
+  tela até ser fechado no ×, em vez de sumir em 4 segundos.
 - Em PDF digitalizado que já vem com texto invisível por cima da imagem (o OCR de uma impressora ou de outro
   programa), a tarja sugerida agora cobre as letras da imagem inteiras. Antes ela seguia o texto invisível e, quando
   ele não coincidia com a imagem, deixava parte das letras à mostra no PDF salvo (docs/PROVA-TARJA-1.2.2.md,

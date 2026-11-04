@@ -44,7 +44,7 @@ const el = {
   formato: $('formato'), folha: $('folha'), infoVistas: $('infoVistas'), barraVistas: $('barraVistas'),
   revisei: $('revisei'), dicaRevisei: $('dicaRevisei'), btSalvar: $('btSalvar'), progresso: $('progresso'),
   barraProgresso: $('barraProgresso'), rotuloHashSaida: $('rotuloHashSaida'), infoHashSaida: $('infoHashSaida'),
-  aviso: $('aviso'), sobre: $('sobre'), sobreVersao: $('sobreVersao'), mostrarAvisos: $('mostrarAvisos'),
+  aviso: $('aviso'), avisoTexto: $('avisoTexto'), avisoFechar: $('avisoFechar'), sobre: $('sobre'), sobreVersao: $('sobreVersao'), mostrarAvisos: $('mostrarAvisos'),
   infoConferido: $('infoConferido'), opOcr: $('opOcr'), ocrLigado: $('ocrLigado'), rotuloTarja: $('rotuloTarja'), listaSugestoes: $('listaSugestoes'), btAceitarMarcadas: $('btAceitarMarcadas'),
   abas: $('abas'), btProcurarTodos: $('btProcurarTodos'), btProximo: $('btProximo'),
   andamento: $('andamento'), andamentoTexto: $('andamentoTexto'), btRecuperar: $('btRecuperar'),
@@ -261,12 +261,23 @@ let tarefaRender = null;
 
 // ---------- avisos ----------
 let tempoAviso = 0;
-function avisar(texto, forcar = false) {
+// fixo: o aviso não some sozinho, fica até a pessoa fechar no × ou vir outro aviso
+function avisar(texto, forcar = false, fixo = false) {
   if (!el.mostrarAvisos.checked && !forcar) return;
-  el.aviso.textContent = texto;
+  el.avisoTexto.textContent = texto;
   el.aviso.classList.add('visivel');
+  el.aviso.classList.toggle('fixo', fixo);
+  el.avisoFechar.hidden = !fixo;
   clearTimeout(tempoAviso);
-  tempoAviso = setTimeout(() => el.aviso.classList.remove('visivel'), 4200);
+  if (!fixo) tempoAviso = setTimeout(() => el.aviso.classList.remove('visivel'), 4200);
+}
+// Arquivo que não abriu (senha, defeito, não é PDF...): nada mais na tela diz o motivo, então o aviso não pode sumir em
+// 4 s, antes de a pessoa ler (docs/E2E-LINUX-1.2.2.md, achado 3, no ramo e2e-linux-1.2.2)
+const avisarRecusa = (texto) => avisar(texto, true, true);
+function fecharAviso() {
+  clearTimeout(tempoAviso);
+  el.aviso.classList.remove('visivel', 'fixo');
+  el.avisoFechar.hidden = true;
 }
 
 // enquanto salva, nada muda as tarjas nem troca o documento (o PDF tem que sair igual ao que foi conferido)
@@ -291,11 +302,11 @@ async function carregarArquivo(arquivo) {
     bytes = new Uint8Array(await arquivo.arrayBuffer());
   } catch (e) {
     console.warn('falha ao ler o arquivo', e);
-    avisar('Não foi possível ler ' + arquivo.name + '.', true);
+    avisarRecusa('Não foi possível ler ' + arquivo.name + '.');
     return null;
   }
   if (!ehPdf(bytes)) {
-    avisar(arquivo.name + ': este arquivo não parece ser um PDF.', true);
+    avisarRecusa(arquivo.name + ': este arquivo não parece ser um PDF.');
     return null;
   }
   const hash = await sha256(bytes);
@@ -314,12 +325,12 @@ async function carregarArquivo(arquivo) {
   } catch (e) {
     console.warn('PDF.js recusou o arquivo', e);
     const senha = e && e.name === 'PasswordException';
-    avisar(arquivo.name + (senha ? ': PDF protegido por senha, tire a senha antes de tarjar.' : ': não foi possível abrir este PDF.'), true);
+    avisarRecusa(arquivo.name + (senha ? ': PDF protegido por senha, tire a senha antes de tarjar.' : ': não foi possível abrir este PDF.'));
     return null;
   }
   if (pdf.numPages > MAX_PAGINAS) {
     pdf.destroy();
-    avisar(`${arquivo.name}: PDF com ${pdf.numPages} páginas, o limite é ${MAX_PAGINAS}. Divida o arquivo antes de tarjar.`, true);
+    avisarRecusa(`${arquivo.name}: PDF com ${pdf.numPages} páginas, o limite é ${MAX_PAGINAS}. Divida o arquivo antes de tarjar.`);
     return null;
   }
   const paginas = [];
@@ -333,7 +344,7 @@ async function carregarArquivo(arquivo) {
     // página que não abre ou com tamanho absurdo sairia em branco ou travaria o navegador: recusa o arquivo todo
     if (!v || !(v.width > 0 && v.height > 0 && v.width < 200000 && v.height < 200000)) {
       pdf.destroy();
-      avisar(`${arquivo.name}: a página ${i} está com defeito; o arquivo não foi aberto.`, true);
+      avisarRecusa(`${arquivo.name}: a página ${i} está com defeito; o arquivo não foi aberto.`);
       return null;
     }
     // o PDF salvo não passa de 14.400 pt de lado (5,08 m; limite do formato e da biblioteca): página maior sairia
@@ -341,8 +352,8 @@ async function carregarArquivo(arquivo) {
     if (Math.max(v.width, v.height) > MAX_LADO_PT + 0.5) {
       pdf.destroy();
       const cm = (pt) => Math.round(pt / 72 * 2.54);
-      avisar(`${arquivo.name}: a página ${i} mede ${cm(v.width)} × ${cm(v.height)} cm, maior que o Tarja consegue salvar `
-        + `(${cm(MAX_LADO_PT)} cm de lado); o arquivo não foi aberto.`, true);
+      avisarRecusa(`${arquivo.name}: a página ${i} mede ${cm(v.width)} × ${cm(v.height)} cm, maior que o Tarja consegue salvar `
+        + `(${cm(MAX_LADO_PT)} cm de lado); o arquivo não foi aberto.`);
       return null;
     }
     paginas.push({ w: v.width, h: v.height, vista: false, marcas: [], sugestoes: [], semTexto: false });
@@ -361,7 +372,7 @@ async function carregarArquivo(arquivo) {
 async function abrirArquivos(lista) {
   if (ocupado()) return;
   let primeiro = null;
-  const limite = () => avisar(`Limite de ${MAX_ARQUIVOS} arquivos abertos: salve e feche alguns antes de abrir mais.`, true);
+  const limite = () => avisarRecusa(`Limite de ${MAX_ARQUIVOS} arquivos abertos: salve e feche alguns antes de abrir mais.`);
   for (const arquivo of lista) {
     if (docs.length >= MAX_ARQUIVOS) {
       limite();
@@ -2078,6 +2089,7 @@ function iniciar() {
   el.formato.addEventListener('change', gravarPref);
   el.folha.addEventListener('change', gravarPref);
   el.mostrarAvisos.addEventListener('change', gravarPref);
+  el.avisoFechar.addEventListener('click', fecharAviso);
   el.revisei.addEventListener('change', atualizar);
   el.btSalvar.addEventListener('click', salvar);
 
@@ -2090,7 +2102,7 @@ function iniciar() {
     if (ocupado()) return;  // salvando: trocar de documento agora misturaria os dois
     const pdfs = [...(ev.dataTransfer?.files || [])].filter((a) => /\.pdf$/i.test(a.name) || a.type === 'application/pdf');
     if (pdfs.length) abrirArquivos(pdfs);
-    else avisar('Solte um ou mais arquivos PDF.', true);
+    else avisarRecusa('Solte um ou mais arquivos PDF.');
   });
 
   window.addEventListener('keydown', (ev) => {

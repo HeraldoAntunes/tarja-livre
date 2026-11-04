@@ -38,7 +38,7 @@ def rodar(nome: str, comando: list[str], limite: int) -> bool:
 
 
 def main() -> int:
-    testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs", "tests/ocr-email.test.mjs", "tests/miniaturas.test.mjs"], 600)]
+    testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs", "tests/ocr-email.test.mjs", "tests/miniaturas.test.mjs", "tests/aviso.test.mjs"], 600)]
     testes.append(("propriedades", ["node", "--test", "tests/propriedades/propriedades.test.js"], 600))
     if "--sem-janela" not in sys.argv:
         testes += [(t, ["node", f"tests/{t}.mjs"], 900) for t in E2E]

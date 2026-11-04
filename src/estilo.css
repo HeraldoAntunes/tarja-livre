@@ -149,11 +149,17 @@ textarea { width: 100%; resize: vertical; border: 1px solid var(--borda); border
 .barra.progresso { height: 8px; margin-top: 8px; }
 .barra.progresso i { background: var(--realce); }
 
-/* aviso discreto que some sozinho */
+/* aviso discreto que some sozinho (o de arquivo que não abriu fica, ver .fixo) */
 .aviso { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 12px); background: #2b2f36; color: #fff;
          padding: 8px 16px; border-radius: 10px; font-size: 13.5px; opacity: 0; pointer-events: none;
          transition: opacity .2s, transform .2s; max-width: 80vw; text-align: center; }
 .aviso.visivel { opacity: 1; transform: translate(-50%, 0); }
+/* arquivo que não abriu: o aviso fica até a pessoa fechar (no ×) ou vir outro */
+.aviso.fixo { pointer-events: auto; display: flex; align-items: center; gap: 12px; text-align: left; }
+.aviso-fechar { flex: none; background: transparent; color: #fff; border: 1px solid #ffffff66; border-radius: 6px;
+                width: 26px; height: 26px; padding: 0; font-size: 16px; line-height: 1; cursor: pointer; }
+.aviso-fechar::before { content: "\00d7"; }
+.aviso-fechar:hover, .aviso-fechar:focus-visible { background: #ffffff22; }
 
 /* janela de ajuda e sobre */
 dialog { border: 0; border-radius: 14px; padding: 0; width: min(640px, 92vw); max-height: 86vh;
