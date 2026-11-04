@@ -545,10 +545,13 @@ async function redesenharMiniatura(i) {
   const ctx = rascunho.getContext('2d');
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, c.width, c.height);
+  const d = doc;
   try {
-    const pg = await doc.pdf.getPage(i + 1);
+    const pg = await d.pdf.getPage(i + 1);
     await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: pg.getViewport({ scale: s }) }).promise;
   } catch (e) {
+    // aba fechada ou trocada no meio do desenho (o PDF.js cancela ou já foi destruído): não é erro, só para
+    if (minha !== geracao || !docs.includes(d) || (e && e.name === 'RenderingCancelledException')) return;
     console.warn('miniatura não desenhada', i + 1, e);
     return;
   }

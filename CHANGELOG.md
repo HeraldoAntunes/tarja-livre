@@ -5,6 +5,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+### Corrigido
+- Fechar ou trocar a aba enquanto as miniaturas são desenhadas não deixa mais aviso no console do navegador.
+
 ## [1.2.2] - 2026-11-02
 
 ### Corrigido
