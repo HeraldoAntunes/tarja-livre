@@ -57,6 +57,7 @@ let n = await abrir();
 assert.equal(await ofertaAusente(n), '', 'nada a oferecer na primeira vez');
 await n.clicar('btProcurar');
 await n.ate(`/pendente/.test(document.getElementById('resumoAchados').textContent)`, 'procura terminar', 60000);
+await n.conferirSugestoes();   // o CPF em texto invisível da página 6 vem marcado "confira"
 await n.clicar('btAceitarTodas');
 await n.ate(`document.getElementById('resumoAchados').textContent === 'Nenhuma sugestão pendente.'`, 'aceitar todas');
 await n.arrastar(0.1, 0.9, 0.3, 0.95);

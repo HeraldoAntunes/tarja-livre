@@ -77,6 +77,8 @@ if (ITENS.includes('A')) {
 if (ITENS.includes('C')) {
   await n.ate(`document.getElementById('guardarAndamento').checked`, 'guardar andamento ligado', 5000);
   // C1. 40 tarjas seguidas, uma a cada ~0,2 s, sem nenhuma pausa de 1 s: no fim, ainda sem parar, já tem de estar gravado
+  // a Mão é a ferramenta ao abrir (1.2.3-rc.9): o mouse cru precisa da Tarja escolhida
+  await n.js(`document.querySelector('[data-ferramenta="tarja"]').click()`);
   for (let k = 0; k < 40; k++) {
     const x = 0.1 + (k % 10) * 0.08, y = 0.1 + Math.floor(k / 10) * 0.08;
     await mouse('mousePressed', await ponto(x, y), 1);

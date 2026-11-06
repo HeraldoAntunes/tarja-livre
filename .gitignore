@@ -8,6 +8,9 @@ node_modules/
 !tests/fixtures/*.pdf
 # e os PDFs fictícios da auditoria externa (tests/fixtures/auditoria/LEIA-ME.md), usados pelos testes no CI
 !tests/fixtures/auditoria/*.pdf
+# e os PDFs fictícios das revisões do Codex (tests/casos-codex), usados pelo e2e_prova_ocr e pelo e2e_confira
+!tests/casos-codex/*.pdf
+!tests/casos-codex/*/*.pdf
 # Python
 __pycache__/
 *.pyc

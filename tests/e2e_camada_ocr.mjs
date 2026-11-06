@@ -52,6 +52,10 @@ try {
   await ate(`/pendente/.test(document.getElementById('resumoAchados').textContent)`, 'procura', 60000);
   const resumo = await texto('resumoAchados');
   assert.match(resumo, /^4 pendente/, 'CPF e nome nas duas páginas: ' + resumo);
+  // na 1.2.3, toda sugestão da camada invisível diz "confira" e só é aceita depois de aberta na lista
+  const lista = await js(`[...document.querySelectorAll('.sugestao .onde')].map((e) => e.textContent)`);
+  assert.ok(lista.every((t) => /confira/.test(t)), 'sugestão sem "confira": ' + lista.join('; '));
+  await nav.conferirSugestoes();
   await clicar('btAceitarTodas');
   await js(`document.querySelectorAll('.mini-pag')[1].click()`);
   await ate(`document.getElementById('infoVistas').textContent === '2 de 2'`, 'páginas vistas');

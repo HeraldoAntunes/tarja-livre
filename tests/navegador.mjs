@@ -155,9 +155,21 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
     cdp, js, ate, erros, baixados, perguntas, pid: edge.pid,
     // combina a resposta das próximas perguntas da página (true = OK, false = Cancelar, ou { aceitar, depois: ms })
     responder: (...r) => respostas.push(...r),
+    // esquece as respostas combinadas que nenhuma pergunta usou (a versão não perguntou)
+    esquecerRespostas: () => respostas.splice(0),
     // eventos do protocolo (por exemplo, uma janela nova aberta pela página)
     aoEvento: (f) => ouvintes.push(f),
     clicar: (id) => js(`document.getElementById('${id}').click()`),
+    // abre na página cada sugestão marcada "confira" ainda não vista (clique na lista), como a pessoa faria antes de
+    // "Aceitar todas": sem isso, essas ficam pendentes (revisão do Codex na 1.2.3-rc.1)
+    async conferirSugestoes() {
+      const n = await js(`document.querySelectorAll('.sugestao.revisar:not(.conferida) button').length`);
+      for (let i = 0; i < n; i++) {
+        await js(`document.querySelector('.sugestao.revisar:not(.conferida) button')?.click()`);
+        await espera(150);
+      }
+      return n;
+    },
     texto: (id) => js(`document.getElementById('${id}').textContent`),
     async tecla(key, code, vk, modifiers = 0) {
       await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode: vk, modifiers });
@@ -169,7 +181,9 @@ export async function abrirNavegador(capturas, { largura = 1400, altura = 900, p
       writeFileSync(join(capturas, nome), Buffer.from(data, 'base64'));
     },
     // arrasta o mouse de verdade sobre a página, em frações do tamanho dela
-    async arrastar(fx0, fy0, fx1, fy1) {
+    async arrastar(fx0, fy0, fx1, fy1, { mao = false } = {}) {
+      // a Mão é a ferramenta ao abrir (1.2.3-rc.9): para tarjar, o teste escolhe a Tarja, como a pessoa faria
+      if (!mao) await js(`(() => { if (document.querySelector('[data-ferramenta="mao"].ativo')) document.querySelector('[data-ferramenta="tarja"]').click(); })()`);
       const r = await js(`(() => { const r = document.getElementById('tela').getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; })()`);
       const p = (fx, fy) => ({ x: r[0] + fx * r[2], y: r[1] + fy * r[3] });
       const a = p(fx0, fy0);

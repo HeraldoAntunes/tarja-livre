@@ -115,6 +115,8 @@ try {
   await ate(`document.getElementById('tela').dataset.pagina === '1'`, 'página 1');
   await nav.captura('1-sugestoes.png');
 
+  // o CPF em texto invisível da página 6 vem marcado "confira": a pessoa o abre na lista antes de aceitar todas
+  assert.equal(await nav.conferirSugestoes(), 1, 'uma sugestão "confira" (o CPF em texto invisível da página 6)');
   await clicar('btAceitarTodas');
   await ate(`document.getElementById('resumoAchados').textContent === 'Nenhuma sugestão pendente.'`, 'aceitar todas');
   await verTodas(esperado.paginas);

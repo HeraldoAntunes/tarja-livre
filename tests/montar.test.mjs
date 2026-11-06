@@ -99,6 +99,20 @@ test('lista de nomes com autocomplete="off", nas duas versões', () => {
   }
 });
 
+// desde a rc.12: a procura é só uma ajuda; nada dispensa a revisão humana visual
+test('aviso de que a procura é só uma ajuda, nas duas versões: na seção da procura, nos passos e no resultado', () => {
+  for (const { nome } of VERSOES) {
+    const { html } = examinar(nome);
+    const ajuda = html.match(/<p class="aviso-ajuda" id="avisoAjuda">([\s\S]*?)<\/p>/);
+    assert.ok(ajuda, 'aviso na seção da procura em ' + nome);
+    assert.doesNotMatch(ajuda[0], /\shidden/, 'à vista, sem clicar, em ' + nome);
+    assert.match(ajuda[1].replace(/\s+/g, ' '), /só uma ajuda e pode deixar dados passarem.*com os próprios olhos/, nome);
+    assert.match(html, /nada dispensa olhar cada página com os próprios olhos/, 'nos passos do Conferir e aceitar em ' + nome);
+    assert.match(html, /Isso não quer dizer que o documento não tem dados pessoais/, '"Nada encontrado" explicado em ' + nome);
+    const secao = html.slice(html.indexOf('<section class="secao-procura">'), html.indexOf('id="opcoesProcura"'));
+    assert.match(secao, /id="avisoAjuda"/, 'fora das opções que abrem e fecham em ' + nome);
+  }
+});
 test('PDF.js aberto com isEvalSupported desligado', () => {
   assert.match(readFileSync(join(RAIZ, 'src', 'app.js'), 'utf8'), /isEvalSupported:\s*false/);
 });

@@ -4,7 +4,7 @@
 // Testes da procura de dados pessoais. Todos os números são de exemplo, gerados só para o teste.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { procurar, cpfValido, cnpjValido, coberta, juntarTexto, prepararTermos, corrigirOcr, selecionar } from '../src/achados.js';
+import { procurar, cpfValido, cnpjValido, coberta, juntarTexto, prepararTermos, corrigirOcr, selecionar, camadaEstranha, textoDeProcura } from '../src/achados.js';
 
 // uma linha de texto como um único pedaço, com 6 pt por letra
 function linha(str, y = 100) {
@@ -153,10 +153,14 @@ test('nome quebrado em duas linhas vira um achado com duas caixas', () => {
   assert.equal(a.caixas.length, 2);
 });
 
-test('termo com ponto e outros sinais é procurado ao pé da letra', () => {
+test('termo com ponto e outros sinais: a pontuação não conta e não vira expressão regular', () => {
   const p = [linha('Responsável: F. de Teste (diretor)')];
   assert.deepEqual(trechos(p, termos(['F. de Teste'])), ['F. de Teste']);
-  assert.deepEqual(trechos(p, termos(['F.? de'])), []);
+  assert.deepEqual(trechos(p, termos(['F.* Teste'])), [], 'o ".*" não pula o "de"');
+  // revisão da gestão na rc.12 (A2, x6): o PDF.js tira o hífen suave da camada
+  assert.deepEqual(trechos([linha('CPF: 123.456.78900.')], termos(['123.456.789-00'])), ['123.456.78900']);
+  assert.deepEqual(trechos([linha('Nome:Fulano de Tal.')], termos(['Fulano de Tal'])), ['Fulano de Tal']);
+  assert.deepEqual(trechos([linha('Fulanos de Tal')], termos(['Fulano de Tal'])), [], 'palavra inteira continua valendo');
 });
 
 test('o termo mais longo ganha no mesmo lugar, e o termo não divide um CPF', () => {
@@ -254,4 +258,47 @@ test('caixa só conta como coberta se ficar inteira embaixo das tarjas', () => {
   assert.ok(coberta(caixa, [{ x: 0, y: 0, w: 35, h: 30 }, { x: 34, y: 0, w: 40, h: 30 }]), 'duas tarjas que juntas cobrem');
   assert.ok(!coberta(caixa, [{ x: 0, y: 0, w: 35, h: 30 }, { x: 36, y: 0, w: 40, h: 30 }]), 'fresta entre duas tarjas');
   assert.ok(!coberta(caixa, [{ x: 0, y: 0, w: 80, h: 14 }, { x: 0, y: 16, w: 80, h: 14 }]), 'fresta na altura');
+});
+
+// revisão independente da gestão na rc.11 (w1 e w2) e decisão do professor para a rc.12
+test('procura: letras sósias (cirílicas e gregas) e formas de compatibilidade casam com as latinas', () => {
+  const termos = { lista: ['SIGILOCODIGO'], palavraInteira: true, semAcento: true };
+  const [a] = procurar([linha('Nome: ЅІGІLОСОDІGО.')], [], null, termos);
+  assert.ok(a, 'S, I, O e C cirílicos');
+  assert.equal(a.trecho.length, 12);
+  const [b] = procurar([linha('CPF ８３１.975.872-60')], ['cpf']);
+  assert.ok(b, 'algarismos de largura total (NFKC)');
+  const [c] = procurar([linha('CPF 831.975.872−60')], ['cpf']);
+  assert.ok(c, 'sinal de menos no lugar do hífen');
+  assert.equal(textoDeProcura('Ѕ１­'), 'S1-');
+});
+test('camadaEstranha: alfabetos misturados e caracteres fora do português pedem conferência', () => {
+  assert.equal(camadaEstranha([{ str: 'Ofício nº 7/2026 — ação concluída às 14h30; “pedido” 1º e 2ª…' }]), false, 'português comum');
+  assert.equal(camadaEstranha([{ str: ' primeiro item' }, { str: ' segundo item' }]), false, 'marcador de lista da fonte Symbol');
+  assert.equal(camadaEstranha([{ str: 'espessura de 10 µm, ângulo α = 30°, Δt = 2 s, Ω' }]), false, 'símbolos gregos de ciência');
+  // decisão do professor na rc.12 (x2): qualquer letra de escrita que não é a latina conta, não só cirílico e grego
+  assert.equal(camadaEstranha([{ str: 'Пример текста на русском' }]), true, 'cirílico puro também pede conferência');
+  assert.equal(camadaEstranha([{ str: 'ᏚIᏀIᏞOCOᎠIᏀO' }]), true, 'sósias Cherokee (x2)');
+  assert.equal(camadaEstranha([{ str: 'onde \u{1D465} = 2\u{1D466} e \u{1D6FC} = \u{1D44E}ℎ' }]), false, 'letras do editor de equações');
+  assert.equal(camadaEstranha([{ str: 'ЅІGІLO' }]), true, 'cirílico misturado com latino (w2)');
+  assert.equal(camadaEstranha([{ str: 'CΟDIGΟ' }]), true, 'ômicron grego misturado com latino');
+  assert.equal(camadaEstranha([{ str: 'Oficio 7/2026' }, { str: '丶丬丶丬' }]), true, 'ideogramas no lugar das letras (w1)');
+  assert.equal(camadaEstranha([{ str: 'texto ��� aqui' }]), true, 'U+FFFD');
+  assert.equal(camadaEstranha([{ str: 'abcd' }]), true, 'controles');
+});
+
+// revisão da gestão na rc.13 (y1): grega de fórmula no lugar da letra latina
+test('procura e camadaEstranha: "mαriαnα" é achado e pede conferência; unidades com grega ficam livres', () => {
+  assert.deepEqual(trechos([linha('Aluna: mαriαnα fictíciα.')], termos(['Mariana'])), ['mαriαnα']);
+  assert.equal(camadaEstranha([{ str: 'Aluna: mαriαnα' }]), true, 'grega no meio de palavra latina');
+  for (const s of ['condutividade de 252 μS/cm', 'Δt = 2 s', 'R = 10 kΩ', 'α = 30°', 'η = 0,9'])
+    assert.equal(camadaEstranha([{ str: s }]), false, s);
+});
+
+// revisão da gestão na rc.14 (z2b): "εvα", grega sósia junto de uma só letra latina
+test('procura e camadaEstranha: "εvα" é achado como Eva e pede conferência; "μm" e "μS" ficam livres', () => {
+  assert.deepEqual(trechos([linha('Nome: εvα.')], termos(['Eva'])), ['εvα']);
+  assert.equal(camadaEstranha([{ str: 'Nome: εvα.' }]), true);
+  for (const s of ['5 μm', '252 μS/cm', '2 μmol/L', 'Δt = 2 s', 'πr²'])
+    assert.equal(camadaEstranha([{ str: s }]), false, s);
 });

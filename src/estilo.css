@@ -83,26 +83,43 @@ svg .cheio { fill: currentColor; stroke: none; }
 .bt.ativo { background: var(--realce-fundo); color: var(--realce); box-shadow: inset 0 0 0 2px var(--realce); }
 .bt svg { width: 19px; height: 19px; }
 .bt.mini { padding: 0; width: 32px; justify-content: center; font-size: 17px; }
-.cor { width: 24px; height: 24px; margin: 0 2px; border-radius: 50%; border: 1px solid rgba(0,0,0,.25);
+.cor { width: 19px; height: 19px; margin: 0 1px; border-radius: 50%; border: 1px solid rgba(0,0,0,.25);
        cursor: pointer; padding: 0; }
 .cor.preta { background: #000; }
-.cor.branca { background: #fff; }
+.cor.cinza { background: #3c4043; } .cor.azul { background: #1a2b4c; } .cor.vinho { background: #5b1a2b; }
+.cor.verde { background: #1e3b2a; }
 .cor.ativo { box-shadow: 0 0 0 2px var(--fundo), 0 0 0 4px var(--realce); }
 .ponto { display: block; background: currentColor; border-radius: 50%; }
 .ponto.fino { width: 5px; height: 5px; } .ponto.medio { width: 9px; height: 9px; } .ponto.grosso { width: 14px; height: 14px; }
 .zoom { min-width: 44px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
 .pagina-nav { margin-left: auto; font-size: 13px; font-variant-numeric: tabular-nums; }
 
-.palco { flex: 1; overflow: auto; background: var(--palco); padding: 20px; min-height: 0; }
+.palco { flex: 1; overflow: auto; background: var(--palco); padding: 20px; min-height: 0; position: relative; }
+.acoes-sugestao { position: absolute; z-index: 5; display: flex; gap: 6px; align-items: center; padding: 6px 8px;
+  background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.2);
+  font-size: 12px; max-width: 340px; }
+.acoes-sugestao { flex-wrap: wrap; }
+.acoes-sugestao span { color: var(--suave); white-space: normal; line-height: 1.3; flex-basis: 100%; }
+.btn-sugestoes { margin-left: 8px; border: 1px solid #e8710a; background: #fff4e8; color: #8a4105; border-radius: 999px;
+  padding: 4px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-sugestoes:hover { background: #ffe9d2; }
+.passos { margin: 6px 0 8px; padding-left: 20px; font-size: 12.5px; color: var(--texto, inherit); }
+.passos li { margin: 2px 0; }
+.lista-sugestoes.chamando { box-shadow: 0 0 0 3px rgba(232, 113, 10, .45); transition: box-shadow .3s; }
 .palco.arrastando { outline: 3px dashed var(--verde); outline-offset: -10px; }
 #tela { display: block; margin: 0 auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.18);
         touch-action: none; cursor: crosshair; }
 #tela.borracha { cursor: pointer; }
 #tela.texto { cursor: text; }
 #tela.mover { cursor: move; }
+#tela.mao { cursor: grab; }
+#tela.mao.agarrando { cursor: grabbing; }
 .vazio { max-width: 440px; margin: 8vh auto 0; text-align: center; background: var(--fundo); border-radius: 16px;
          padding: 28px 24px; border: 1px solid var(--borda); }
 .vazio svg { width: 72px; height: 72px; color: var(--verde); stroke-width: 2.4; }
+.vazio { cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.vazio:hover, .vazio:focus-visible, .palco.arrastando .vazio { border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(31, 107, 69, .18); outline: none; }
 .vazio h1 { font-size: 19px; margin: 10px 0 6px; }
 .vazio p { margin: 4px 0; }
 
@@ -139,8 +156,23 @@ h3 { font-size: 13px; margin: 10px 0 4px; }
 .sugestao .onde { color: var(--suave); white-space: nowrap; }
 .sugestao .trecho { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: Consolas, monospace; }
 .sugestao.desmarcada .trecho { color: var(--suave); text-decoration: line-through; }
+.sugestao.revisar .onde { color: var(--suave); }
+.sugestao .marca-confira { color: #fff; background: var(--laranja); border-radius: 4px; padding: 0 5px; font-size: 11px;
+  font-weight: 600; }
+/* a nota inteira fica no item para o leitor de tela; na tela, ela aparece junto da sugestão aberta */
+.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.btn.conferir { width: 100%; padding: 9px 12px; font-size: 14.5px; margin: 2px 0 6px; }
+.aviso-ajuda { font-size: 12px; color: var(--suave); margin: 0 0 6px; line-height: 1.35; }
+.aviso-lista { font-size: 12.5px; color: #8a4105; background: #fff4e8; border: 1px solid #f3c99c; border-radius: 6px;
+  padding: 5px 8px; margin: 0 0 6px; }
+.mais-opcoes { margin: 6px 0 2px; }
+.mais-opcoes summary { cursor: pointer; font-size: 12.5px; color: var(--suave); padding: 2px 0; }
 .lista-sugestoes .mais { padding: 4px 8px; color: var(--suave); font-size: 12px; }
 .botoes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.btn.procurar { width: 100%; padding: 10px 12px; font-size: 15px; margin: 4px 0 6px; }
+.opcoes-procura { margin: 2px 0 6px; }
+.opcoes-procura summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--verde); padding: 3px 0; }
+.opcoes-procura[open] summary { margin-bottom: 4px; }
 .campo { width: 100%; border: 1px solid var(--borda); border-radius: 6px; padding: 5px 7px; font-size: 13px; }
 textarea { width: 100%; resize: vertical; border: 1px solid var(--borda); border-radius: 6px; padding: 5px 7px;
            font-size: 13px; }

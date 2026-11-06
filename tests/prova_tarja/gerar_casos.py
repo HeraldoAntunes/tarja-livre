@@ -13,6 +13,7 @@ Cada caso sai numa pasta com:
 Precisa do PyMuPDF (pip install pymupdf). Uso: python gerar_casos.py <pasta de saída>
 """
 
+import os
 import io
 import json
 import sys
@@ -20,7 +21,8 @@ from pathlib import Path
 
 import pymupdf
 
-FONTE = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+# a DejaVu Sans do Linux; noutro sistema, PROVA_FONTE aponta para uma cópia dela (a do matplotlib serve)
+FONTE = os.environ.get("PROVA_FONTE", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
 NOME = "Fulano de Teste"
 NOME2 = "Beltrana Ficticia"
 CPF = "831.975.872-60"
@@ -171,6 +173,50 @@ def camada_ocr_deslocada(com: bool, pasta: Path):
     return camada_ocr(com, pasta, deslocar=6)
 
 
+CODIGO = "SIGILOCODIGO"
+
+
+def cartao_ocr(com: bool, dado: str, cinza: int = 20, deslocar: float = 0, fator: float = 1, depois: str = ""):
+    """Os cenários da revisão do Codex na 1.2.3-rc.1 (Ordem 24): um cartão digitalizado (imagem a 216 ppp, letra de
+    largura fixa) com o dado em cima e uma linha pública embaixo, e a camada de texto invisível só do dado. cinza é a
+    cor das letras do dado na imagem (168: cinza-claro); deslocar, quantos pontos a camada fica abaixo das letras;
+    fator, a largura da camada sobre a largura das letras (0,72: camada estreita); depois, letras públicas coladas
+    logo depois do dado, que não estão na camada (a vizinha que a tarja não pode apagar sem avisar)."""
+    from PIL import Image, ImageDraw, ImageFont
+    mono = str(Path(FONTE).with_name("DejaVuSansMono.ttf"))
+    esc = 3
+    img = Image.new("L", (330 * esc, 185 * esc), 250)
+    g = ImageDraw.Draw(img)
+    f = ImageFont.truetype(mono, 18 * esc)
+    x, y = 60 * esc, 72 * esc
+    if com:
+        g.text((x, y), dado, fill=cinza, font=f)
+    if depois:
+        g.text((x + g.textlength(dado, font=f), y), depois, fill=20, font=f)
+    g.text((x, 135 * esc), "CONTROLE PUBLICO", fill=20, font=ImageFont.truetype(mono, 12 * esc))
+    b = io.BytesIO()
+    img.save(b, "PNG")
+    d = pymupdf.open()
+    p = d.new_page(width=330, height=185)
+    p.insert_image(p.rect, stream=b.getvalue())
+    ponto = pymupdf.Point(60, 72 + f.getbbox("S")[3] / esc + deslocar)
+    escala = fator * (g.textlength(dado, font=f) / esc) / pymupdf.get_text_length(dado, fontname="cour", fontsize=18)
+    p.insert_text(ponto, dado, fontsize=18, fontname="cour", render_mode=3, morph=(ponto, pymupdf.Matrix(escala, 1)))
+    return d
+
+
+def ocr_cinza_claro(com: bool, pasta: Path):
+    return cartao_ocr(com, CODIGO, cinza=168, deslocar=5, fator=0.72)
+
+
+def ocr_longe(com: bool, pasta: Path):
+    return cartao_ocr(com, CODIGO, deslocar=32)
+
+
+def ocr_vizinho_colado(com: bool, pasta: Path):
+    return cartao_ocr(com, "SIGILO", depois="X")
+
+
 def formulario(com: bool, pasta: Path):
     d = novo()
     p = d[0]
@@ -221,7 +267,7 @@ def metadados_anexos(com: bool, pasta: Path):
     if com:
         d.set_metadata({"title": "Ficha de " + NOME, "author": NOME2, "subject": "CPF " + CPF2, "keywords": MATRICULA,
                         "creator": "Gerador de teste", "producer": "Gerador de teste"})
-        d.set_xml_metadata(f'<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+        d.set_xml_metadata(f'<x:xmpmeta xmlns:x="ado' f'be:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
                            f'<rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:creator>{NOME2}</dc:creator>'
                            f'<dc:description>matricula {MATRICULA}</dc:description></rdf:Description></rdf:RDF></x:xmpmeta>')
         d.embfile_add("boletim.txt", f"Boletim de {NOME}\nCPF {CPF2}\n".encode("utf-8"), filename="boletim.txt")
@@ -267,7 +313,13 @@ CASOS = {
     "metadados-anexos": (metadados_anexos, {"termos": [], "segredos": [CPF, NOME, NOME2, CPF2, MATRICULA]}),
     "incremental": (incremental, {"termos": [NOME2], "segredos": [NOME2, NOME, CPF]}),
     "texto-claro-miudo": (texto_claro_miudo, {"termos": [NOME], "segredos": [NOME, CPF]}),
+    "ocr-cinza-claro": (ocr_cinza_claro, {"termos": [CODIGO], "segredos": [CODIGO]}),
+    "ocr-longe": (ocr_longe, {"termos": [CODIGO], "segredos": [CODIGO]}),
+    "ocr-vizinho-colado": (ocr_vizinho_colado, {"termos": ["SIGILO"], "segredos": ["SIGILO"]}),
 }
+# casos com camada de texto invisível sobre a imagem: toda sugestão deles tem de sair com "confira" na lista
+CONFIRA = {"camada-ocr", "camada-ocr-largura", "camada-ocr-deslocada", "ocr-cinza-claro", "ocr-longe",
+           "ocr-vizinho-colado"}
 
 
 def main() -> int:
@@ -284,7 +336,8 @@ def main() -> int:
                 base.replace(pasta / arq)
             else:
                 salvar(r, pasta / arq)
-        info = {"html": "normal", "tarjas": [[round(v, 1) for v in c] for c in CAIXAS.get(nome, [])], **info}
+        info = {"html": "normal", "tarjas": [[round(v, 1) for v in c] for c in CAIXAS.get(nome, [])],
+                "confira": nome in CONFIRA, **info}
         (pasta / "caso.json").write_text(json.dumps(info, ensure_ascii=False, indent=1),
                                          encoding="utf-8")
         print(nome)

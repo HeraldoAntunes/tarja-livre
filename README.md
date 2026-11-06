@@ -7,17 +7,18 @@
 Sugere CPF, e-mail, telefone e nomes da sua lista, e refaz cada página como imagem. Livre, gratuito e sem internet.</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/feito%20em-JavaScript-f1e05a?logo=javascript&logoColor=black" alt="Feito em JavaScript">
+  <a href="https://github.com/HeraldoAntunes/tarja-livre/releases/latest"><img src="https://img.shields.io/github/v/release/HeraldoAntunes/tarja-livre?label=vers%C3%A3o" alt="Versão"></a>
+  <img src="https://img.shields.io/badge/situa%C3%A7%C3%A3o-est%C3%A1vel-2b8a3e" alt="Situação: estável">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="Licença MIT"></a>
+  <a href="https://doi.org/10.5281/zenodo.23725274"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23725274.svg" alt="DOI"></a>
+  <a href="https://github.com/HeraldoAntunes/tarja-livre/releases"><img src="https://img.shields.io/github/downloads/HeraldoAntunes/tarja-livre/total?label=downloads" alt="Downloads"></a>
+  <br>
   <img src="https://img.shields.io/badge/testado%20no-Edge%20%C2%B7%20Windows%2011-0078D6" alt="Testado no Edge e Windows 11">
   <img src="https://img.shields.io/badge/internet-n%C3%A3o%20precisa-2b8a3e" alt="Não precisa de internet">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="Licença MIT"></a>
-  <img src="https://img.shields.io/badge/situa%C3%A7%C3%A3o-est%C3%A1vel-2b8a3e" alt="Situação: estável">
   <br>
+  <img src="https://img.shields.io/badge/feito%20em-JavaScript-f1e05a?logo=javascript&logoColor=black" alt="Feito em JavaScript">
   <a href="https://github.com/HeraldoAntunes/tarja-livre/actions/workflows/testes.yml"><img src="https://github.com/HeraldoAntunes/tarja-livre/actions/workflows/testes.yml/badge.svg" alt="Testes"></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/HeraldoAntunes/tarja-livre"><img src="https://api.scorecard.dev/projects/github.com/HeraldoAntunes/tarja-livre/badge" alt="OpenSSF Scorecard"></a>
-  <a href="https://github.com/HeraldoAntunes/tarja-livre/releases/latest"><img src="https://img.shields.io/github/v/release/HeraldoAntunes/tarja-livre?label=vers%C3%A3o" alt="Versão"></a>
-  <a href="https://github.com/HeraldoAntunes/tarja-livre/releases"><img src="https://img.shields.io/github/downloads/HeraldoAntunes/tarja-livre/total?label=downloads" alt="Downloads"></a>
-  <a href="https://doi.org/10.5281/zenodo.23725274"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23725274.svg" alt="DOI"></a>
 </p>
 
 <p align="center">
@@ -38,17 +39,17 @@ as tarjas, então o texto coberto deixa de existir no arquivo novo. O documento 
 
 ## Qual arquivo baixar
 
-Os arquivos abaixo são os da versão mais nova (versão 1.2.2), na [página de versões](https://github.com/HeraldoAntunes/tarja-livre/releases/latest).
+Os arquivos abaixo são os da versão mais nova (versão 1.2.3), na [página de versões](https://github.com/HeraldoAntunes/tarja-livre/releases/latest).
 
 | Para quê | Baixar |
 |---|---|
-| **Windows: janela própria, se instala sozinho, já com OCR** | [**Instalar-TarjaLivre-1.2.2.zip**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/Instalar-TarjaLivre-1.2.2.zip) (cerca de 5 MB; extraia e abra o `.exe`) |
-| Usar em qualquer sistema, sem instalar nada: abre no navegador | [**TarjaLivre-1.2.2.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/TarjaLivre-1.2.2.html) (cerca de 2 MB) |
-| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.2.2.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/TarjaLivre-OCR-1.2.2.html) (cerca de 8 MB) |
-| Atalho com o ícone do Tarja para o arquivo HTML (o .exe cria o dele ao instalar) | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.2/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
+| **Windows: janela própria, se instala sozinho, já com OCR** | [**Instalar-TarjaLivre-1.2.3.zip**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.3/Instalar-TarjaLivre-1.2.3.zip) (cerca de 5 MB; extraia e abra o `.exe`) |
+| Usar em qualquer sistema, sem instalar nada: abre no navegador | [**TarjaLivre-1.2.3.html**](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.3/TarjaLivre-1.2.3.html) (cerca de 2 MB) |
+| Também ler PDF digitalizado (OCR, sem internet) | [TarjaLivre-OCR-1.2.3.html](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.3/TarjaLivre-OCR-1.2.3.html) (cerca de 8 MB) |
+| Atalho com o ícone do Tarja para o arquivo HTML (o .exe cria o dele ao instalar) | [Criar-atalho-TarjaLivre.cmd](https://github.com/HeraldoAntunes/tarja-livre/releases/download/v1.2.3/Criar-atalho-TarjaLivre.cmd) (opcional; veja abaixo) |
 | Conferir se o arquivo é legítimo | `SHA256SUMS.txt`, na mesma [página da versão](https://github.com/HeraldoAntunes/tarja-livre/releases/latest) |
 
-É um arquivo só: baixe, abra com dois cliques e pronto. Dá para levar num pendrive ou guardar na rede da escola.
+A versão HTML é um arquivo só: baixe, abra com dois cliques e pronto. Dá para levar num pendrive ou guardar na rede da escola.
 
 **O .exe (Windows)** vem dentro do `Instalar-TarjaLivre-<versão>.zip`: extraia o zip e abra o `.exe`. Ele abre numa janela própria, com o ícone do Tarja na barra de tarefas, sem depender do navegador do
 dia a dia (programas de banco que se instalam no navegador não entram nele). Na primeira vez, ele pergunta se instala: **Sim** copia o programa para a sua conta (sem pedir administrador), cria o
@@ -65,7 +66,8 @@ antes de rodar o arquivo. Se mudar o Tarja de pasta, rode de novo na pasta nova.
 Versões anteriores ficam na [página de versões](https://github.com/HeraldoAntunes/tarja-livre/releases).
 
 - **Grátis e livre:** licença [MIT](LICENSE). Use, copie e distribua à vontade, inclusive em escolas e órgãos públicos.
-- **Sem internet, sem conta, sem anúncios:** o PDF fica só no seu computador; o programa não acessa a rede.
+- **Sem internet, sem conta, sem anúncios:** o PDF fica só no seu computador; o Tarja não acessa a rede (no `.exe`, o componente da Microsoft que faz a
+  janela pode abrir uma conexão própria, ver [Privacidade](#privacidade)).
 - **Versão atual:** a da página de [Releases](https://github.com/HeraldoAntunes/tarja-livre/releases/latest); o que
   mudou em cada versão está nas [novidades](CHANGELOG.md).
 
@@ -76,13 +78,15 @@ Versões anteriores ficam na [página de versões](https://github.com/HeraldoAnt
 
 ## Como usar
 
-1. Abra `TarjaLivre-x.y.z.html` com dois cliques (Microsoft Edge, Google Chrome ou Mozilla Firefox atualizados).
-2. Clique em **Abrir PDF** ou arraste o arquivo para a janela. Pode abrir vários de uma vez: cada um ganha uma aba.
+1. Abra o Tarja: pelo atalho **Tarja Livre** no menu Iniciar (versão instalada, do zip) ou com dois cliques no
+   `TarjaLivre-x.y.z.html` (Microsoft Edge, Google Chrome ou Mozilla Firefox atualizados).
+2. Clique em **Abrir PDF** ou no cartão do meio, ou arraste o arquivo para a janela. Pode abrir vários de uma vez:
+   cada um ganha uma aba. A ferramenta **Mão** vem escolhida: com ela você anda pela página sem tarjar nada.
 3. Tarje com a **Tarja** (arraste um retângulo), com o **Texto** (arraste do começo ao fim do trecho, como quem
    seleciona texto), com a **Caneta** ou com **Página inteira**.
-4. **Procurar no documento** (ou **em todos os arquivos**) sugere CPF, CNPJ, RG, PIS/NIS, título de eleitor, CNH,
-   e-mail, telefone e CEP. Nomes e endereços entram pela lista **Nomes e outros termos**. Confira as sugestões na
-   lista do painel e aceite as certas.
+4. **Procurar dados pessoais**, no topo do painel da direita (ou **Procurar em todos os arquivos**), sugere CPF, CNPJ, RG, PIS/NIS, título de eleitor, CNH,
+   e-mail, telefone e CEP. Nomes e endereços entram pela lista **Nomes e outros termos**. Clique numa sugestão (na
+   lista ou na página) para ver onde ela está e aceite as certas no botão que aparece junto dela.
 5. Se quiser, ponha o **carimbo LGPD**, com a data e o SHA-256 do original, e um texto dentro das tarjas, como
    "dado pessoal omitido".
 6. Passe por todas as páginas, marque **Revisei todas as páginas** e clique em **Salvar PDF tarjado**. Antes de
@@ -92,9 +96,10 @@ Versões anteriores ficam na [página de versões](https://github.com/HeraldoAnt
 
 Passo a passo com detalhes no [Guia de uso](docs/GUIA-DE-USO.md).
 
-Para conferir se o arquivo baixado é legítimo, compare o SHA-256 com o `SHA256SUMS.txt` da mesma página (troque
+Para conferir se o arquivo baixado é legítimo, compare o SHA-256 (uma impressão digital do arquivo, que muda se um
+só byte mudar) com o `SHA256SUMS.txt` da mesma página (troque
 `x.y.z` pela versão que baixou):
-```bash
+```cmd
 certutil -hashfile TarjaLivre-x.y.z.html SHA256
 ```
 
@@ -119,8 +124,10 @@ Todos os documentos das imagens são de exemplo, com dados fictícios.
   "só palavra inteira" e "ignorar maiúsculas e acentos". A lista é dado pessoal: some ao fechar, a não ser que você
   peça para guardar.
 - **Revisão em lista** das sugestões, com marcar e desmarcar antes de aceitar.
-- **PDF digitalizado:** a versão com OCR lê as páginas que são só imagem, no próprio computador, sem internet.
-- **Tarja preta ou branca, seleção de texto com o cursor, página inteira, caneta** em três espessuras, borracha,
+- **PDF digitalizado:** a versão com OCR lê as páginas que são só imagem, no próprio computador, sem internet; cada
+  sugestão lida pelo OCR sai com "confira", porque o OCR pode errar ou não ler tudo.
+- **Tarja em cinco cores** (preta e quatro escuras, sempre opacas), **seleção de texto com o cursor, página
+  inteira, caneta** em três espessuras, borracha, **Mão** para andar pela página,
   Desfazer e Refazer, ampliação até 300%; texto opcional dentro das tarjas.
 - **Vários PDFs de uma vez**, cada um na sua aba, com a sua conferência; procura em todos de uma vez.
 - **Carimbo LGPD** editável e arrastável, com a data e o SHA-256 do original.
@@ -145,15 +152,19 @@ tarja não sair.
 
 **A procura acha todos os dados pessoais?** Não. Ela acha os números e e-mails dos tipos marcados e os nomes e
 endereços que você puser na lista; não adivinha nomes que não estão nela. PDF digitalizado (só imagem) só é lido pela
-versão com OCR, e o OCR pode errar letras. É uma ajuda: a conferência é sua.
+versão com OCR, e o OCR pode errar letras. **Sem OCR, o programa não lê dado que só existe em imagem ou desenho**
+(um carimbo, uma assinatura, texto convertido em curvas ou em blocos). Página com tabela, linha ou desenho sempre pede conferência, porque o programa não distingue um desenho inofensivo de um dado desenhado. A página com imagem ou desenho ganha o aviso
+"confira a página inteira", precisa ser vista de novo antes do Salvar, e você tarja à mão o que achar. O OCR também pode
+não ler imagem muito clara ou página girada. A página com texto em letras de outro alfabeto misturadas ou com o mapa
+de letras da fonte quebrado (o texto copiado sai como lixo) também pede conferência. Se a fonte do PDF trocar uma letra latina por outra letra latina, ou fizer uma ou duas letras do dado virarem espaço no texto do PDF (o texto copiado sai diferente do que se vê), o programa não percebe: só uma comparação do OCR entre a imagem e o texto descobriria isso. **A parte automática é só uma ajuda e pode deixar dados passarem: nada dispensa a sua revisão, olhando cada página.** "Nada encontrado" não quer dizer que o documento não tem dados pessoais.
 
 **Qual das duas versões baixar?** A normal (cerca de 2 MB) serve para PDF gerado no computador, que já tem texto. A
 com OCR (cerca de 8 MB) também lê PDF digitalizado. As duas funcionam sem internet.
 
 ## Privacidade
 
-O Tarja Livre não se conecta à internet. A página dele proíbe o navegador de buscar qualquer coisa na rede
-(`connect-src 'none'`). O documento não sai do seu computador.
+O Tarja Livre não se conecta à internet. A página dele tem uma regra que proíbe o navegador de buscar qualquer coisa
+na rede. O documento não sai do seu computador.
 
 O PDF que você abre é lido no próprio navegador. Ao salvar, o Edge, o Chrome e o `.exe` abrem a caixa **Salvar como**
 para você escolher a pasta; nos outros navegadores, o PDF tarjado vai como um download comum. Nada passa por servidor.
@@ -178,14 +189,15 @@ janela **Ajuda e Sobre**; desligar apaga.
 **Computador dividido** (sala dos professores, laboratório): não guarde a lista e, ao terminar, use **Apagar tudo o
 que o Tarja Livre guardou**, em **Ajustes**. Isso tira deste computador as escolhas, a lista guardada e o andamento.
 
-**Ao instalar**, o `.exe` grava só na sua conta do Windows: o programa em `%LOCALAPPDATA%\Programs\Tarja Livre`, o
+**Ao instalar**, o `.exe` grava só na sua conta do Windows (`%LOCALAPPDATA%` é a pasta AppData\Local dentro da sua
+pasta de usuário, onde ficam programas e dados da sua conta): o programa em `%LOCALAPPDATA%\Programs\Tarja Livre`, o
 atalho no menu Iniciar e na Área de Trabalho e a entrada de **Aplicativos instalados**. O que a página guarda fica em
 `%LOCALAPPDATA%\br.tarjalivre.app`. Ao desinstalar, ele pergunta se apaga também essa pasta.
 
 O `.exe` mostra a mesma página dentro de uma janela feita com o Microsoft Edge WebView2, um componente da Microsoft
 que já vem no Windows. Além da regra da página, o Tarja proíbe o motor dessa janela de achar qualquer endereço da
 internet. Mesmo assim, nos testes, o próprio componente da Microsoft abriu sozinho uma conexão segura (HTTPS) com
-servidores da Microsoft ao abrir o programa, por fora dessas regras, como o navegador também faz por conta própria.
+servidores da Microsoft depois de aberto o programa (nas medições da 1.2.2, perto dos 5 minutos), por fora dessas regras, como o navegador também faz por conta própria.
 O Tarja não usa essa conexão nem tem acesso a ela, e a página onde o PDF é aberto e tarjado continua sem acesso à
 rede. Cortar até essa conexão só é possível bloqueando o programa no firewall do Windows. O botão **Ver se há versão
 nova** abre a página no seu navegador.

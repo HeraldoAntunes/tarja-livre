@@ -5,15 +5,96 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## Não publicado
 
+## [1.2.3] - 2026-11-06
+
+### Pedidos do professor depois de usar a Tarja (04/11/2026)
+- **Mão:** ferramenta nova, a escolhida ao abrir um PDF. Arrastar com ela anda pela página ampliada sem tarjar
+  nada; o clique numa sugestão só a mostra. Segurar a barra de espaço vira Mão por um momento.
+- **Sugestões à vista:** ao fim da procura o painel vai até a lista, que ganha três passos curtos de como usar; a
+  barra de cima mostra quantas faltam conferir; a sugestão aberta ganha, junto dela na página, os botões Aceitar e
+  Descartar.
+- **Cores da tarja:** cinco cores, sempre opacas: preta, cinza-escura, azul-marinho, vinho e verde-escura. A
+  sugestão aceita sai na cor escolhida.
+- **Sem tarja branca:** numa página branca ela escondia que algo foi tirado. O andamento guardado por uma versão
+  antiga com tarja branca volta com ela preta, e o aviso diz isso.
+- **Procurar em destaque:** a seção "Sugerir tarjas" é a primeira do painel, com o botão grande **Procurar dados
+  pessoais** no topo; os tipos de dado e a lista de nomes ficam em "Opções da procura", que abre e fecha e diz o que
+  vai ser procurado. Depois da procura, a lista e os botões de aceitar ficam à vista sem rolar (1366x768).
+- **Salvar durante a procura:** enquanto a procura roda, o Salvar e o "Revisei" ficam desligados, e a procura que traz
+  sugestão nova desmarca o "Revisei". Antes, clicar em Salvar logo depois de Procurar gravava o PDF sem as tarjas.
+- **Todo desenho conta:** linha de tabela, sublinhado, moldura e qualquer tinta que não seja texto, até a bem clara
+  (amarelo-pálido, cinza 0,98), fazem a página sair com "confira". Página com tabela, linha ou desenho sempre pede conferência, porque o programa não distingue um desenho inofensivo de um dado desenhado.
+- **Letras sósias e texto estranho:** a procura lê as letras cirílicas e gregas que se desenham como latinas (Ѕ, І,
+  О, С...), os algarismos de largura total e os traços parecidos com o hífen como as letras comuns. A página cujo texto
+  tem letra de outra escrita que não a latina (as letras gregas de fórmula não contam), caracteres de uso privado ou
+  sem desenho conhecido, ou letras pintadas que não estão no texto do PDF (comum quando a fonte do PDF está com o mapa
+  de letras errado) pede conferência
+  como a de desenho: aviso, "confira" e visita obrigatória antes do Salvar. Se a fonte do PDF trocar uma letra latina por outra letra latina, ou fizer uma ou duas letras do dado virarem espaço no texto do PDF (o texto copiado sai diferente do que se vê), o programa não percebe: só uma comparação do OCR entre a imagem e o texto descobriria isso.
+- **Letras gregas parecidas com latinas:** a procura lê α, γ, ε, η, ι, κ, μ, ν, ο, ρ, σ, τ, υ, χ e ω como as latinas
+  parecidas, e a grega dessas junto de letra latina na mesma palavra ("mαriαnα", "εvα") pede conferência; "μm",
+  "μS/cm", "Δt", "kΩ" e "πr²" continuam livres.
+- **Nomes da lista sem pontuação:** a procura não liga para pontuação e espaços dos dois lados: "123.456.789-00" acha
+  também "123.456.78900", quando o PDF tira o hífen do texto.
+- **Só uma ajuda:** a seção da procura, os passos do "Conferir e aceitar" e o resultado da procura dizem que a parte
+  automática é só uma ajuda e que nada dispensa olhar cada página; o "Nada encontrado" diz que isso não quer dizer que
+  o documento não tem dados pessoais.
+- **Aceitar à vista:** depois da procura, o botão verde **Conferir e aceitar (N)**, acima da lista, abre cada sugestão
+  "confira" na página, uma por vez, com o motivo e os botões Aceitar e Descartar junto dela; sem "confira" pendente,
+  ele vira **Aceitar todas (N)**. Os itens da lista ficam curtos ("p. 1 · CPF · confira"), o aviso das páginas com
+  imagem ou desenho aparece uma vez acima da lista, e os botões de grupo ficam em "Mais opções".
+- **Aceitar com "confira" nunca falha calado:** quando o Aceitar todas, o Aceitar desta página ou o Aceitar marcadas
+  deixa sugestões "confira" de fora, o aviso diz quantas faltam e por quê, e a primeira abre na página com Aceitar e
+  Descartar junto dela; aceitar ou descartar abre a próxima. A que abre sozinha não conta como conferida: só entra pelo
+  Aceitar junto dela.
+- **Cartão "Abra um PDF para começar":** o clique (e Enter ou espaço) abre a escolha de arquivo, e ele se destaca
+  ao arrastar um arquivo por cima.
+
 ### Corrigido
-- Em PDF digitalizado que já vem com texto invisível por cima da imagem (o OCR de uma impressora ou de outro
-  programa), a tarja sugerida agora cobre as letras da imagem inteiras. Antes ela seguia o texto invisível e, quando
-  ele não coincidia com a imagem, deixava parte das letras à mostra no PDF salvo (docs/PROVA-TARJA-1.2.2.md,
-  achado 1). A tarja pode sair um pouco maior que a palavra; confira a página como sempre.
+- PDF digitalizado com camada de texto invisível (o OCR de impressora ou de outro programa) que não coincide com as
+  letras da imagem: a tarja sugerida agora vai até as letras da imagem, também as cinza-claras. Antes ela seguia a
+  camada e podia deixar o fim de um nome ou a metade de cima das letras à mostra. A tarja só cresce na linha das
+  letras, até um limite; se a camada está longe das letras, a tarja vai para a palavra da mesma largura mais perto.
+  Em fonte de largura fixa, a tarja atravessa o vão maior em volta das letras estreitas, como o I, e não para mais
+  antes do fim da palavra.
+- O texto escondido de outros jeitos também conta como camada invisível: transparente (opacidade zero), branco,
+  recortado ou embaixo da imagem. Antes só os modos de pintura 3 e 7 contavam, e o texto transparente ganhava uma
+  tarja no lugar da camada, longe da palavra da imagem, sem "confira". Agora o programa desenha a página com e sem o
+  texto: o texto que não muda o desenho não aparece e ganha "confira", seja qual for o jeito de esconder, mesmo com
+  outra palavra da imagem embaixo dele. Nesse caso o dado pode estar desenhado em outro lugar da página, que só você
+  acha: a nota diz que o dado pode estar em outro ponto da página e manda procurar e tarjar à mão.
+- O texto que aparece, mas com imagem embaixo ou perto dele, também ganha "confira" quando não tem o tamanho e o
+  lugar das letras da imagem: a camada minúscula embaixo do dado grande da imagem, ou em cinza claro sobre outra
+  palavra, com o dado na linha de cima. Antes a sugestão saía sem aviso e o dado da imagem ficava inteiro.
+- Página com imagem ou desenho (foto, logotipo, carimbo, assinatura, texto em curvas ou em blocos, área pintada), em
+  qualquer lugar e com sugestão ou sem: a página entra no aviso da procura, todas as sugestões dela saem com "confira"
+  e a nota "esta página tem imagem ou desenho; o programa pode não ver dados que estejam nela; confira a página
+  inteira", e o "Revisei" só libera depois que a pessoa passar de novo por ela. Na versão com OCR, essas páginas passam pelo OCR sem a camada de texto, e o dado lido
+  no desenho vira sugestão. Sem OCR, o dado que só existe em imagem ou desenho não é lido, e o OCR pode não ler imagem
+  muito clara ou girada; o Guia e o README dizem isso. Qualquer imagem na página conta, mesmo de tinta clara.
+- Toda sugestão que o OCR leu numa página digitalizada sai com "confira" e a nota "lida pelo OCR, que pode errar letras
+  ou não ler o dado pequeno, claro ou girado; confira a página inteira".
+- Toda sugestão tirada dessa camada aparece na lista com "confira" e uma nota do que conferir (tarja ajustada à
+  imagem e que pode não ser o dado, tarja que pode ter ficado curta, tarja que pode cobrir letras vizinhas, camada que não coincide com a imagem,
+  ou letras não achadas: tarjar à mão). **Aceitar todas** e **Aceitar marcadas** deixam essas sugestões na lista até
+  você clicar em cada uma para ver na página, e o **Salvar** não passa enquanto houver alguma não vista.
+  **Descartar** com sugestão "confira" que você não abriu pergunta antes, avisando que esses dados continuam legíveis
+  no PDF; dizendo não, nada é descartado.
+- Fechar um arquivo no meio da procura não mostra mais "Nada encontrado" sobre o outro arquivo na tela, que ainda
+  não foi procurado.
+- Fechar a aba no meio da procura não deixa mais o botão **Procurar no documento** desligado até recarregar a página.
+- **Fechar** clicado logo depois de escolher o arquivo, antes de ele aparecer, cancela a abertura. Antes o botão
+  ficava desligado e o arquivo abria logo depois.
+- Fechar a aba enquanto as miniaturas são desenhadas não deixa mais aviso no console.
+- O aviso de arquivo que não abriu (PDF com senha, PDF com defeito) e de procura que falhou fica 10 segundos na tela,
+  em vez de 4.
 
 ### Manutenção
-- A prova da tarja (tests/prova_tarja) entra no repositório: 14 PDFs sintéticos tarjados pelo próprio programa e
-  conferidos com pdftotext, qpdf, mutool, strings, versões incrementais, metadados, anexos e pixel a pixel.
+- Testes novos: fechar a aba no meio da procura e das miniaturas (`tests/e2e_fechar_no_meio.mjs`), o ajuste da caixa
+  às letras da imagem (`tests/tinta.test.mjs`), o "confira" e a procura cancelada (`tests/e2e_confira.mjs`) e a prova
+  da tarja com 17 PDFs difíceis (`tests/prova_tarja`), trazida da validação de 03/11/2026, com os 3 cenários da
+  revisão do Codex (letra cinza-clara, camada longe, letra vizinha colada). Os PDFs originais das revisões do Codex e
+  8 jeitos de esconder a camada ficam em `tests/casos-codex` (`tests/e2e_prova_ocr.mjs` confere os pixels no PDF
+  salvo), e `tests/e2e_procura_fechar.mjs` e os testes das miniaturas vêm da validação no Linux.
 
 ## [1.2.2] - 2026-11-02
 

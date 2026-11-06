@@ -21,8 +21,9 @@ import time
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-E2E = ["e2e", "e2e_pdf_teste", "e2e_varios", "e2e_ocr", "e2e_camada_ocr", "e2e_andamento", "e2e_auditoria",
-       "e2e_auditoria2", "e2e_export_real", "e2e_telas"]
+E2E = ["e2e", "e2e_pdf_teste", "e2e_varios", "e2e_ocr", "e2e_camada_ocr", "e2e_andamento", "e2e_auditoria", "e2e_auditoria2",
+       "e2e_export_real", "e2e_telas", "e2e_fechar_no_meio", "e2e_confira", "e2e_procura_fechar",
+       "e2e_prova_ocr", "e2e_retornos", "e2e_leigo"]
 
 
 def rodar(nome: str, comando: list[str], limite: int) -> bool:
@@ -38,7 +39,7 @@ def rodar(nome: str, comando: list[str], limite: int) -> bool:
 
 
 def main() -> int:
-    testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs", "tests/ocr-email.test.mjs", "tests/miniaturas.test.mjs"], 600)]
+    testes = [("rápidos", ["node", "--test", "tests/achados.test.mjs", "tests/montar.test.mjs", "tests/ficticios.test.mjs", "tests/ocr-email.test.mjs", "tests/miniaturas.test.mjs", "tests/tinta.test.mjs"], 600)]
     testes.append(("propriedades", ["node", "--test", "tests/propriedades/propriedades.test.js"], 600))
     if "--sem-janela" not in sys.argv:
         testes += [(t, ["node", f"tests/{t}.mjs"], 900) for t in E2E]

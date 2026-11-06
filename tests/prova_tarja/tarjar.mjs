@@ -57,6 +57,14 @@ async function tarjarCaso(nome) {
     await ate(`!document.body.classList.contains('ocupado') && document.getElementById('resumoAchados').textContent.length > 0
       && !/Procurando|Lendo/.test(document.getElementById('resumoAchados').textContent)`, 'procurar');
     const sugestoes = await js(`document.getElementById('resumoAchados').textContent`);
+    // o que a lista diz de cada sugestão (o "confira" das que vêm da camada de texto invisível)
+    const lista = await js(`[...document.querySelectorAll('.sugestao .onde')].map((e) => e.textContent)`);
+    // a pessoa olha cada sugestão marcada "confira" (o clique na lista mostra na página) antes de aceitar todas
+    const conferir = await js(`document.querySelectorAll('.sugestao.revisar button').length`);
+    for (let i = 0; i < conferir; i++) {
+      await js(`document.querySelectorAll('.sugestao.revisar button')[${i}].click()`);
+      await espera(300);
+    }
     if (/pendente/.test(sugestoes)) {
       await js(`document.getElementById('btAceitarTodas').click()`);
       await ate(`document.getElementById('resumoAchados').textContent === 'Nenhuma sugestão pendente.'`, 'aceitar');
@@ -113,7 +121,7 @@ async function tarjarCaso(nome) {
       return r;
     })()`);
     for (const p of pixels) if (p.png) { writeFileSync(join(pasta, `descobertos-p${p.pagina}.png`), Buffer.from(p.png, 'base64')); delete p.png; }
-    const resultado = { caso: nome, html: caso.html, sugestoes, marcas, paginas, nomeSalvo: await js('window.__salvo.nome'),
+    const resultado = { caso: nome, html: caso.html, sugestoes, lista, marcas, paginas, nomeSalvo: await js('window.__salvo.nome'),
       aviso: await js(`document.getElementById('aviso').textContent`), sha256_original: sha(original), sha256_tarjado: sha(saida), pixels, erros };
     writeFileSync(join(pasta, 'resultado.json'), JSON.stringify(resultado, null, 1));
     const desc = pixels.reduce((s, p) => s + p.descobertos, 0); const tot = pixels.reduce((s, p) => s + p.dados, 0);

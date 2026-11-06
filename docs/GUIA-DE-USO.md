@@ -21,7 +21,7 @@ mesmo programa:
   Abrir uma versão mais nova pergunta se atualiza; as escolhas e o andamento continuam.
 - **Desinstalar:** em **Aplicativos instalados**, clique nos três pontos do Tarja Livre e em **Desinstalar**. Ele
   pergunta se apaga também o que guardou (escolhas, lista de nomes e andamento); em computador dividido, escolha **Sim**.
-- Clique em **Abrir PDF** ou arraste os arquivos para a janela. Pode abrir **vários de uma vez** (até 20): cada um
+- Clique em **Abrir PDF** ou no cartão **Abra um PDF para começar**, ou arraste os arquivos para a janela. Pode abrir **vários de uma vez** (até 20): cada um
   ganha uma aba em cima da página, com a situação dele: *a conferir*, *conferido* ou *salvo*.
 - O painel da direita mostra o número de páginas e o **SHA-256 do original**, um código que identifica aquele
   arquivo. Ele serve para conferir depois de qual documento o PDF tarjado veio.
@@ -31,12 +31,13 @@ mesmo programa:
 
 | Ferramenta | Para quê |
 |---|---|
+| **Mão** | vem escolhida ao abrir: arraste para andar pela página ampliada, sem tarjar nada. Clique numa sugestão para vê-la. Segurar a barra de espaço vira Mão por um momento, com qualquer ferramenta |
 | **Tarja** | arraste um retângulo sobre o trecho |
 | **Texto** | arraste do começo ao fim do trecho, como quem seleciona texto: a tarja cobre exatamente aquelas letras, uma faixa por linha (só em página com texto) |
 | **Página inteira** | cobre a página toda com uma tarja, num clique |
 | **Caneta** (fina, média, grossa) | trecho irregular, como uma assinatura |
 | **Borracha** | clique numa tarja ou num traço para apagar |
-| Cor **preta** ou **branca** | a branca cobre sem chamar atenção em fundo branco |
+| **Cor** da tarja | preta, cinza-escura, azul-marinho, vinho ou verde-escura. Todas são opacas e cobrem do mesmo jeito: o PDF salvo é refeito como imagem com a tarja por cima. A sugestão aceita sai na cor escolhida. Não há tarja branca: numa página branca, ela esconderia que algo foi tirado |
 | **Desfazer** e **Refazer** | também por <kbd>Ctrl</kbd>+<kbd>Z</kbd> e <kbd>Ctrl</kbd>+<kbd>Y</kbd> |
 | **−** e **+** | ampliam a página até 300%, para tarjar trecho pequeno |
 
@@ -50,11 +51,20 @@ Use as miniaturas da esquerda, os botões ‹ › ou as setas do teclado para tr
    **Importar .txt**. "Só palavra inteira" evita tarjar "Ana" dentro de "Banana"; "Ignorar maiúsculas e acentos"
    acha "JOAO" quando a lista diz "João". A lista também é dado pessoal: ela some ao fechar o programa, a não ser
    que você marque **Guardar a lista neste computador**. Desmarcar apaga.
-3. Clique em **Procurar no documento** (ou **Procurar em todos os arquivos**, com vários abertos).
+3. Clique em **Procurar dados pessoais**, o botão verde no topo do painel da direita (ou **Procurar em todos os
+   arquivos**, com vários abertos). Os tipos de dado e a lista de nomes ficam em **Opções da procura**, que abre e
+   fecha logo abaixo dele e diz o que vai ser procurado.
 4. As sugestões aparecem com contorno laranja na página e numa lista no painel, com página, tipo e o trecho achado
-   (o trecho só aparece na tela; não vai para a folha de conferência). Desmarque as erradas e use **Aceitar
-   marcadas**, ou clique numa sugestão na página. Clicar numa linha da lista leva à página e destaca a sugestão. O
-   Desfazer devolve as sugestões aceitas.
+   (o trecho só aparece na tela; não vai para a folha de conferência). Ao fim da procura, o painel vai até elas, e a
+   barra de cima mostra quantas faltam conferir (clique nela para voltar à lista).
+5. O jeito mais simples: clique no botão verde **Conferir e aceitar**, logo acima da lista. Ele abre cada sugestão
+   "confira" na página, uma por vez, com o motivo e os botões **Aceitar** e **Descartar**; quando não sobra nenhuma
+   "confira", ele vira **Aceitar todas**. Os botões de aceitar em grupo e o Descartar ficam em **Mais opções**.
+6. Também dá para clicar numa sugestão, na lista ou, com a Mão, na página: ela fica destacada e ganha, junto dela, os botões
+   **Aceitar** e **Descartar**, que agem só nela. Para aceitar várias, desmarque as erradas na lista e use **Aceitar
+   marcadas**, **Aceitar desta página** ou **Aceitar todas**. Com a ferramenta Tarja, o clique numa sugestão aceita
+   direto. As marcadas **confira** só entram nos botões de aceitar em grupo depois de abertas. O Desfazer devolve as
+   sugestões aceitas.
 
 Limites da procura: ela lê o texto do PDF. CPF e CNPJ só são sugeridos com dígito verificador válido; PIS, título
 e CNH, pelo formato ou pela palavra logo antes do número. Nomes só se estiverem na lista. **É uma ajuda: confira cada
@@ -66,6 +76,45 @@ Na versão com OCR, deixe marcado **Ler páginas digitalizadas (OCR, mais lento)
 próprio computador (alguns segundos cada), e o que for achado vira sugestão, inclusive os nomes da lista. A leitura
 pode errar letras de digitalização ruim: confira com mais cuidado. Na versão normal, página sem texto só pode ser
 tarjada à mão.
+
+### Página com imagem ou desenho
+
+Na procura, o programa desenha cada página sem o texto, também a que não tem sugestão. Se sobrar imagem ou desenho
+(logotipo, foto, carimbo, assinatura, texto convertido em curvas ou em blocos, área pintada, faixa, papel timbrado), a
+página entra no aviso da procura e todas as sugestões dela saem com **confira**, também as que estão certas, com a
+nota "esta página tem imagem ou desenho; o programa pode não ver dados que estejam nela; confira a página inteira".
+Essas páginas voltam a contar como não vistas: o "Revisei", e com ele o Salvar, só libera depois que você passar de
+novo por cada uma delas, inteira. A borda de tabela, o sublinhado e a linha de assinatura também contam. Página com tabela, linha ou desenho sempre pede conferência, porque o programa não distingue um desenho inofensivo de um dado desenhado.
+
+**Sem OCR, o programa não lê dado que só existe em imagem ou desenho**: procure na página e tarje à mão. Na versão com
+OCR, essas páginas também passam pelo OCR sem o texto, e o dado que ele ler no desenho vira sugestão. **O OCR pode não
+ler imagem muito clara (cinza bem claro) nem página girada**: o aviso continua, e a conferência da página é sua. Por
+isso toda sugestão que o OCR leu numa página digitalizada também sai com **confira**, com a nota "lida pelo OCR, que pode
+errar letras ou não ler o dado pequeno, claro ou girado; confira a página inteira". Qualquer imagem na página, mesmo
+clara, conta como imagem, e qualquer tinta que não seja texto, mesmo bem clara, conta como desenho.
+
+### Página com texto que o programa não lê direito
+
+A procura lê as letras cirílicas e gregas que se desenham como latinas (Ѕ, І, О, С...) como as latinas, e não liga para
+pontuação e espaços nos nomes da lista: "123.456.789-00" acha também "123.456.78900". A página entra no aviso quando o
+texto dela tem letra de outra escrita que não a latina (cirílico, grego, cherokee, ideograma; as letras gregas de
+fórmula, como α, Δ, μ e Ω, não contam), caracteres sem desenho conhecido, ou letras pintadas que não estão no texto do
+PDF (comum quando o PDF tem o mapa de letras da fonte errado e o texto copiado sai como lixo ou some). Ela ganha a nota "o texto desta página tem letras que o programa não lê direito", e as sugestões dela saem com
+**confira**. Como na página de desenho, o "Revisei" só libera depois de você passar de novo por ela. Se a fonte do PDF trocar uma letra latina por outra letra latina, ou fizer uma ou duas letras do dado virarem espaço no texto do PDF (o texto copiado sai diferente do que se vê), o programa não percebe: só uma comparação do OCR entre a imagem e o texto descobriria isso.
+
+**A parte automática é só uma ajuda e pode deixar dados passarem: nada dispensa a sua revisão, olhando cada página.** "Nada encontrado" não quer dizer que o documento não tem dados pessoais.
+
+PDF digitalizado que já vem com texto invisível por cima da imagem (o OCR da impressora ou de outro programa, ou
+texto transparente, branco, recortado ou embaixo da imagem): a procura usa esse texto, mas ele pode não coincidir com
+as letras da imagem. O programa desenha a página com e sem esse texto: se o texto não muda o desenho, ele não
+aparece, e a tarja vai para as letras da imagem embaixo dele, que podem ser outra palavra, com o dado desenhado em
+outro lugar da página. O texto que aparece, mas com imagem embaixo ou perto, também precisa ter o tamanho e o lugar
+das letras da imagem. Por isso cada sugestão dessas aparece na lista com **confira** e uma nota (tarja que foi para
+as letras da imagem: veja se são mesmo o dado; tarja que pode ter ficado curta, tarja que pode cobrir letras vizinhas, camada que não coincide com a imagem,
+ou letras não achadas). Quando a tarja pode ter ido para outro lugar, a nota diz que o dado pode estar em outro ponto
+da página: procure e tarje à mão. Clique em cada uma para ver na página: só depois disso **Aceitar todas** a
+aceita, e o **Salvar** não passa enquanto houver alguma não vista. **Descartar** também pergunta antes, porque o dado
+de uma sugestão descartada continua legível no PDF.
 
 ## 4. Texto nas tarjas e carimbo
 

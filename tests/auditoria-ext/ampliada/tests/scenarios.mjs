@@ -29,7 +29,11 @@ add('TL-X02','geometria/pdf','Tarjas em CropBox deslocado com /Rotate 0/90/180/2
  const h=setup();const input=await croppedRotations();artifact('TL-X02-input.pdf',input);const d=await openBytes(h,input);
  const before=[];for(let i=1;i<=4;i++)before.push(await render(d.pdf,i));
  await h.run("procurarEm(doc,[],()=>{},{lista:['SYNTHETICSECRET'],palavraInteira:true,semAcento:true})");
- assert.deepEqual(Array.from(h.run('doc.paginas.map(p=>p.sugestoes.length)')),[1,1,1,1]);h.run('aceitarTodas()');const bytes=await save(h);assert.ok(bytes);artifact('TL-X02-export.pdf',bytes);
+ assert.deepEqual(Array.from(h.run('doc.paginas.map(p=>p.sugestoes.length)')),[1,1,1,1]);
+ // adaptação da equipe (1.2.3-rc.7): os retângulos vermelhos e azuis são desenho, então as sugestões saem com "confira" e só
+ // entram no Aceitar todas depois de abertas, como a pessoa faria na lista
+ assert.deepEqual(Array.from(h.run('doc.paginas.map(p=>p.sugestoes[0].revisar)')),['desenho','desenho','desenho','desenho']);
+ h.run('doc.paginas.forEach(p=>p.sugestoes.forEach(s=>{s.conferida=true}))');h.run('aceitarTodas()');const bytes=await save(h);assert.ok(bytes);artifact('TL-X02-export.pdf',bytes);
  const parsed=await pdfjs.getDocument({data:bytes.slice()}).promise,checks=[];
  for(let i=1;i<=4;i++){
   const a=before[i-1],b=await render(parsed,i);assert.equal(b.width,a.width);assert.equal(b.height,a.height);

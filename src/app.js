@@ -6,7 +6,7 @@
 // sugestões) está em pontos do PDF, com origem no canto de cima da página; a tela só converte na hora de desenhar,
 // então ampliar ou mudar de monitor não desalinha nada.
 import { VERSAO } from './versao.js';
-import { TIPOS, NOMES, DESMARCADOS, procurar, coberta, prepararTermos, corrigirOcr, selecionar, MAX_TERMOS, MAX_LETRAS_TERMO } from './achados.js';
+import { TIPOS, NOMES, DESMARCADOS, procurar, ajustarATinta, textoAparece, bateComImagem, temDesenhoAos, camadaEstranha, coberta, prepararTermos, corrigirOcr, selecionar, MAX_TERMOS, MAX_LETRAS_TERMO } from './achados.js';
 
 const pdfjsLib = globalThis.pdfjsLib;
 const { jsPDF } = globalThis.jspdf;
@@ -37,7 +37,7 @@ const el = {
   btDesfazer: $('btDesfazer'), btRefazer: $('btRefazer'), btMenos: $('btMenos'), btMais: $('btMais'),
   zoomTexto: $('zoomTexto'), btAnterior: $('btAnterior'), btProxima: $('btProxima'), paginaTexto: $('paginaTexto'),
   infoPaginas: $('infoPaginas'), infoHash: $('infoHash'), btCopiarHash: $('btCopiarHash'),
-  tipos: $('tipos'), btProcurar: $('btProcurar'), resumoAchados: $('resumoAchados'),
+  tipos: $('tipos'), resumoOpcoes: $('resumoOpcoes'), btProcurar: $('btProcurar'), resumoAchados: $('resumoAchados'),
   btAceitarPagina: $('btAceitarPagina'), btAceitarTodas: $('btAceitarTodas'), btDescartar: $('btDescartar'),
   carAtivo: $('carAtivo'), carTexto: $('carTexto'), carTodas: $('carTodas'), carUma: $('carUma'),
   carHash: $('carHash'), carData: $('carData'), carDica: $('carDica'),
@@ -45,7 +45,10 @@ const el = {
   revisei: $('revisei'), dicaRevisei: $('dicaRevisei'), btSalvar: $('btSalvar'), progresso: $('progresso'),
   barraProgresso: $('barraProgresso'), rotuloHashSaida: $('rotuloHashSaida'), infoHashSaida: $('infoHashSaida'),
   aviso: $('aviso'), sobre: $('sobre'), sobreVersao: $('sobreVersao'), mostrarAvisos: $('mostrarAvisos'),
-  infoConferido: $('infoConferido'), opOcr: $('opOcr'), ocrLigado: $('ocrLigado'), rotuloTarja: $('rotuloTarja'), listaSugestoes: $('listaSugestoes'), btAceitarMarcadas: $('btAceitarMarcadas'),
+  infoConferido: $('infoConferido'), opOcr: $('opOcr'), ocrLigado: $('ocrLigado'), rotuloTarja: $('rotuloTarja'), listaSugestoes: $('listaSugestoes'),
+  btSugestoes: $('btSugestoes'), acoesSugestao: $('acoesSugestao'), acoesTexto: $('acoesTexto'), btAceitarEsta: $('btAceitarEsta'),
+  btDescartarEsta: $('btDescartarEsta'), passosSugestoes: $('passosSugestoes'), btConferir: $('btConferir'),
+  avisoLista: $('avisoLista'), btAceitarMarcadas: $('btAceitarMarcadas'),
   abas: $('abas'), btProcurarTodos: $('btProcurarTodos'), btProximo: $('btProximo'),
   andamento: $('andamento'), andamentoTexto: $('andamentoTexto'), btRecuperar: $('btRecuperar'),
   btDescartarAndamento: $('btDescartarAndamento'), guardarAndamento: $('guardarAndamento'), btApagarTudo: $('btApagarTudo'),
@@ -175,7 +178,7 @@ function limparAndamentoVelho() {
 // (auditoria TL-X05).
 function andamentoValido(a, d) {
   const num = (x) => typeof x === 'number' && Number.isFinite(x) && Math.abs(x) <= 1e6;
-  const cor = (c) => typeof c === 'string' && /^#[0-9a-f]{6}$/i.test(c);
+  const cor = (c) => typeof c === 'string' && (CORES_TARJA.includes(c.toLowerCase()) || c.toLowerCase() in CORES_ANTIGAS);
   const marca = (m) => !!m && typeof m === 'object' && (m.tipo === 'tarja'
     ? [m.x, m.y, m.w, m.h].every(num) && cor(m.cor)
     : m.tipo === 'caneta' && num(m.largura) && m.largura > 0 && cor(m.cor) && Array.isArray(m.pontos) &&
@@ -215,12 +218,21 @@ function recuperarAndamento() {
   el.andamento.hidden = true;
   if (!a) return;
   a.paginas.forEach((p, i) => { if (p.vista) doc.paginas[i].vista = true; });
-  registrar(a.paginas.map((p, i) => ({ pagina: i, antes: doc.paginas[i].marcas.slice(), depois: [...doc.paginas[i].marcas, ...p.marcas.map(marcaSoGeometria)] }))
+  // a tarja branca de uma versão antiga volta preta (a branca saiu na 1.2.3)
+  let trocadas = 0;
+  const comCorAtual = (m) => {
+    const c = CORES_ANTIGAS[m.cor.toLowerCase()];
+    if (!c) return m;
+    trocadas++;
+    return { ...m, cor: c };
+  };
+  registrar(a.paginas.map((p, i) => ({ pagina: i, antes: doc.paginas[i].marcas.slice(), depois: [...doc.paginas[i].marcas, ...p.marcas.map(marcaSoGeometria).map(comCorAtual)] }))
     .filter((m) => m.depois.length > m.antes.length));
   montarMiniaturas();
   // os botões das miniaturas são refeitos: o selo das marcas recuperadas tem de voltar já (como no resto do programa)
   atualizarMiniaturas();
-  avisar('Marcas de antes recuperadas. Confira as páginas antes de salvar.');
+  avisar('Marcas de antes recuperadas. Confira as páginas antes de salvar.' +
+    (trocadas ? ` ${trocadas === 1 ? 'Uma tarja branca virou preta' : `${trocadas} tarjas brancas viraram pretas`}: a tarja branca saiu do programa.` : ''));
 }
 function descartarAndamento() {
   doc.andamentoVisto = true;
@@ -242,14 +254,25 @@ const docs = [];
 let doc = null;
 let atual = 0;
 let zoom = 1;
-let ferramenta = 'tarja';
+let ferramenta = 'mao';     // a Mão anda pela página sem tarjar nada (retorno do professor em 04/11/2026)
+let ferramentaAntes = null;  // a ferramenta de antes, enquanto a barra de espaço segura a Mão
+let espacoPreso = false;
+// As cores da tarja: só escuras e opacas (retorno do professor em 04/11/2026). O PDF salvo é refeito como imagem com a
+// tarja pintada por cima, então a cor não muda a remoção do dado; cor clara ou seletor livre ficam de fora, porque
+// tarja clara parece marca-texto. A branca saiu na 1.2.3 (decisão do professor): numa página branca ela esconde que
+// houve remoção, e quem lê não sabe que falta algo. A cor é sempre uma desta lista (andamentoValido, botões); o
+// andamento guardado por uma versão antiga com tarja branca volta com ela preta (CORES_ANTIGAS).
+const CORES_TARJA = ['#000000', '#3c4043', '#1a2b4c', '#5b1a2b', '#1e3b2a'];
+const CORES_ANTIGAS = { '#ffffff': '#000000' };
 let cor = '#000000';
 let espessura = 9;
 let historico = [];      // [{ mudancas: [{ pagina, antes, depois }] }]
 let refazer = [];
 let procurando = false;
+let abertura = null;     // a abertura em andamento ({ cancelada, novos }): o Fechar a cancela (e2e no Linux, achado 4)
 let rotuloTarja = '';      // texto opcional dentro das tarjas (vale para todos os arquivos)
 let destaque = null;     // sugestão destacada na tela, escolhida na lista de revisão
+let escolhida = null;    // { sg, i }: a sugestão aberta por último, com a barra de Aceitar e Descartar junto dela
 let trabalhadorPdf = null;  // worker do PDF.js comum a todos os documentos (ver o fim do arquivo)
 let menorDpi = DPI_SAIDA;  // resolução mais baixa usada no último salvamento (página enorme é reduzida)
 let geracao = 0;         // invalida desenhos antigos quando o documento muda
@@ -266,7 +289,9 @@ function avisar(texto, forcar = false) {
   el.aviso.textContent = texto;
   el.aviso.classList.add('visivel');
   clearTimeout(tempoAviso);
-  tempoAviso = setTimeout(() => el.aviso.classList.remove('visivel'), 4200);
+  // o aviso importante (arquivo que não abriu, procura que falhou) fica mais tempo: em 4 s some antes de ser lido
+  // (e2e no Linux da 1.2.2, achado 3)
+  tempoAviso = setTimeout(() => el.aviso.classList.remove('visivel'), forcar ? 10000 : 4200);
 }
 
 // enquanto salva, nada muda as tarjas nem troca o documento (o PDF tem que sair igual ao que foi conferido)
@@ -284,8 +309,9 @@ function ehPdf(bytes) {
   return inicio.includes('%PDF-');
 }
 
-// Lê um arquivo e devolve o documento pronto (ainda fora da lista), ou null com o motivo já avisado.
-async function carregarArquivo(arquivo) {
+// Lê um arquivo e devolve o documento pronto (ainda fora da lista), ou null com o motivo já avisado (ou se a
+// abertura foi cancelada no meio).
+async function carregarArquivo(arquivo, pedido = {}) {
   let bytes;
   try {
     bytes = new Uint8Array(await arquivo.arrayBuffer());
@@ -324,6 +350,10 @@ async function carregarArquivo(arquivo) {
   }
   const paginas = [];
   for (let i = 1; i <= pdf.numPages; i++) {
+    if (pedido.cancelada) {
+      pdf.destroy();
+      return null;
+    }
     let v = null;
     try {
       v = (await pdf.getPage(i)).getViewport({ scale: 1 });
@@ -361,13 +391,21 @@ async function carregarArquivo(arquivo) {
 async function abrirArquivos(lista) {
   if (ocupado()) return;
   let primeiro = null;
+  const pedido = { cancelada: false, novos: [] };
+  abertura = pedido;
+  atualizar();
   const limite = () => avisar(`Limite de ${MAX_ARQUIVOS} arquivos abertos: salve e feche alguns antes de abrir mais.`, true);
   for (const arquivo of lista) {
+    if (pedido.cancelada) break;
     if (docs.length >= MAX_ARQUIVOS) {
       limite();
       break;
     }
-    const novo = await carregarArquivo(arquivo);
+    const novo = await carregarArquivo(arquivo, pedido);
+    if (pedido.cancelada) {
+      if (novo && !docs.includes(novo)) novo.pdf.destroy();
+      break;
+    }
     if (!novo) continue;
     if (!docs.includes(novo)) {
       // conferido de novo depois da leitura, que leva tempo: repetido ou acima do limite não entra
@@ -382,10 +420,25 @@ async function abrirArquivos(lista) {
         continue;
       }
       docs.push(novo);
+      pedido.novos.push(novo);
     }
     primeiro = primeiro || novo;
     montarAbas();
   }
+  if (abertura === pedido) abertura = null;
+  if (pedido.cancelada) {
+    // Fechar antes de o arquivo aparecer: os que esta abertura acabou de pôr nas abas saem também
+    for (const d of pedido.novos) {
+      if (d === doc || !docs.includes(d)) continue;
+      docs.splice(docs.indexOf(d), 1);
+      d.pdf.destroy();
+    }
+    montarAbas();
+    atualizar();
+    avisar('Abertura cancelada: o arquivo não foi aberto.');
+    return;
+  }
+  atualizar();
   if (primeiro) await ativar(primeiro);
   if (lista.length > 1 && docs.length > 1) avisar(`${docs.length} arquivos abertos: cada um é conferido e salvo na sua aba.`);
 }
@@ -428,6 +481,7 @@ function fechar(d = doc) {
   const k = docs.indexOf(d);
   docs.splice(k, 1);
   d.pdf.destroy();
+  d.avisarFechou?.();
   // fechar o arquivo é escolher não guardar: as marcas de antes deixam de ser oferecidas
   esquecerAndamento(d.hash);
   if (d !== doc) {
@@ -535,6 +589,7 @@ const pedidoMiniatura = [];
 async function redesenharMiniatura(i) {
   const botao = el.miniaturas.children[i];
   if (!botao || !doc) return;
+  const d = doc;
   const c = botao.querySelector('canvas');
   const s = c.width / doc.paginas[i].w;
   const minha = geracao;
@@ -546,10 +601,11 @@ async function redesenharMiniatura(i) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, c.width, c.height);
   try {
-    const pg = await doc.pdf.getPage(i + 1);
+    const pg = await d.pdf.getPage(i + 1);
     await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: pg.getViewport({ scale: s }) }).promise;
   } catch (e) {
-    console.warn('miniatura não desenhada', i + 1, e);
+    // desenho cancelado porque o arquivo fechou ou saiu da tela não é erro (e2e no Linux da 1.2.2, achado 2)
+    if (docs.includes(d) && d === doc && e?.name !== 'RenderingCancelledException') console.warn('miniatura não desenhada', i + 1, e);
     return;
   }
   if (minha !== geracao || pedido !== pedidoMiniatura[i]) return;
@@ -684,7 +740,8 @@ let arrasto = null;  // traço ou tarja em andamento, ou carimbo sendo movido
 
 function desenharTela() {
   // enquanto a página nova não termina de aparecer, a tela antiga fica como está
-  if (!doc || !base.canvas || base.pagina !== atual) return;
+  if (!doc || !base.canvas || base.pagina !== atual) { el.acoesSugestao.hidden = true; return; }
+  posicionarAcoes();
   const c = el.tela;
   c.width = base.canvas.width;
   c.height = base.canvas.height;
@@ -709,7 +766,7 @@ function desenharTela() {
   ctx.restore();
   if (arrasto && arrasto.tipo === 'tarja') {
     const r = retangulo(arrasto);
-    ctx.fillStyle = cor === '#ffffff' ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.7)';
+    ctx.fillStyle = cor + 'b3';   // prévia: a cor escolhida, a 70%
     ctx.fillRect(r.x * s, r.y * s, r.w * s, r.h * s);
     ctx.strokeStyle = '#1e6fd9';
     ctx.lineWidth = 1.5;
@@ -737,7 +794,7 @@ function escreverNaTarja(ctx, m, s) {
   ctx.beginPath();
   ctx.rect(m.x * s, m.y * s, m.w * s, m.h * s);
   ctx.clip();
-  ctx.fillStyle = m.cor === '#ffffff' ? '#5f6670' : '#ffffff';
+  ctx.fillStyle = '#ffffff';   // toda cor da tarja é escura
   ctx.font = `600 ${fonte * s}px Helvetica, Arial, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -923,7 +980,11 @@ el.tela.addEventListener('pointerdown', (ev) => {
     desenharTela();
     return;
   }
-  if (ferramenta === 'caneta') {
+  if (ferramenta === 'mao') {
+    // a Mão rola a página ampliada; o clique parado numa sugestão só a mostra (não aceita nada)
+    arrasto = { tipo: 'mao', x: ev.clientX, y: ev.clientY, sl: el.palco.scrollLeft, st: el.palco.scrollTop, inicio: pt, longe: false };
+    el.tela.classList.add('agarrando');
+  } else if (ferramenta === 'caneta') {
     arrasto = { tipo: 'caneta', marca: { tipo: 'caneta', cor, largura: espessura, pontos: [pt] } };
   } else if (ferramenta === 'texto') {
     // o texto da página chega do PDF.js; enquanto não chega, a seleção espera
@@ -943,7 +1004,7 @@ el.tela.addEventListener('pointerdown', (ev) => {
 function cancelarArrasto() {
   const a = arrasto;
   arrasto = null;
-  el.tela.classList.remove('mover');
+  el.tela.classList.remove('mover', 'agarrando');
   if (a?.tipo === 'carimbo') Object.assign(carimbo, a.antes);
   if (doc) desenharTela();
 }
@@ -958,6 +1019,14 @@ el.tela.addEventListener('pointermove', (ev) => {
     return;
   }
   if (arrastoFora()) { cancelarArrasto(); return; }
+  if (arrasto.tipo === 'mao') {
+    const dx = ev.clientX - arrasto.x;
+    const dy = ev.clientY - arrasto.y;
+    if (Math.hypot(dx, dy) > 3) arrasto.longe = true;
+    el.palco.scrollLeft = arrasto.sl - dx;
+    el.palco.scrollTop = arrasto.st - dy;
+    return;
+  }
   if (arrasto.tipo === 'carimbo') {
     const p = doc.paginas[atual];
     carimbo.fx = (pt[0] - arrasto.dx) / p.w;
@@ -999,8 +1068,15 @@ function soltar(ev) {
   if (arrastoFora()) { cancelarArrasto(); return; }
   const a = arrasto;
   arrasto = null;
-  el.tela.classList.remove('mover');
+  el.tela.classList.remove('mover', 'agarrando');
   const p = doc.paginas[atual];
+  if (a.tipo === 'mao') {
+    voltarDaMao();
+    if (a.longe) return;
+    const k = sugestaoEm(a.inicio);
+    if (k >= 0) mostrarSugestao(p.sugestoes[k], atual);
+    return;
+  }
   if (a.tipo === 'texto') {
     soltarTexto(a);
     return;
@@ -1102,6 +1178,7 @@ function termosAtuais() {
 }
 
 function mudouTermos() {
+  resumirOpcoes();
   const n = prepararTermos(el.termos.value).length;
   // o que a lista deixa de fora não some calado (auditoria de 29/10/2026): repetidos, de uma letra só, além do limite
   // de termos, e o que passa do limite de letras (é cortado)
@@ -1190,6 +1267,14 @@ async function importarTermos(arquivo) {
 }
 
 // ---------- sugestões ----------
+// o "Opções da procura" fechado diz o que vai ser procurado (a seção fica curta e o botão de procurar fica à vista)
+function resumirOpcoes() {
+  const n = tiposMarcados().length;
+  const termos = termosAtuais().lista.length;
+  el.resumoOpcoes.textContent = `Opções da procura: ${n === 1 ? '1 tipo de dado' : `${n} tipos de dado`}, ` +
+    (termos === 0 ? 'nenhum nome na lista' : termos === 1 ? '1 nome na lista' : `${termos} nomes na lista`);
+}
+
 function tiposMarcados() {
   return [...el.tipos.querySelectorAll('input:checked')].map((c) => c.value);
 }
@@ -1278,93 +1363,6 @@ function textoDaPagina(d, i) {
   return p.texto;
 }
 
-// ---------- camada de texto invisível ----------
-// PDF digitalizado que já vem com OCR de outro programa: a imagem tem as letras e, por cima, um texto invisível
-// (modo de desenho 3 ou 7) que é o que a procura lê. As caixas das sugestões saem desse texto, que pode não coincidir
-// com as letras da imagem (mais estreito ou fora do lugar), e a tarja deixava parte delas à mostra (achado 1 da prova
-// da tarja da 1.2.2, docs/PROVA-TARJA-1.2.2.md). Nessas páginas, cada caixa cresce até cobrir as palavras da imagem
-// que ela toca. Só cresce, nunca diminui: sobrar tarja é melhor que deixar uma letra do dado à mostra.
-const MODOS_INVISIVEIS = new Set([3, 7]);
-
-async function temTextoInvisivel(pg) {
-  const O = pdfjsLib.OPS;
-  const mostrar = new Set([O.showText, O.showSpacedText, O.nextLineShowText, O.nextLineSetSpacingShowText]);
-  const ops = await pg.getOperatorList({ intent: 'print', annotationMode: pdfjsLib.AnnotationMode.DISABLE });
-  let modo = 0;
-  const pilha = [];
-  for (let k = 0; k < ops.fnArray.length; k++) {
-    const f = ops.fnArray[k];
-    if (f === O.save) pilha.push(modo);
-    else if (f === O.restore) modo = pilha.length ? pilha.pop() : 0;
-    else if (f === O.setTextRenderingMode) modo = ops.argsArray[k][0];
-    else if (mostrar.has(f) && MODOS_INVISIVEIS.has(modo)) return true;
-  }
-  return false;
-}
-
-// Desenha a página (na resolução do PDF salvo, reduzida em página enorme como no salvar) e faz cada caixa dos
-// achados cobrir também as palavras escuras da imagem que encostam nela. Letras da mesma palavra ficam juntas por um
-// vão menor que o espaço entre palavras; a procura vai até 3 alturas de cada lado e 3/4 de altura acima e abaixo, para
-// não engolir a página.
-async function ajustarAoDesenho(pg, p, achados) {
-  const s = escalaSegura(p, DPI_SAIDA / 72);
-  const v = pg.getViewport({ scale: s });
-  const c = document.createElement('canvas');
-  c.width = Math.max(1, Math.round(v.width));
-  c.height = Math.max(1, Math.round(v.height));
-  const ctx = c.getContext('2d', { willReadFrequently: true });
-  if (!ctx) return;
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, c.width, c.height);
-  await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: v }).promise;
-  const L = c.width;
-  const A = c.height;
-  const px = ctx.getImageData(0, 0, L, A).data;
-  c.width = c.height = 0;
-  const escuro = new Uint8Array(L * A);
-  for (let i = 0, k = 0; i < escuro.length; i++, k += 4) {
-    escuro[i] = 0.299 * px[k] + 0.587 * px[k + 1] + 0.114 * px[k + 2] < 140 ? 1 : 0;
-  }
-  for (const a of achados) a.caixas = a.caixas.map((k) => crescerAteAsLetras(k, s, escuro, L, A));
-}
-
-function crescerAteAsLetras(k, s, escuro, L, A) {
-  const b = { x0: Math.floor(k.x * s), y0: Math.floor(k.y * s), x1: Math.ceil((k.x + k.w) * s), y1: Math.ceil((k.y + k.h) * s) };
-  const H = b.y1 - b.y0;
-  if (H < 2) return k;
-  const r = { x0: Math.max(0, b.x0 - 3 * H), y0: Math.max(0, Math.round(b.y0 - 0.75 * H)),
-              x1: Math.min(L, b.x1 + 3 * H), y1: Math.min(A, Math.round(b.y1 + 0.75 * H)) };
-  const vaoX = Math.max(1, Math.round(0.15 * H));
-  const vaoY = Math.max(1, Math.round(0.06 * H));
-  const visto = new Uint8Array((r.x1 - r.x0) * (r.y1 - r.y0));
-  const idx = (x, y) => (y - r.y0) * (r.x1 - r.x0) + (x - r.x0);
-  const fila = [];
-  // sementes: os pixels escuros dentro da caixa
-  for (let y = Math.max(r.y0, b.y0); y < Math.min(r.y1, b.y1); y++) {
-    for (let x = Math.max(r.x0, b.x0); x < Math.min(r.x1, b.x1); x++) {
-      if (escuro[y * L + x] && !visto[idx(x, y)]) { visto[idx(x, y)] = 1; fila.push(x, y); }
-    }
-  }
-  if (!fila.length) return k;
-  let { x0, y0, x1, y1 } = b;
-  for (let q = 0; q < fila.length; q += 2) {
-    const x = fila[q];
-    const y = fila[q + 1];
-    if (x < x0) x0 = x;
-    if (x + 1 > x1) x1 = x + 1;
-    if (y < y0) y0 = y;
-    if (y + 1 > y1) y1 = y + 1;
-    for (let yy = Math.max(r.y0, y - vaoY); yy <= Math.min(r.y1 - 1, y + vaoY); yy++) {
-      for (let xx = Math.max(r.x0, x - vaoX); xx <= Math.min(r.x1 - 1, x + vaoX); xx++) {
-        const j = idx(xx, yy);
-        if (!visto[j] && escuro[yy * L + xx]) { visto[j] = 1; fila.push(xx, yy); }
-      }
-    }
-  }
-  // um pixel de folga em volta das letras
-  return { x: (x0 - 1) / s, y: (y0 - 1) / s, w: (x1 - x0 + 2) / s, h: (y1 - y0 + 2) / s };
-}
-
 // ---------- OCR (só na versão com OCR) ----------
 // O Tesseract roda num worker feito do texto embutido na página (dados do português dentro, sem rede). Só as
 // palavras e as caixas delas voltam para cá, e só ficam na memória enquanto a procura roda.
@@ -1397,9 +1395,33 @@ async function lerComOcr(pg, p) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, c.width, c.height);
   await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: pg.getViewport({ scale: s }) }).promise;
+  const pedacos = await reconhecer(c, s);
+  c.width = c.height = 0;
+  return pedacos;
+}
+
+// O OCR da página já desenhada sem a camada de texto (tintaDaPagina com semTexto), na página que tem imagem ou
+// desenho: o dado que só existe nele vira sugestão (regra da gestão na revisão da 1.2.3-rc.5)
+async function lerDesenhoComOcr(sem) {
+  const c = document.createElement('canvas');
+  c.width = sem.largura;
+  c.height = sem.altura;
+  const ctx = c.getContext('2d');
+  const img = ctx.createImageData(c.width, c.height);
+  for (let i = 0; i < sem.lum.length; i++) {
+    img.data[4 * i] = img.data[4 * i + 1] = img.data[4 * i + 2] = sem.lum[i];
+    img.data[4 * i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const pedacos = await reconhecer(c, sem.escala);
+  c.width = c.height = 0;
+  return pedacos;
+}
+
+// As palavras que o OCR lê no desenho c, feito na escala s, em pontos da página
+async function reconhecer(c, s) {
   const trabalhador = await obterOcr();
   const { data } = await trabalhador.recognize(c, {}, { blocks: true, text: false });
-  c.width = c.height = 0;
   const pedacos = [];
   for (const bloco of data.blocks || []) {
     for (const par of bloco.paragraphs || []) {
@@ -1417,45 +1439,258 @@ async function lerComOcr(pg, p) {
   return pedacos;
 }
 
+// Algum texto da página é pintado sem aparecer, pela própria pintura (modo 3 ou 7, opacidade de preenchimento quase
+// zero, recorte de área zero)? Antes só os modos 3 e 7 contavam (revisão do Codex na 1.2.3-rc.2, opacity-zero). Os
+// outros jeitos de esconder (tinta branca, recorte fora do texto, imagem por cima) não dá para dizer pela pintura,
+// porque são comuns em documento normal (cabeçalho de tabela, logotipo); para eles, a conferência é o desenho da
+// página com e sem o texto (textoAparece). Este atalho só poupa o segundo desenho.
+async function temTextoEscondido(pg) {
+  const { fnArray, argsArray } = await pg.getOperatorList();
+  const O = pdfjsLib.OPS;
+  let g = { modo: 0, opaco: 1, recorteVazio: false };
+  const pilha = [];
+  let caminhoVazio = false;
+  let escondido = false;
+  fnArray.forEach((f, j) => {
+    const a = argsArray[j];
+    if (f === O.save || f === O.paintFormXObjectBegin) pilha.push({ ...g });
+    else if (f === O.restore || f === O.paintFormXObjectEnd) g = pilha.pop() || g;
+    else if (f === O.setTextRenderingMode) g.modo = a[0];
+    else if (f === O.setGState) for (const [k, v] of a[0]) { if (k === 'ca') g.opaco = v; }
+    else if (f === O.constructPath) {
+      const mm = a[2];
+      caminhoVazio = !!mm && (mm[2] - mm[0] < 0.5 || mm[3] - mm[1] < 0.5);
+    } else if (f === O.clip || f === O.eoClip) { if (caminhoVazio) g.recorteVazio = true; }
+    else if (f === O.showText || f === O.showSpacedText) {
+      if ([3, 7].includes(g.modo) || g.opaco < 0.05 || g.recorteVazio) escondido = true;
+    }
+  });
+  return escondido;
+}
+
+// A página desenhada como na tela, em luminosidade de 0 a 255 por pixel (para ajustarATinta). semTexto desenha a
+// página sem pintar texto nenhum (para textoAparece). O PDF.js pinta as letras com fillText e strokeText ou, com a
+// fonte em traço (texto com padrão de cor, ou sem fonte do navegador, como no Node), com fill e stroke de um caminho,
+// sempre de dentro de paintChar; o fill de caminho de fora dele (a máscara de imagem, por exemplo) continua no
+// desenho. Se pintar de outro jeito (fonte Type3), as letras saem nos dois desenhos e a sugestão ganha "confira", o
+// lado seguro.
+const deLetra = () => /paintChar/.test(new Error().stack || '');
+async function tintaDaPagina(pg, p, semTexto = false) {
+  const s = escalaSegura(p, DPI_OCR / 72);
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(p.w * s));
+  c.height = Math.max(1, Math.round(p.h * s));
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  const imagens = [];
+  // letras: onde cada letra que o desenho sem texto deixou de pintar cairia, em pixels (o ponto de partida dela, na
+  // linha de base): letra pintada fora da camada de texto é texto que a procura não vê (revisão da gestão na rc.12, x5)
+  const letras = [];
+  const guardar = (x = 0, y = 0) => {
+    const m = ctx.getTransform();
+    if (letras.length < 20000) letras.push([m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]);
+  };
+  if (semTexto) {
+    ctx.fillText = ctx.strokeText = (_, x, y) => guardar(x, y);
+    for (const nome of ['fill', 'stroke']) {
+      const original = ctx[nome].bind(ctx);
+      ctx[nome] = (...a) => (a.length && typeof a[0] === 'object' && deLetra() ? guardar() : original(...a));
+    }
+    // onde cada imagem cai na página, em pixels (para bateComImagem): o PDF.js desenha imagem, máscara de imagem e
+    // grupo transparente com drawImage. Sem saber onde, a imagem conta como a página inteira, o lado seguro
+    const desenharImagem = ctx.drawImage.bind(ctx);
+    ctx.drawImage = (...a) => {
+      try {
+        const [dx, dy, dw, dh] = a.length >= 9 ? a.slice(5, 9) : a.length >= 5 ? a.slice(1, 5) : [a[1], a[2], a[0].width, a[0].height];
+        const t = ctx.getTransform();
+        const xs = [];
+        const ys = [];
+        for (const [px, py] of [[dx, dy], [dx + dw, dy], [dx, dy + dh], [dx + dw, dy + dh]]) {
+          xs.push(t.a * px + t.c * py + t.e);
+          ys.push(t.b * px + t.d * py + t.f);
+        }
+        const r = { x0: Math.floor(Math.min(...xs)), y0: Math.floor(Math.min(...ys)), x1: Math.ceil(Math.max(...xs)), y1: Math.ceil(Math.max(...ys)) };
+        imagens.push(Object.values(r).every(Number.isFinite) ? r : { x0: 0, y0: 0, x1: c.width, y1: c.height });
+      } catch {
+        imagens.push({ x0: 0, y0: 0, x1: c.width, y1: c.height });
+      }
+      return desenharImagem(...a);
+    };
+  }
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, c.width, c.height);
+  await pg.render({ ...OPCOES_DESENHO, canvasContext: ctx, viewport: pg.getViewport({ scale: s }) }).promise;
+  const px = ctx.getImageData(0, 0, c.width, c.height).data;
+  const lum = new Uint8Array(c.width * c.height);
+  // afasta: quanto o canal mais escuro do pixel fica abaixo do branco (para temDesenho, que olha a cor por canal)
+  const afasta = semTexto ? new Uint8Array(lum.length) : undefined;
+  for (let i = 0; i < lum.length; i++) {
+    lum[i] = px[4 * i] * 0.299 + px[4 * i + 1] * 0.587 + px[4 * i + 2] * 0.114;
+    if (afasta) afasta[i] = 255 - Math.min(px[4 * i], px[4 * i + 1], px[4 * i + 2]);
+  }
+  const tinta = { largura: c.width, altura: c.height, escala: s, lum, afasta, imagens, letras };
+  c.width = c.height = 0;
+  return tinta;
+}
+
+// Dá a vez à tela no meio de uma conta longa (temDesenho numa página grande levava até 7 s de tela parada, com o
+// processador freado 4x, na rc.7), mas só depois de 30 ms desde a última vez: cada pausa custa alguns ms. Usa o
+// scheduler.yield do navegador (Edge e WebView2); onde não houver, a conta vai de uma vez, como antes.
+let ultimaVez = 0;
+function ceder() {
+  const sc = globalThis.scheduler;
+  if (Date.now() - ultimaVez < 30 || typeof sc?.yield !== 'function') return null;
+  return sc.yield().then(() => { ultimaVez = Date.now(); });
+}
+
+// Espera um pedido ao PDF.js do arquivo, mas desiste com erro se o arquivo for fechado: o pedido feito ao PDF já
+// destruído pode ficar pendente para sempre, sem resolver nem dar erro, e a procura nunca terminaria (o Procurar
+// ficava desligado até recarregar a página; e2e no Linux da 1.2.2, achado 1).
+function enquantoAberto(d, pedido) {
+  if (!docs.includes(d)) return Promise.reject(new Error('arquivo fechado'));
+  d.fechou = d.fechou || new Promise((_, nao) => { d.avisarFechou = () => nao(new Error('arquivo fechado')); });
+  d.fechou.catch(() => {});
+  return Promise.race([pedido, d.fechou]);
+}
+
+// O que a lista diz da sugestão tirada da camada de texto invisível, da mais grave para a mais leve (ajustarATinta).
+const NOTAS_TINTA = ['sem-letras', 'longe', 'curta', 'cresceu', 'ajustada'];
+// quando a tarja pode ter ido para outro lugar que não o dado (decisão da gestão na revisão da rc.4)
+const OUTRO_PONTO = 'o dado pode estar em outro ponto da página; procure e tarje à mão';
+// a página com imagem ou desenho fora de linha reta e retângulo (temDesenho): todas as sugestões dela saem com
+// "confira", também as do texto que está certo, e a nota diz por quê (regra da gestão na revisão da 1.2.3-rc.5)
+const AVISO_DESENHO = 'esta página tem imagem ou desenho; o programa pode não ver dados que estejam nela; confira a página inteira';
+// a sugestão do OCR da página digitalizada: o OCR pode não ler tudo (revisão da gestão na rc.7, A3)
+const AVISO_OCR = 'lida pelo OCR, que pode errar letras ou não ler o dado pequeno, claro ou girado; confira a página inteira';
+// a página cuja camada de texto parece não dizer o que está desenhado (camadaEstranha: letras de outro alfabeto
+// misturadas, ideogramas, caracteres sem desenho conhecido): a procura nela não basta (revisão da gestão na rc.11, w1 e w2)
+// Quantas letras pintadas (tintaDaPagina com semTexto) caem fora de todos os pedaços da camada de texto, com folga de
+// meia letra (do texto girado, a caixa vai até o comprimento dele em qualquer direção)
+function letrasForaDaCamada(sem, pedacos) {
+  const s = sem.escala;
+  const caixas = pedacos.filter((p) => String(p.str || '').trim()).map((p) => {
+    const f = p.ang ? p.w + p.h : 0.6 * p.h;
+    return p.ang
+      ? [(p.x - f) * s, (p.y - f) * s, (p.x + f) * s, (p.y + f) * s]
+      : [(p.x - f) * s, (p.y - 1.3 * p.h) * s, (p.x + p.w + f) * s, (p.y + 0.6 * p.h) * s];
+  });
+  let fora = 0;
+  for (const [x, y] of sem.letras || []) if (!caixas.some(([a, b, c, d]) => x >= a && x <= c && y >= b && y <= d)) fora++;
+  return fora;
+}
+const AVISO_CAMADA = 'o texto desta página tem letras que o programa não lê direito; o dado pode estar escrito nela sem ser achado; confira a página inteira';
+const TEXTO_NOTA = {
+  desenho: 'confira: ' + AVISO_DESENHO,
+  camada: 'confira: ' + AVISO_CAMADA,
+  ocr: 'confira: ' + AVISO_OCR,
+  imagem: 'confira: a camada de texto não tem o tamanho e o lugar das letras da imagem; ' + OUTRO_PONTO,
+  'sem-letras': 'confira: não achei estas letras na imagem; ' + OUTRO_PONTO,
+  longe: 'confira: a camada de texto não coincide com a imagem, a tarja foi para a palavra parecida mais perto; ' + OUTRO_PONTO,
+  curta: 'confira: a tarja pode ter ficado curta; veja se alguma letra do dado ficou à mostra ao lado dela',
+  cresceu: 'confira: a tarja cresceu até as letras da imagem e pode cobrir letras vizinhas',
+  ajustada: 'confira: a tarja foi para as letras da imagem embaixo da camada de texto; veja se são mesmo o dado; ' + OUTRO_PONTO,
+};
+
 // Procura num arquivo (na tela ou não). Para no meio, sem estragar nada, se o arquivo for fechado.
 // Devolve { total, semTexto } ou null se parou.
 async function procurarEm(d, tipos, progresso, termos = null) {
   let semTexto = 0;
   const novas = [];
   const incompletas = [];   // páginas em que os campos de formulário e as anotações não puderam ser lidos
+  const comDesenho = [];    // páginas com imagem ou desenho (temDesenho), com sugestão ou sem
+  const comCamada = [];     // páginas com a camada de texto estranha (camadaEstranha), com sugestão ou sem
   const usarOcr = ocrDisponivel() && el.ocrLigado.checked;
   for (let i = 0; i < d.paginas.length; i++) {
     progresso(i);
-    const pg = await d.pdf.getPage(i + 1);
+    const pg = await enquantoAberto(d, d.pdf.getPage(i + 1));
     const v = pg.getViewport({ scale: 1 });
-    const pedacos = (await textoDaPagina(d, i)).slice();
+    const pedacos = (await enquantoAberto(d, textoDaPagina(d, i))).slice();
     // página sem texto (digitalizada): o texto sai da imagem, pelo OCR, quando a versão tem e a opção está ligada
     let ocr = false;
     if (!pedacos.length && usarOcr) {
       progresso(i, true);
-      pedacos.push(...(await lerComOcr(pg, d.paginas[i])));
+      pedacos.push(...(await enquantoAberto(d, lerComOcr(pg, d.paginas[i]))));
       ocr = true;
     }
-    const anotacoes = await sugestoesDeAnotacoes(pg, v, tipos, termos);
+    const anotacoes = await enquantoAberto(d, sugestoesDeAnotacoes(pg, v, tipos, termos));
     if (!anotacoes) incompletas.push(i + 1);
     const doTexto = procurar(pedacos, tipos, medirTexto, termos);
-    if (doTexto.length && !ocr && await temTextoInvisivel(pg)) await ajustarAoDesenho(pg, d.paginas[i], doTexto);
+    // camada de texto invisível sobre a imagem: a caixa vai até as letras da imagem (prova da tarja da 1.2.2), e a
+    // sugestão sai sempre marcada para conferir, porque a camada pode não coincidir com a imagem (revisão do Codex
+    // na 1.2.3-rc.1: dado legível no PDF salvo, com a sugestão sem aviso). O texto que não aparece na página
+    // desenhada também é invisível, seja qual for o jeito de esconder: só conta como visível se tirá-lo do desenho
+    // muda os pixels da caixa em toda a largura (textoAparece). Ter tinta na caixa não basta, porque a tinta pode
+    // ser outra palavra, da imagem ou de traços, embaixo da camada, com o dado desenhado em outro lugar (revisões
+    // do Codex na rc.2 e na rc.3). Vale para toda página com sugestão da camada de texto, com imagem ou sem
+    const escondido = !ocr && doTexto.length ? await enquantoAberto(d, temTextoEscondido(pg)) : false;
+    // TODA página é desenhada sem a camada de texto, também a que não tem sugestão: o dado pode estar só na imagem de
+    // uma página cuja camada fala de outra coisa (revisão independente da gestão na rc.6, r4). Tem imagem ou desenho
+    // (qualquer tinta que não é texto)? Então nenhuma conferência da caixa basta (o dado pode estar
+    // desenhado longe da isca, em curvas ou em blocos): todas as sugestões dela saem com "confira", a página entra no
+    // aviso e precisa ser vista de novo antes do Salvar, e no HTML com OCR o desenho sem a camada passa pelo OCR
+    // (revisões da rc.5, n1 e n2, e da rc.6). A página digitalizada já lida inteira pelo OCR não passa de novo por ele.
+    // O desenho a 200 ppp: com menos, a borda suavizada de uma letra branca sobre letra escura da imagem passava por
+    // letra que aparece (branco-publico a 100 ppp, na rc.4 em preparo)
+    const sem = await enquantoAberto(d, tintaDaPagina(pg, d.paginas[i], true));
+    const desenho = await enquantoAberto(d, temDesenhoAos(sem, ceder));
+    if (desenho) comDesenho.push(i + 1);
+    // camada de texto estranha: mesma conferência da página de desenho (sugestões com "confira", aviso, visita
+    // obrigatória antes do Salvar), com a nota própria
+    // ou letras pintadas fora de qualquer pedaço da camada: o mapa de letras da fonte manda tudo para o espaço, e o
+    // PDF.js tira esse texto da camada (revisão da gestão na rc.12, x5)
+    const estranha = !ocr && (camadaEstranha(pedacos) || letrasForaDaCamada(sem, pedacos) >= 3);
+    if (estranha) comCamada.push(i + 1);
+    const confira = desenho || estranha;
+    if (desenho && usarOcr && !ocr) progresso(i, true);
+    const lidos = desenho && usarOcr && !ocr ? procurar(await enquantoAberto(d, lerDesenhoComOcr(sem)), tipos, medirTexto, termos) : [];
+    // toda sugestão da página digitalizada lida pelo OCR sai com "confira" (revisão da gestão na rc.7, A3)
+    if (ocr) for (const a of doTexto) { a.revisar = 'ocr'; a.desenho = true; }
+    if (!ocr && doTexto.length) {
+      const tinta = await enquantoAberto(d, tintaDaPagina(pg, d.paginas[i]));
+      for (const a of doTexto) {
+        a.desenho = confira;
+        // o texto aparece, mas com imagem embaixo ou perto ele só basta se tiver o tamanho e o lugar das letras da
+        // imagem: a camada visível minúscula (2 pt sob o dado de 18 pt), ou em cinza claro sobre outra palavra, com o
+        // dado em outra linha, saía sem "confira" e o dado ficava inteiro (revisão independente da gestão na rc.4)
+        const visivel = !escondido && a.caixas.every((k) => textoAparece(k, tinta, sem));
+        if (visivel && !confira && a.caixas.every((k) => bateComImagem(k, sem))) continue;
+        if (visivel && confira) { a.revisar = desenho ? 'desenho' : 'camada'; continue; }
+        const ajustes = a.caixas.map((k) => ajustarATinta(k, tinta, k.h / 1.49));
+        const novas = ajustes.flatMap((j) => j.caixas);
+        // o texto visível continua tarjado; a tarja ajustada à imagem vai junto
+        a.caixas = visivel ? [...a.caixas, ...novas.filter((n) => !a.caixas.some((k) => k.x === n.x && k.y === n.y && k.w === n.w && k.h === n.h))] : novas;
+        a.revisar = visivel ? 'imagem' : NOTAS_TINTA.find((n) => ajustes.some((j) => j.nota === n));
+      }
+    }
+    // o que o OCR leu no desenho sem a camada vira sugestão, menos o que a camada já cobre no mesmo lugar
+    const sobre = (k, j) => Math.max(0, Math.min(k.x + k.w, j.x + j.w) - Math.max(k.x, j.x)) *
+      Math.max(0, Math.min(k.y + k.h, j.y + j.h) - Math.max(k.y, j.y));
+    const daCamada = doTexto.slice();
+    for (const a of lidos) {
+      if (a.caixas.every((k) => daCamada.some((b) => b.caixas.some((j) => sobre(k, j) >= 0.5 * k.w * k.h)))) continue;
+      a.revisar = 'desenho';
+      a.desenho = true;
+      doTexto.push(a);
+    }
     const achados = [...doTexto, ...(anotacoes || [])];
     if (!docs.includes(d)) return null;
-    novas.push({ semTexto: pedacos.length === 0, ocr, achados });
+    novas.push({ semTexto: pedacos.length === 0, ocr, achados, desenho: confira });
   }
   // só no fim aplica tudo de uma vez, descontando o que já foi tarjado nesse meio tempo
-  novas.forEach(({ semTexto: vazia, ocr, achados }, i) => {
+  novas.forEach(({ semTexto: vazia, ocr, achados, desenho }, i) => {
     const p = d.paginas[i];
     p.semTexto = vazia;
     p.ocr = ocr;
+    // a página com imagem ou desenho volta a "não vista": o "Revisei" (e com ele o Salvar) só libera depois que a
+    // pessoa passar de novo por ela, inteira, depois do aviso (revisão da gestão na rc.6, A2)
+    p.desenho = desenho;
+    if (desenho) { p.vista = false; p.vistos = null; }
     if (vazia) semTexto++;
     const tarjas = tarjasDa(d, i);
     p.sugestoes = achados.filter((a) => !a.caixas.every((k) => coberta(k, tarjas)));
   });
   d.procurou = tipos;
   d.termosProcurados = termos?.lista?.length || 0;  // só a quantidade: os termos são dado pessoal
-  return { total: d.paginas.reduce((n, p) => n + p.sugestoes.length, 0), semTexto, incompletas };
+  return { total: d.paginas.reduce((n, p) => n + p.sugestoes.length, 0), semTexto, incompletas, comDesenho, comCamada };
 }
 
 async function procurarArquivos(lista) {
@@ -1470,8 +1705,11 @@ async function procurarArquivos(lista) {
   atualizar();
   let total = 0;
   let semTexto = 0;
+  const procurados = [];
   const falharam = [];
   const incompletos = [];
+  const desenhos = [];
+  const camadas = [];
   for (const [n, d] of lista.entries()) {
     if (!docs.includes(d)) continue;
     try {
@@ -1482,9 +1720,12 @@ async function procurarArquivos(lista) {
           : `Procurando... ${arq}página ${i + 1} de ${d.paginas.length}`;
       }, termos);
       if (r) {
+        procurados.push(d);
         total += r.total;
         semTexto += r.semTexto;
         if (r.incompletas.length) incompletos.push(`${d.nome} (página ${r.incompletas.join(', ')})`);
+        if (r.comDesenho.length) desenhos.push((lista.length > 1 ? `${d.nome}, ` : '') + `página ${r.comDesenho.join(', ')}`);
+        if (r.comCamada.length) camadas.push((lista.length > 1 ? `${d.nome}, ` : '') + `página ${r.comCamada.join(', ')}`);
       }
     } catch (e) {
       // arquivo fechado no meio da procura: não é erro
@@ -1494,21 +1735,43 @@ async function procurarArquivos(lista) {
     }
   }
   procurando = false;
+  // sugestão nova pede revisão nova: o "Revisei" de antes da procura não vale mais (revisão da gestão na rc.8, A3)
+  if (total) el.revisei.checked = false;
   if (doc) desenharTela();
   atualizar();
-  const onde = lista.length > 1 ? ` em ${lista.length} arquivos` : '';
+  if (total) chamarLista();
+  // o resultado é só dos arquivos procurados até o fim, e diz quais quando não é o da tela (revisão do Codex na
+  // 1.2.3-rc.1: fechar o arquivo no meio da procura mostrava "Nada encontrado" sobre outro, ainda não procurado)
+  const onde = procurados.length > 1 ? ` em ${procurados.length} arquivos`
+    : procurados.length && procurados[0] !== doc ? ` em ${procurados[0].nome}` : '';
   // procura que falhou nunca vira "Nada encontrado": isso daria falsa segurança (auditoria de 29/10/2026)
-  if (falharam.length) {
+  if (!procurados.length && !falharam.length) {
+    avisar('A procura parou: o arquivo foi fechado antes do fim.', true);
+  } else if (falharam.length) {
     avisar(`A procura em ${falharam.join(', ')} não terminou: tente de novo. Até lá, não conte com as sugestões ` +
       'desse arquivo.', true);
   } else if (incompletos.length) {
     avisar(`Procura incompleta: os campos de formulário e as anotações de ${incompletos.join('; ')} não puderam ser ` +
-      `lidos. ${total ? `Há ${total} sugestão(ões) no resto. ` : ''}Confira essas páginas à mão ou procure de novo.`, true);
+      `lidos. ${total ? `Há ${sugestoes(total)} no resto. ` : ''}Confira essas páginas à mão ou procure de novo. ${SO_AJUDA}`, true);
   } else if (semTexto) {
     avisar(`${semTexto} página(s) sem texto${onde} (talvez digitalizadas): nelas a procura não funciona, tarje à mão.` +
-      (ocrDisponivel() ? '' : ' A versão com OCR lê páginas digitalizadas.'), true);
+      (ocrDisponivel() ? '' : ' A versão com OCR lê páginas digitalizadas.') + ' ' + (total ? SO_AJUDA : NADA_NAO_QUER_DIZER), true);
+  } else if (desenhos.length || camadas.length) {
+    // a página com imagem ou desenho: o programa pode não ver o dado desenhado nela (regra da gestão na rc.5); a de
+    // camada de texto estranha, o dado escrito nela (rc.11, w1 e w2)
+    const partes = [];
+    if (desenhos.length) {
+      partes.push(`${desenhos.join('; ')}: imagem ou desenho; o programa pode não ver dados que estejam nela; confira a ` +
+        'página inteira.' + (ocrDisponivel() ? '' : ' Sem OCR, o dado que só existe na imagem ou no desenho não é lido.'));
+    }
+    if (camadas.length) {
+      partes.push(`${camadas.join('; ')}: texto com letras que o programa não lê direito; o dado pode estar escrito ` +
+        'nela sem ser achado; confira a página inteira.');
+    }
+    avisar(`${sugestoes(total)}${onde}. ${partes.join(' ')} ${total ? SO_AJUDA : NADA_NAO_QUER_DIZER}`, true);
   } else {
-    avisar(total ? `${total} sugestão(ões)${onde}. Clique numa sugestão para aceitar.` : 'Nada encontrado nos tipos marcados.');
+    avisar(total ? `${sugestoes(total)}${onde}. Clique numa sugestão para ver onde está e aceitar as certas. ${SO_AJUDA}`
+      : `Nada encontrado nos tipos marcados. ${NADA_NAO_QUER_DIZER}`);
   }
 }
 
@@ -1524,17 +1787,24 @@ function sugestoesPendentes() {
   return todas;
 }
 
+// o que conferir numa sugestão marcada "confira", inteiro
+function notaDa(sg) {
+  return TEXTO_NOTA[sg.revisar] + (sg.desenho && !['desenho', 'ocr', 'camada'].includes(sg.revisar) ? '; ' + AVISO_DESENHO : '');
+}
+
 function montarListaSugestoes() {
   const todas = sugestoesPendentes();
   // só remonta quando a lista muda: navegar entre páginas não perde a rolagem nem as marcações
-  const assinatura = docs.indexOf(doc) + ':' + todas.map(({ sg, i }) => i + (sg.desmarcada ? '-' : '+') + sg.trecho).join('|');
+  const assinatura = docs.indexOf(doc) + ':' + todas.map(({ sg, i }) => i + (sg.desmarcada ? '-' : '+')
+    + (sg.conferida ? 'v' : '') + sg.trecho).join('|');
   if (assinatura === assinaturaLista) return;
   assinaturaLista = assinatura;
   el.listaSugestoes.hidden = todas.length === 0;
   el.btAceitarMarcadas.hidden = todas.length === 0;
   const linhas = todas.slice(0, MAX_LINHAS_LISTA).map(({ sg, i }) => {
     const linha = document.createElement('div');
-    linha.className = 'sugestao' + (sg.desmarcada ? ' desmarcada' : '');
+    linha.className = 'sugestao' + (sg.desmarcada ? ' desmarcada' : '') + (sg.revisar ? ' revisar' : '')
+      + (sg.conferida ? ' conferida' : '');
     linha.setAttribute('role', 'listitem');
     const caixa = document.createElement('input');
     caixa.type = 'checkbox';
@@ -1546,7 +1816,20 @@ function montarListaSugestoes() {
     ir.title = 'Mostrar na página';
     const onde = document.createElement('span');
     onde.className = 'onde';
-    onde.textContent = `p. ${i + 1} · ${NOMES[sg.tipo] || sg.tipo}`;
+    // o item é curto ("p. 1 · CPF · confira"); a nota inteira (o que conferir) fica no item para o leitor de tela e
+    // aparece na tela junto da sugestão aberta (retorno do professor na rc.9: a nota repetida em cada item escondia o
+    // aceitar)
+    onde.append(`p. ${i + 1} · ${NOMES[sg.tipo] || sg.tipo}`);
+    if (sg.revisar) {
+      const marca = document.createElement('span');
+      marca.className = 'marca-confira';
+      marca.textContent = 'confira';
+      const nota = document.createElement('span');
+      nota.className = 'so-leitor';
+      nota.textContent = ': ' + notaDa(sg).replace(/^confira: /, '');
+      onde.append(' · ', marca, nota, sg.conferida ? ' (vista)' : '');
+      linha.title = notaDa(sg);
+    }
     const trecho = document.createElement('span');
     trecho.className = 'trecho';
     trecho.textContent = sg.trecho || '';  // texto do PDF: sempre como texto, nunca como HTML
@@ -1558,29 +1841,144 @@ function montarListaSugestoes() {
   if (todas.length > MAX_LINHAS_LISTA) {
     const mais = document.createElement('div');
     mais.className = 'mais';
-    mais.textContent = `e mais ${todas.length - MAX_LINHAS_LISTA} sugestão(ões), nas páginas.`;
+    mais.textContent = `e mais ${sugestoes(todas.length - MAX_LINHAS_LISTA)}, nas páginas.`;
     linhas.push(mais);
   }
   el.listaSugestoes.replaceChildren(...linhas);
+  // o aviso das páginas com imagem ou desenho, uma vez só, acima da lista
+  const comDesenho = [...new Set(todas.filter(({ sg }) => sg.revisar === 'desenho' || sg.revisar === 'ocr' || sg.desenho).map(({ i }) => i + 1))];
+  const outras = todas.some(({ sg }) => sg.revisar && !(sg.revisar === 'desenho' || sg.revisar === 'ocr' || sg.desenho));
+  const deCamada = new Set(todas.filter(({ sg }) => sg.revisar === 'camada').map(({ i }) => i + 1));
+  const partes = [];
+  if (comDesenho.length) {
+    partes.push(`${comDesenho.length === 1 ? 'A página' : 'As páginas'} ${comDesenho.slice(0, 8).join(', ')}` +
+      `${comDesenho.length > 8 ? '...' : ''} ${comDesenho.length === 1 ? 'tem' : 'têm'} ` +
+      `${deCamada.size === comDesenho.length ? 'texto com letras que o programa não lê direito' : deCamada.size ? 'imagem, desenho ou texto que o programa não lê direito' : 'imagem ou desenho'}: ` +
+      'o programa pode não ver dados que estejam nela; confira cada sugestão e a página inteira.');
+  }
+  if (outras) partes.push('As marcadas "confira" pedem que você olhe antes: o motivo aparece junto da sugestão, ao abrir.');
+  el.avisoLista.textContent = partes.join(' ');
+  el.avisoLista.hidden = !partes.length;
 }
 
 let tempoDestaque = 0;
-async function mostrarSugestao(sg, i) {
+// marcar = false: abre e destaca sem contar como conferida (a que abre sozinha depois do aceitar em grupo; ela só entra
+// pelo Aceitar junto dela, e o Aceitar todas de novo não a aceita)
+async function mostrarSugestao(sg, i, marcar = true) {
   destaque = sg;
-  if (i !== atual) await mostrar(i);
+  escolhida = { sg, i };
+  if (marcar) sg.conferida = true;
+  // a página ainda não vista (a com imagem ou desenho, depois da procura) passa a contar como vista ao abrir nela
+  if (i !== atual || !doc.paginas[i].vista) await mostrar(i);
   else desenharTela();
+  montarListaSugestoes();
   clearTimeout(tempoDestaque);
   tempoDestaque = setTimeout(() => { destaque = null; desenharTela(); }, 2500);
 }
 
+// A barra de Aceitar e Descartar fica junto da sugestão aberta (retorno do professor em 04/11/2026: as sugestões
+// ficavam escondidas no painel). Some quando a sugestão sai da página na tela (aceita, descartada, outra página).
+function posicionarAcoes() {
+  const b = el.acoesSugestao;
+  const p = doc?.paginas[atual];
+  const sg = escolhida?.sg;
+  if (!p || !sg || escolhida.i !== atual || !p.sugestoes.includes(sg) || el.tela.hidden || base.pagina !== atual) {
+    b.hidden = true;
+    return;
+  }
+  const k = sg.caixas[0];
+  const s = el.tela.clientWidth / p.w;
+  b.hidden = false;
+  el.acoesTexto.textContent = (NOMES[sg.tipo] || sg.tipo) + (sg.revisar ? ' · ' + notaDa(sg) : '');
+  // na altura da sugestão, sem cobrir a linha de baixo (de uma tabela, por exemplo; desde a rc.9) nem
+  // o resto da linha: na margem à direita da página, se couber; senão, à direita da sugestão, à esquerda, ou embaixo
+  const fimDaPagina = el.tela.offsetLeft + el.tela.clientWidth;
+  const limiteDir = Math.max(el.palco.scrollWidth, el.palco.clientWidth) - 4;
+  // a margem à direita da página, se tiver pelo menos 220 px, é o lugar: a barra encolhe para caber nela
+  const margem = limiteDir - fimDaPagina - 14;
+  b.style.maxWidth = margem >= 220 ? Math.min(340, margem) + 'px' : '';
+  const largura = b.offsetWidth, altura = b.offsetHeight;
+  const esq = el.tela.offsetLeft + k.x * s, dir = el.tela.offsetLeft + (k.x + k.w) * s;
+  const meio = el.tela.offsetTop + (k.y + k.h / 2) * s - altura / 2;
+  const limite = Math.max(el.palco.scrollWidth, el.palco.clientWidth) - 4;
+  let x, y;
+  if (fimDaPagina + 10 + largura <= limite) { x = fimDaPagina + 10; y = meio; }
+  else if (dir + 8 + largura <= limite) { x = dir + 8; y = meio; }
+  else if (esq - 8 - largura >= 4) { x = esq - 8 - largura; y = meio; }
+  else { x = Math.max(4, Math.min(esq, limite - largura)); y = el.tela.offsetTop + (k.y + k.h) * s + 6; }
+  b.style.left = Math.round(x) + 'px';
+  b.style.top = Math.round(Math.max(4, y)) + 'px';
+}
+
+function aceitarEscolhida() {
+  const p = doc?.paginas[atual];
+  const k = escolhida && escolhida.i === atual ? p.sugestoes.indexOf(escolhida.sg) : -1;
+  if (k < 0) return;
+  escolhida = null;
+  aceitar([[atual, k]]);
+  avisar('1 tarja aplicada.' + (abrirProximaConfira() ? ' A próxima sugestão "confira" está aberta.' : ''));
+}
+
+function descartarEscolhida() {
+  const p = doc?.paginas[atual];
+  const k = escolhida && escolhida.i === atual ? p.sugestoes.indexOf(escolhida.sg) : -1;
+  if (k < 0) return;
+  escolhida = null;
+  p.sugestoes.splice(k, 1);
+  desenharTela();
+  atualizar();
+  if (abrirProximaConfira()) avisar('Sugestão descartada. A próxima sugestão "confira" está aberta.');
+}
+
+// leva o painel até a lista de sugestões e chama a atenção para ela
+function chamarLista() {
+  if (el.listaSugestoes.hidden) return;
+  // o resumo fica logo abaixo do botão de procurar: o painel sobe até ele, e a lista e os botões de aceitar ficam
+  // à vista sem esconder o botão (1366x768)
+  el.resumoAchados.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  el.listaSugestoes.classList.add('chamando');
+  setTimeout(() => el.listaSugestoes.classList.remove('chamando'), 1600);
+}
+
+// sugestão "confira" que a pessoa ainda não abriu na lista: os botões de aceitar em grupo não a aceitam, e o Salvar
+// não passa com ela pendente (revisão do Codex na 1.2.3-rc.1)
+const naoVista = (sg) => sg.revisar && !sg.conferida;
+
+const tarjasAplicadas = (n) => (n === 0 ? 'Nenhuma tarja aplicada' : n === 1 ? '1 tarja aplicada' : `${n} tarjas aplicadas`);
+
+// O que o aceitar em grupo fez. A sugestão "confira" só entra depois de vista: quando sobra alguma, o aviso diz isso com
+// todas as letras e a primeira já abre na página, com Aceitar e Descartar junto dela (retorno do professor em
+// 05/11/2026: "mandei procurar sugestão e aceitei, mas ele não tarjou"; com imagem na página, todas eram "confira" e o
+// Aceitar todas não tarjava nada, com um aviso que começava por "0 tarja(s) aplicada(s)")
+function avisoAceitas(n, ficaram) {
+  if (ficaram) {
+    avisar(`${tarjasAplicadas(n)}. ${ficaram === 1 ? 'Falta 1 sugestão marcada "confira"' : `Faltam ${ficaram} sugestões marcadas "confira"`}: ` +
+      'elas só são tarjadas depois que você olha cada uma. A primeira está aberta na página: confira e clique em Aceitar ' +
+      '(ou Descartar), e a próxima abre em seguida.', true);
+    abrirProximaConfira();
+  } else avisar(`${tarjasAplicadas(n)}. Confira cada página.`);
+}
+
+// abre na página a primeira sugestão "confira" ainda não vista (na página da tela primeiro); devolve se achou
+function abrirProximaConfira() {
+  if (!doc) return false;
+  const ordem = [atual, ...doc.paginas.map((_, i) => i).filter((i) => i !== atual)];
+  for (const i of ordem) {
+    const sg = doc.paginas[i].sugestoes.find(naoVista);
+    if (sg) { mostrarSugestao(sg, i, false); return true; }
+  }
+  return false;
+}
+
 function aceitarMarcadas() {
-  const pares = sugestoesPendentes().filter(({ sg }) => !sg.desmarcada).map(({ i, k }) => [i, k]);
-  if (!pares.length) {
+  const marcadas = sugestoesPendentes().filter(({ sg }) => !sg.desmarcada);
+  if (!marcadas.length) {
     avisar('Nenhuma sugestão marcada.', true);
     return;
   }
+  const pares = marcadas.filter(({ sg }) => !naoVista(sg)).map(({ i, k }) => [i, k]);
   aceitar(pares);
-  avisar(`${pares.length} tarja(s) aplicada(s). Confira cada página.`);
+  avisoAceitas(pares.length, marcadas.length - pares.length);
 }
 
 function resumoSugestoes() {
@@ -1593,7 +1991,14 @@ function resumoSugestoes() {
   return `${total} pendente(s): ${partes.join(', ')}`;
 }
 
-// pares [página, índice da sugestão] viram tarjas pretas, num passo só do Desfazer
+// "1 sugestão", "3 sugestões": o plural certo nos avisos (pedido da gestão na rc.9)
+const sugestoes = (n) => (n === 1 ? '1 sugestão' : `${n} sugestões`);
+// desde a rc.12: a parte automática é só uma ajuda, nada dispensa a revisão humana visual
+const SO_AJUDA = 'A procura é só uma ajuda: confira cada página com os próprios olhos antes de salvar.';
+const NADA_NAO_QUER_DIZER = 'Isso não quer dizer que o documento não tem dados pessoais. ' + SO_AJUDA;
+
+// pares [página, índice da sugestão] viram tarjas, na cor escolhida, num passo só
+// do Desfazer
 function aceitar(pares) {
   const porPagina = new Map();
   for (const [i, k] of pares) {
@@ -1604,7 +2009,7 @@ function aceitar(pares) {
   for (const [i, ks] of porPagina) {
     const p = doc.paginas[i];
     const novas = [];
-    for (const k of ks) for (const c of p.sugestoes[k].caixas) novas.push({ tipo: 'tarja', cor: '#000000', ...c });
+    for (const k of ks) for (const c of p.sugestoes[k].caixas) novas.push({ tipo: 'tarja', cor, ...c });
     // guarda as sugestões de antes: desfazer o aceite devolve as tarjas e as sugestões
     mudancas.push({ pagina: i, antes: p.marcas.slice(), depois: [...p.marcas, ...novas], sugestoes: p.sugestoes.slice(),
                     aceitas: ks.length });
@@ -1613,17 +2018,26 @@ function aceitar(pares) {
 }
 
 function aceitarPagina() {
-  aceitar(doc.paginas[atual].sugestoes.map((_, k) => [atual, k]));
+  const sugestoes = doc.paginas[atual].sugestoes;
+  const pares = sugestoes.flatMap((sg, k) => (naoVista(sg) ? [] : [[atual, k]]));
+  aceitar(pares);
+  if (pares.length < sugestoes.length) avisoAceitas(pares.length, sugestoes.length - pares.length);
 }
 
 function aceitarTodas() {
   const pares = [];
-  doc.paginas.forEach((p, i) => p.sugestoes.forEach((_, k) => pares.push([i, k])));
+  let ficaram = 0;
+  doc.paginas.forEach((p, i) => p.sugestoes.forEach((sg, k) => (naoVista(sg) ? ficaram++ : pares.push([i, k]))));
   aceitar(pares);
-  avisar(`${pares.length} tarja(s) aplicada(s). Confira cada página.`);
+  avisoAceitas(pares.length, ficaram);
 }
 
+// Descartar continua permitido, por ser escolha explícita, mas a sugestão "confira" que ninguém abriu pede confirmação:
+// sem isso, o Salvar deixava de barrar e o dado da página continuava legível no PDF (revisão do Codex na 1.2.3-rc.2)
 function descartar() {
+  const naoVistas = doc.paginas.reduce((n, p) => n + p.sugestoes.filter(naoVista).length, 0);
+  if (naoVistas && !confirm(`${naoVistas === 1 ? '1 sugestão marcada com "confira" não foi conferida' : `${naoVistas} sugestões marcadas com "confira" não foram conferidas`}. Se descartar, ` +
+    `${naoVistas === 1 ? 'esse dado continua legível' : 'esses dados continuam legíveis'} no PDF. Descartar mesmo assim?`)) return;
   for (const p of doc.paginas) p.sugestoes = [];
   desenharTela();
   atualizar();
@@ -1737,8 +2151,18 @@ function travarInterface(sim) {
 async function salvar() {
   // um salvar por vez (auditoria TL-X11): o segundo pedido, com o primeiro ainda na caixa ou gerando, não faz nada
   if (ocupado() || !doc || !el.revisei.checked) return;
+  if (procurando) {
+    avisar('Espere a procura terminar: as sugestões dela ainda não estão na página. Depois confira e salve.', true);
+    return;
+  }
+  const naoVistas = doc.paginas.reduce((n, p) => n + p.sugestoes.filter(naoVista).length, 0);
+  if (naoVistas) {
+    avisar(`Antes de salvar, confira ${naoVistas === 1 ? 'a sugestão marcada' : `as ${naoVistas} sugestões marcadas`} com "confira": clique em cada uma na ` +
+      'lista para ver na página e aceite ou descarte.', true);
+    return;
+  }
   const pendentes = doc.paginas.reduce((n, p) => n + p.sugestoes.length, 0);
-  if (pendentes && !confirm(`Ainda há ${pendentes} sugestão(ões) não aceita(s). Salvar mesmo assim?`)) return;
+  if (pendentes && !confirm(`Ainda há ${pendentes === 1 ? '1 sugestão não aceita' : `${pendentes} sugestões não aceitas`}. Salvar mesmo assim?`)) return;
   // o salvar fica preso ao documento que o começou (auditoria de 29/10/2026: com a caixa "Salvar como" aberta, trocar
   // de aba fazia sair o outro documento com o nome deste). A interface trava já no clique, antes da caixa, e trava
   // também o teclado (Tab): mudar o carimbo ou o "Revisei" no meio deixaria páginas diferentes entre si.
@@ -1891,7 +2315,7 @@ function baixar(bytes, nome) {
 function atualizar() {
   const tem = !!doc;
   if (!tem) el.andamento.hidden = true;
-  el.btFechar.disabled = !tem;
+  el.btFechar.disabled = !tem && !abertura;
   el.btCopiarHash.disabled = !tem;
   el.btProcurar.disabled = !tem;
   el.btPaginaInteira.disabled = !tem;
@@ -1907,17 +2331,33 @@ function atualizar() {
   el.btAceitarPagina.disabled = !tem || !doc.paginas[atual].sugestoes.length;
   el.btAceitarTodas.disabled = el.btDescartar.disabled = !pend;
   el.resumoAchados.textContent = tem ? resumoSugestoes() : '';
+  el.btSugestoes.hidden = !pend;
+  // o botão principal: "Conferir e aceitar" abre a primeira "confira" que falta, com Aceitar e Descartar junto dela, e
+  // vai passando uma por uma; sem "confira" pendente, vira "Aceitar todas" (retorno do professor na rc.9)
+  const faltaVer = tem ? doc.paginas.reduce((n, p) => n + p.sugestoes.filter(naoVista).length, 0) : 0;
+  el.btConferir.hidden = !pend;
+  el.btConferir.textContent = faltaVer ? `Conferir e aceitar (${pend})` : `Aceitar todas (${pend})`;
+  el.btSugestoes.textContent = pend === 1 ? '1 sugestão para conferir' : `${pend} sugestões para conferir`;
+  el.passosSugestoes.hidden = !pend;
+  if (!tem) el.acoesSugestao.hidden = true;
   montarListaSugestoes();
   const vistas = tem ? doc.paginas.filter((p) => p.vista).length : 0;
   const total = tem ? doc.paginas.length : 0;
   el.infoVistas.textContent = `${vistas} de ${total}`;
   el.barraVistas.style.width = total ? Math.round((100 * vistas) / total) + '%' : '0';
   const todasVistas = tem && vistas === total;
-  el.revisei.disabled = !todasVistas;
+  // durante a procura, nem "Revisei" nem Salvar: o PDF salvo no meio dela sairia sem as tarjas das sugestões que ainda
+  // vão chegar, sem pergunta nenhuma (revisão independente da gestão na rc.8, A3: Salvar 0,3 s depois de Procurar)
+  el.revisei.disabled = !todasVistas || procurando;
   if (!todasVistas) el.revisei.checked = false;
-  el.dicaRevisei.textContent = !tem ? 'Abra um PDF.' : todasVistas
-    ? 'Confira de novo cada página antes de marcar.' : 'Passe por todas as páginas para liberar.';
-  el.btSalvar.disabled = !tem || !el.revisei.checked || document.body.classList.contains('ocupado');
+  const desenhoFalta = tem ? doc.paginas.flatMap((p, i) => (p.desenho && !p.vista ? [i + 1] : [])) : [];
+  el.dicaRevisei.textContent = !tem ? 'Abra um PDF.' : procurando ? 'Procurando: espere terminar para revisar e salvar.' : todasVistas
+    ? 'Confira de novo cada página antes de marcar.'
+    : desenhoFalta.length && vistas + desenhoFalta.length === total
+      ? `Passe pela${desenhoFalta.length > 1 ? 's' : ''} página${desenhoFalta.length > 1 ? 's' : ''} com aviso ` +
+        `(${desenhoFalta.slice(0, 8).join(', ')}${desenhoFalta.length > 8 ? '...' : ''}) e confira a página inteira para liberar.`
+      : 'Passe por todas as páginas para liberar.';
+  el.btSalvar.disabled = !tem || !el.revisei.checked || procurando || document.body.classList.contains('ocupado');
   el.carDica.textContent = !carimbo.ativo ? 'Desligado.' : carimbo.todas || !tem || carimbo.pagina === atual
     ? 'Arraste o carimbo na página para mudar de lugar.'
     : `O carimbo está na página ${carimbo.pagina + 1}. Marque de novo "Só numa página" para trazê-lo para cá.`;
@@ -1956,10 +2396,16 @@ function atualizarAbas() {
 }
 
 // ---------- ligações ----------
+// solta a barra de espaço: volta para a ferramenta de antes, mas só depois de terminar o arrasto da Mão
+function voltarDaMao() {
+  if (ferramentaAntes && !espacoPreso && !arrasto) { escolherFerramenta(ferramentaAntes); ferramentaAntes = null; }
+}
+
 function escolherFerramenta(nome) {
   ferramenta = nome;
   document.querySelectorAll('[data-ferramenta]').forEach((b) => b.classList.toggle('ativo', b.dataset.ferramenta === nome));
   el.tela.classList.toggle('borracha', nome === 'borracha');
+  el.tela.classList.toggle('mao', nome === 'mao');
   el.tela.classList.toggle('texto', nome === 'texto');
 }
 
@@ -1986,7 +2432,7 @@ function iniciar() {
     const visto = Array.isArray(pref.tipos) && (!Array.isArray(pref.tiposVistos) ? chave in { cpf: 1, cnpj: 1, rg: 1, email: 1, telefone: 1, cep: 1 }
       : pref.tiposVistos.includes(chave));
     c.checked = visto ? pref.tipos.includes(chave) : !DESMARCADOS.includes(chave);
-    c.addEventListener('change', gravarPref);
+    c.addEventListener('change', () => { gravarPref(); resumirOpcoes(); });
     l.append(c, ' ' + nome);
     el.tipos.append(l);
   }
@@ -2009,15 +2455,27 @@ function iniciar() {
   el.carTexto.value = carimbo.texto;
 
   el.btAbrir.addEventListener('click', () => el.entrada.click());
+  // o cartão "Abra um PDF para começar" também abre (retorno do professor em 04/11/2026)
+  el.vazio.addEventListener('click', () => el.entrada.click());
+  el.vazio.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); el.entrada.click(); }
+  });
   el.entrada.addEventListener('change', () => { abrirArquivos([...el.entrada.files]); el.entrada.value = ''; });
-  el.btFechar.addEventListener('click', () => fechar());
+  // durante uma abertura, o Fechar cancela o que ainda não apareceu (e2e no Linux da 1.2.2, achado 4: o Fechar ficava
+  // desligado sem aba, e o arquivo abria logo depois)
+  el.btFechar.addEventListener('click', () => {
+    if (abertura) abertura.cancelada = true;
+    else fechar();
+  });
   el.btSobre.addEventListener('click', () => el.sobre.showModal());
   el.btCopiarHash.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(doc.hash); avisar('SHA-256 copiado.'); }
     catch (e) { console.warn('cópia recusada', e); avisar('O navegador não deixou copiar: selecione o código e copie.', true); }
   });
-  document.querySelectorAll('[data-ferramenta]').forEach((b) => b.addEventListener('click', () => escolherFerramenta(b.dataset.ferramenta)));
+  document.querySelectorAll('[data-ferramenta]').forEach((b) => b.addEventListener('click', () => { ferramentaAntes = null; escolherFerramenta(b.dataset.ferramenta); }));
+  escolherFerramenta(ferramenta);
   document.querySelectorAll('[data-cor]').forEach((b) => b.addEventListener('click', () => {
+    if (!CORES_TARJA.includes(b.dataset.cor)) return;
     cor = b.dataset.cor;
     document.querySelectorAll('[data-cor]').forEach((o) => o.classList.toggle('ativo', o === b));
   }));
@@ -2047,6 +2505,14 @@ function iniciar() {
     if (doc) doc.paginas.forEach((_, i) => redesenharMiniatura(i));
   });
   el.btDescartar.addEventListener('click', descartar);
+  el.btSugestoes.addEventListener('click', chamarLista);
+  el.btConferir.addEventListener('click', () => {
+    if (!doc) return;
+    if (abrirProximaConfira()) avisar('Confira a sugestão aberta na página e clique em Aceitar ou Descartar, junto dela; a próxima abre em seguida.');
+    else aceitarTodas();
+  });
+  el.btAceitarEsta.addEventListener('click', aceitarEscolhida);
+  el.btDescartarEsta.addEventListener('click', descartarEscolhida);
   for (const c of [el.carAtivo, el.carTodas, el.carUma, el.carHash, el.carData]) c.addEventListener('change', mudouCarimbo);
   el.carTexto.addEventListener('input', mudouCarimbo);
   el.opOcr.hidden = !ocrDisponivel();
@@ -2082,7 +2548,11 @@ function iniciar() {
   el.btSalvar.addEventListener('click', salvar);
 
   // arrastar o PDF para qualquer lugar da janela
-  window.addEventListener('dragover', (ev) => { ev.preventDefault(); el.palco.classList.add('arrastando'); });
+  window.addEventListener('dragover', (ev) => {
+    ev.preventDefault();
+    if (ev.dataTransfer) ev.dataTransfer.dropEffect = 'copy';
+    el.palco.classList.add('arrastando');
+  });
   window.addEventListener('dragleave', (ev) => { if (!ev.relatedTarget) el.palco.classList.remove('arrastando'); });
   window.addEventListener('drop', (ev) => {
     ev.preventDefault();
@@ -2103,7 +2573,19 @@ function iniciar() {
     else if (ev.key === 'ArrowRight') { ev.preventDefault(); mostrar(atual + 1); }
     else if (ev.key === '+' || ev.key === '=') mudarZoom(1);
     else if (ev.key === '-') mudarZoom(-1);
+    else if (ev.key === ' ') {
+      // segurar a barra de espaço vira Mão por um momento, como nos editores de imagem
+      ev.preventDefault();
+      espacoPreso = true;
+      if (!ev.repeat && ferramenta !== 'mao' && !arrasto) { ferramentaAntes = ferramenta; escolherFerramenta('mao'); }
+    }
   });
+  const soltarEspaco = () => {
+    espacoPreso = false;
+    voltarDaMao();
+  };
+  window.addEventListener('keyup', (ev) => { if (ev.key === ' ') soltarEspaco(); });
+  window.addEventListener('blur', soltarEspaco);
 
   let tempoJanela = 0;
   window.addEventListener('resize', () => {

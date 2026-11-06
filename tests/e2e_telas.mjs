@@ -22,6 +22,8 @@ for (const [largura, altura] of TELAS) {
   await n.cdp('Emulation.setDeviceMetricsOverride', { width: largura, height: altura, deviceScaleFactor: 1, mobile: false });
   await n.enviarArquivo(PDF, 'teste.pdf');
   await n.ate(`document.getElementById('tela').dataset.pagina === '1'`, 'abrir o PDF de teste', 30000);
+  // o Aceitar todas fica em "Mais opções" desde a 1.2.3-rc.10: aberto, ele tem de caber e ficar clicável
+  await n.js(`document.getElementById('maisOpcoes').open = true`);
   const r = await n.js(`(() => {
     const vazaLado = document.documentElement.scrollWidth > innerWidth + 1;
     const ruins = [];

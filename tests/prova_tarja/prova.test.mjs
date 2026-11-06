@@ -5,8 +5,8 @@
 // recuperar os dados. Para cada caso, dois testes:
 //   - nenhuma ferramenta acha os dados no tarjado.pdf (e, de controle, alguma coisa acha no original.pdf);
 //   - todo pixel onde os dados aparecem no original ficou escuro no tarjado.pdf.
-// Na 1.2.2 falhavam os testes de pixel de camada-ocr-largura e camada-ocr-deslocada: é o achado 1 do relatório (a
-// tarja saía da camada de texto invisível, não das letras da imagem), corrigido depois da 1.2.2.
+// Na 1.2.2, falham de propósito os testes de pixel de camada-ocr-largura e camada-ocr-deslocada: é o defeito 1 do
+// relatório (a tarja sai da camada de texto invisível, não das letras da imagem). Não corrige o programa.
 //
 // Uso (em tests/prova_tarja, depois de npm ci e de python3 scripts/montar.py na raiz):
 //   CHROMIUM=<chrome> PYTHON=<python com PyMuPDF> node --test prova.test.mjs
@@ -37,6 +37,8 @@ const FERRAMENTAS = ['pdftotext', 'qpdf --qdf', 'mutool extract', 'strings', 've
 // a lista vem do gerador, para que cada caso apareça mesmo se o programa falhar nele
 const nomes = execFileSync(process.env.PYTHON || 'python3', ['-I', '-c',
   `import sys; sys.path.insert(0, ${JSON.stringify(AQUI)}); import gerar_casos; print(' '.join(gerar_casos.CASOS))`]).toString().trim().split(' ');
+const confira = execFileSync(process.env.PYTHON || 'python3', ['-I', '-c',
+  `import sys; sys.path.insert(0, ${JSON.stringify(AQUI)}); import gerar_casos; print(' '.join(gerar_casos.CONFIRA))`]).toString().trim().split(' ');
 
 for (const nome of nomes) {
   test(`${nome}: nenhuma ferramenta recupera os dados do tarjado`, () => {
@@ -57,4 +59,13 @@ for (const nome of nomes) {
     assert.equal(descobertos, 0, `${descobertos} de ${dados} pixels dos dados à mostra no tarjado.pdf ` +
       `(em vermelho em ${imagens.map((f) => join(CASOS, nome, f)).join(', ')})`);
   });
+  // revisão do Codex na 1.2.3-rc.1 (Ordem 24): a camada de texto invisível pode não coincidir com a imagem, e a
+  // tarja tirada dela pode deixar letras à mostra ou cobrir letras públicas; a lista tem de pedir a conferência
+  if (confira.includes(nome)) {
+    test(`${nome}: toda sugestão da camada invisível sai com "confira"`, () => {
+      const r = JSON.parse(readFileSync(join(CASOS, nome, 'resultado.json'), 'utf8'));
+      assert.ok(r.lista?.length, 'nenhuma sugestão na lista: ' + (r.falha || r.sugestoes));
+      assert.deepEqual(r.lista.filter((t) => !/confira/.test(t)), [], 'sugestão sem "confira"');
+    });
+  }
 }

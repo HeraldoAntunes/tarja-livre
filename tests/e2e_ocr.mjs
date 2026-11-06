@@ -52,8 +52,17 @@ try {
   const resumo = await texto('resumoAchados');
   for (const t of ['CPF 1', 'E-mail 1', 'Telefone 1', 'Termo da lista 1']) assert.ok(resumo.includes(t), t + ' em ' + resumo);
   await nav.captura('1-ocr-sugestoes.png');
+  // toda sugestão do OCR da página digitalizada sai com "confira" (revisão da gestão na 1.2.3-rc.7, A3)
+  const notas = await js(`[...document.querySelectorAll('.sugestao .onde')].map((e) => e.textContent)`);
+  assert.ok(notas.length && notas.every((t) => /confira: lida pelo OCR/.test(t)), 'sugestão do OCR sem "confira": ' + notas.join('; '));
+  // a página digitalizada é imagem: depois da procura ela volta a "não vista", e o "Revisei" só libera depois de passar
+  // de novo por ela (revisão da gestão na 1.2.3-rc.6, A2); abrir as sugestões nela conta como passar
+  assert.equal(await js(`document.getElementById('revisei').disabled`), true, 'o "Revisei" ficou livre sem ver de novo a página');
+  assert.match(await texto('dicaRevisei'), /páginas? com aviso/);
+  await nav.conferirSugestoes();
 
   await clicar('btAceitarTodas');
+  await js(`document.querySelector('.mini-pag').click()`);
   await ate(`document.getElementById('infoVistas').textContent === '1 de 1'`, 'página vista');
   await clicar('revisei');
   await clicar('btSalvar');

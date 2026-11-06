@@ -100,9 +100,10 @@ test('as leituras do "@" pelo OCR só valem em página lida pelo OCR', () => {
 test('lerComOcr marca os pedaços para a procura distinguir OCR de texto digital', async () => {
   const fonte = readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
   const inicio = fonte.indexOf('async function lerComOcr(pg, p) {');
-  const fim = fonte.indexOf('// Procura num arquivo', inicio);
+  // até o fim de reconhecer, que lê as palavras do desenho (lerComOcr chama ela)
+  const fim = fonte.indexOf('\n}\n', fonte.indexOf('async function reconhecer(c, s) {')) + 2;
   assert.ok(inicio >= 0 && fim > inicio);
-  const ler = vm.runInNewContext('(' + fonte.slice(inicio, fim).trim() + ')', {
+  const ler = vm.runInNewContext(fonte.slice(inicio, fim) + '\nlerComOcr', {
     DPI_OCR: 72, escalaSegura: () => 1, OPCOES_DESENHO: {}, corrigirOcr,
     document: { createElement: () => ({ getContext: () => ({ fillRect() {} }) }) },
     obterOcr: async () => ({ recognize: async () => ({ data: { blocks: [{ paragraphs: [{ lines: [{

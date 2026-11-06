@@ -1,7 +1,7 @@
 # Tarja Livre — © 2026 Heraldo Antunes — Licença MIT (ver LICENSE). Janela própria (Tauri 2 com o WebView2), portátil.
 [package]
 name = "tarja-livre"
-version = "1.2.2"
+version = "1.2.3"
 description = "Tarja Livre: tarjar dados pessoais em PDF, sem internet"
 authors = ["Heraldo Antunes"]
 edition = "2021"

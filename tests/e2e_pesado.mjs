@@ -6,19 +6,23 @@
 // páginas e salvar, e o pico de memória dos processos do navegador do teste. Durante o salvamento, a barra de progresso
 // tem de andar e a página tem de responder. O PDF salvo é conferido (páginas e nada do texto original).
 // Uso: node tests/e2e_pesado.mjs [páginas=100] [freio=4] [formato=png|jpeg]
+// PESADO_IMAGEM=1 põe em cada página uma imagem com letras (um carimbo fictício): a página tem desenho, toda
+// sugestão sai com "confira" e, no HTML com OCR, a página passa pelo OCR (custo da regra da 1.2.3-rc.6)
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
-import { RAIZ, montar, abrirNavegador, espera } from './navegador.mjs';
+import { RAIZ, HTML, montar, abrirNavegador, espera } from './navegador.mjs';
 
 const PAGINAS = Number(process.argv[2] || 100);
 const FREIO = Number(process.argv[3] || 4);
 const FORMATO = process.argv[4] || 'png';
 const CPF = '514.334.988-55';
+const IMAGEM = process.env.PESADO_IMAGEM === '1';
 
-montar();
+// TARJA_HTML: mede um HTML já montado (o de uma rc), sem montar o código atual
+if (!process.env.TARJA_HTML) montar();
 const n = await abrirNavegador(join(RAIZ, 'files', 'e2e-pesado'));
-await n.abrirPrograma();
+await n.abrirPrograma(process.env.TARJA_HTML || HTML);
 const perfilDoTeste = await n.js('1') && process.env.TARJA_EXE ? 'br.tarjalivre' : 'tarja-e2e-perfil-';
 const memoria = () => Number(execFileSync('powershell', ['-NoProfile', '-Command',
   `(Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*${perfilDoTeste}*' } | ForEach-Object { (Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue).PrivateMemorySize64 } | Measure-Object -Sum).Sum`]).toString().trim() || 0);
@@ -30,11 +34,16 @@ const cronometro = async (nome, f) => { const t = Date.now(); await f(); tempos[
 // PDF de teste: uma página A4 de texto por página, com um CPF fictício em cada uma
 const b64 = await n.js(`(() => {
   const d = new jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+  const c = document.createElement('canvas'); c.width = 400; c.height = 120;
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 400, 120);
+  x.strokeStyle = x.fillStyle = '#123'; x.lineWidth = 4; x.strokeRect(6, 6, 388, 108); x.font = 'bold 40px serif'; x.fillText('CARIMBO FICTICIO', 20, 75);
+  const carimbo = c.toDataURL('image/png');
   for (let i = 1; i <= ${PAGINAS}; i++) {
     if (i > 1) d.addPage();
     d.setFontSize(12);
     for (let l = 0; l < 40; l++) d.text('Linha ' + (l + 1) + ' da página ' + i + ' do documento de teste, com texto comum.', 50, 60 + l * 18);
     d.text('CPF do titular: ${CPF}', 50, 800);
+    if (${IMAGEM}) d.addImage(carimbo, 'PNG', 380, 740, 160, 48);
   }
   return btoa(d.output());
 })()`);
@@ -52,6 +61,7 @@ await cronometro('procurar', async () => {
   await n.ate(`/${PAGINAS} pendente/.test(document.getElementById('resumoAchados').textContent)`, 'achar um CPF por página', 900000);
 });
 await cronometro('aceitar', async () => {
+  if (IMAGEM) await n.conferirSugestoes();
   await n.clicar('btAceitarTodas');
   await n.ate(`document.getElementById('resumoAchados').textContent === 'Nenhuma sugestão pendente.'`, 'aceitar todas', 300000);
 });

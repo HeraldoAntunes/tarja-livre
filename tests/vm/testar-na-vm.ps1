@@ -4,14 +4,15 @@
 # Bateria com janela da candidata, DENTRO da VM de testes (guia VM-WINDOWS.md; modelo: roteiro da Bancada 2.1.2).
 # Roda no Windows PowerShell 5.1 do convidado, pelo executar-na-vm.ps1. Lê \\VBOXSVR\entrada\tarja\<rodada> e grava
 # em \\VBOXSVR\resultados\tarja\<rodada>. Abre janelas só no convidado. Sai com 1 se algo falhar.
-#   e2e    tests/e2e.mjs dentro do exe (TARJA_EXE), com o node.exe portátil da rodada
+#   e2e    os e2e de -Testes (padrão: tests/e2e.mjs) dentro do exe (TARJA_EXE), com o node.exe portátil da rodada
 #   a      A1 a A4: a versão anterior instalada, a nova por cima (respondendo Sim na pergunta), Aplicativos
 #          instalados, desinstalar
 #   c4     conexões: 5 aberturas de 10 min no perfil normal da conta do convidado (tests/conexoes_repetidas.ps1)
 #   offline  abre e procura com o cabo da VM desligado (o cabo é desligado no host antes; aqui só confere e mede)
-# Uso: testar-na-vm.ps1 -Rodada <rodada> -Fase e2e|a|c4|offline -Versao 1.2.2 -Anterior 1.2.1
-param([string]$Rodada = 'rc1-122', [ValidateSet('e2e', 'a', 'c4', 'offline')][string]$Fase = 'e2e',
-      [string]$Versao = '1.2.2', [string]$Anterior = '1.2.1')
+#   arrastar  arrasto de verdade do Windows (OLE, como o do Explorador) de um PDF para a janela do exe (1.2.3-rc.9)
+# Uso: testar-na-vm.ps1 -Rodada <rodada> -Fase e2e|a|c4|offline|arrastar -Versao 1.2.2 -Anterior 1.2.1 [-Testes e2e,e2e_confira]
+param([string]$Rodada = 'rc1-122', [ValidateSet('e2e', 'a', 'c4', 'offline', 'arrastar')][string]$Fase = 'e2e',
+      [string]$Versao = '1.2.2', [string]$Anterior = '1.2.1', [string]$Testes = 'e2e')
 $ErrorActionPreference = 'Stop'
 if ((Get-CimInstance Win32_ComputerSystem).Model -ne 'VirtualBox') { throw 'Teste permitido somente dentro da VM VirtualBox.' }
 
@@ -42,6 +43,8 @@ Add-Type -Namespace TV -Name U -MemberDefinition @'
 [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern System.IntPtr FindWindowEx(System.IntPtr p, System.IntPtr a, string c, string t);
 [DllImport("user32.dll")] public static extern System.IntPtr PostMessage(System.IntPtr h, uint m, System.IntPtr w, System.IntPtr l);
 [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(System.IntPtr h, out uint pid);
+[DllImport("user32.dll")] public static extern bool SetForegroundWindow(System.IntPtr h);
+[DllImport("user32.dll")] public static extern bool GetWindowRect(System.IntPtr h, int[] r);
 '@
 # caixa de mensagem do processo: responde pelo código do botão (IDYES = 6, IDNO = 7), sem depender do texto
 function responder([int]$processo, [int]$botao) {
@@ -81,14 +84,16 @@ $abertos = @()
 try {
   switch ($Fase) {
     'e2e' {
-      # o e2e de sempre, com o node.exe portátil copiado para a rodada (o convidado não tem Node)
+      # os e2e da lista (-Testes), com o node.exe portátil copiado para a rodada (o convidado não tem Node)
       $copia = Join-Path $base 'rodada'; Copy-Item -Recurse (Join-Path $entrada 'teste') $copia
       $env:TARJA_EXE = $exe
-      $log = Join-Path $saida 'e2e.log'
-      $p = Start-Process (Join-Path $copia 'ferramentas-teste\node.exe') -ArgumentList "`"$(Join-Path $copia 'tests\e2e.mjs')`"", "`"$(Join-Path $saida 'capturas')`"" `
-        -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru -Wait -NoNewWindow
-      $fim = (Get-Content $log -ErrorAction SilentlyContinue | Select-Object -Last 3) -join ' '
-      anotar 'e2e dentro do exe (abrir, procurar, tarjar, carimbo, salvar, conferir o PDF salvo)' ($p.ExitCode -eq 0) "saída $($p.ExitCode): $fim"
+      foreach ($t in $Testes.Split(',')) {
+        $log = Join-Path $saida "$t.log"
+        $p = Start-Process (Join-Path $copia 'ferramentas-teste\node.exe') -ArgumentList "`"$(Join-Path $copia "tests\$t.mjs")`"", "`"$(Join-Path $saida "capturas-$t")`"" `
+          -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru -Wait -NoNewWindow
+        $fim = (Get-Content $log -ErrorAction SilentlyContinue | Select-Object -Last 3) -join ' '
+        anotar "$t dentro do exe" ($p.ExitCode -eq 0) "saída $($p.ExitCode): $fim"
+      }
       Remove-Item Env:TARJA_EXE
     }
     'a' {
@@ -138,6 +143,35 @@ try {
       $r | Set-Content (Join-Path $saida 'conexoes.txt') -Encoding UTF8
       $limpas = @($r | Where-Object { $_ -match 'nenhuma conexão' -and $_ -notmatch 'CONTAMINADA' }).Count
       anotar 'C4: 5 aberturas de 10 min sem conexão de rede' ($limpas -eq 5) (($r | ForEach-Object { "$_" }) -join '; ')
+    }
+    'arrastar' {
+      # o professor arrastou o PDF para o cartão e não abriu (retorno de 04/11/2026): arrasto OLE de verdade, de uma
+      # janelinha .NET para o meio da janela do exe, e a página tem de abrir o arquivo
+      $porta = 9336
+      $perfil = Join-Path $base 'perfil'
+      $pdf = Join-Path $base 'arrastado.pdf'
+      Copy-Item (Join-Path $entrada 'teste\tests\fixtures\tarja-teste.pdf') $pdf
+      $env:WEBVIEW2_USER_DATA_FOLDER = $perfil
+      $env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS = "--remote-debugging-port=$porta"
+      $p = Start-Process $exe -ArgumentList '--sem-instalar' -PassThru; $abertos += $p.Id
+      Remove-Item Env:WEBVIEW2_USER_DATA_FOLDER, Env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS
+      $abriu = janela $p
+      $pronta = $false
+      for ($i = 0; $i -lt 60 -and -not $pronta; $i++) {
+        Start-Sleep -Milliseconds 500
+        try { $pronta = (pagina $porta "!!document.getElementById('vazio') && !document.getElementById('vazio').hidden") -eq $true } catch {}
+      }
+      $p.Refresh()
+      $r = New-Object int[] 4
+      [void][TV.U]::SetForegroundWindow($p.MainWindowHandle)
+      [void][TV.U]::GetWindowRect($p.MainWindowHandle, $r)
+      $cx = [int](($r[0] + $r[2]) / 2); $cy = [int](($r[1] + $r[3]) / 2)
+      Start-Sleep 1
+      $efeito = & (Join-Path $entrada 'teste\tests\vm\arrastar_ole.ps1') -Pdf $pdf -X $cx -Y $cy
+      $abas = 0
+      for ($i = 0; $i -lt 20 -and $abas -lt 1; $i++) { Start-Sleep -Milliseconds 500; try { $abas = [int](pagina $porta "document.querySelectorAll('#abas .aba').length") } catch {} }
+      $paginas = try { pagina $porta "document.getElementById('infoPaginas').textContent" } catch { '?' }
+      anotar 'arrastar do Windows (OLE) um PDF para a janela do exe' ($abriu -and $pronta -and $abas -eq 1) "janela: $abriu; página pronta: $pronta; soltou em ($cx, $cy); efeito do arrasto: $efeito; abas: $abas; páginas: $paginas"
     }
     'offline' {
       # o cabo da VM já está desligado (no host): confere a falta de rede e que o programa abre e trabalha
